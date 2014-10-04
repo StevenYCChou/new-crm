@@ -1,12 +1,12 @@
-var AgentController = require('./AgentController.js');
-var CustomerController = require('./CustomerController.js');
-var ContactHistoryController = require('./ContactHistoryController.js');
+var AgentController = require('./controller/AgentController.js');
+var CustomerController = require('./controller/CustomerController.js');
+var ContactHistoryController = require('./controller/ContactHistoryController.js');
 
 var express = require('express');
 var http = require('http');
 var app = express();
 app.engine('.html', require('ejs').__express);
-app.set('views', __dirname+ '/views');
+app.set('views', __dirname+'/views');
 app.set('view engine', 'html');
 http.createServer(app).listen(3000);
 
