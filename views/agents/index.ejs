@@ -1,0 +1,19 @@
+<h3>Agent List</h3>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Details</th>
+  </tr>
+  <% for (var i = 0; i < agents.length;i++) { %>
+    <tr>
+      <td><%= agents[i]["name"] %></td>
+      <td><%= agents[i]["phone"] %></td>
+      <td><%= agents[i]["email"] %></td> 
+      <td><button class="agent_detail" value="<%= agents[i]["id"] %>">Details</button></td>
+    </tr>
+  <% } %>
+</table><br />
+
+<button id="create_agent">Create New Agent</button>

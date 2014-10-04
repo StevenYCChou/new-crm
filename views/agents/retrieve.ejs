@@ -1,0 +1,27 @@
+<h3>Agent Basic Info</h3>
+<ul>
+  <li>Agent Name: <%= agent["name"] %></li>
+  <li>Agent Phone: <%= agent["phone"] %></li>
+  <li>Agent Email: <%= agent["email"] %></li> 
+</ul>
+<h3>Customers</h3>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Details</th>
+  </tr>
+  <% for (var i = 0; i < customer.length;i++) { %>
+    <tr>
+      <td><%= customer[i]["name"] %></td>
+      <td><%= customer[i]["phone"] %></td>
+      <td><%= customer[i]["email"] %></td> 
+      <td><button class="customer_detail" value="<%= customer[i]["id"] %>" name="<%= agent["id"] %>" >Details</button></td>
+    </tr>
+  <% } %>
+</table><br />
+
+<button id="create_customer" value="<%= agent["id"] %>">Create New Customer</button>
+<button id="edit_agent" value="<%= agent["id"] %>">Edit Basic Info</button>
+<button id="back_agents">Fo back to the list</button>

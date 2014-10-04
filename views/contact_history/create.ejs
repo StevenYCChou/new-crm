@@ -1,0 +1,24 @@
+<h3>Create Contact History</h3>
+<div>
+  <label>Summary: <input type="text" id="TextSummary" placeholder="TextSummary" />
+  </label>
+<div>
+</div>
+  <label>Model: </label>
+  <select id="model_select">
+    <option value="phone">Phone</option>
+    <option value="email">Email</option>  
+  </select>
+</div>
+<div>
+  <label>Time: <input type="text" id="time" placeholder="time" />
+  </label>
+</div>
+<div>
+  <label>Data: <input type="text" id="data" placeholder="data" />
+  </label>
+</div>
+<div>
+  <button id="create_contact_submit" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Submit</button>
+  <button id="create_contact_cancel" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Return</button>
+</div>

@@ -1,0 +1,31 @@
+<h3>Customer Basic Info</h3>
+<ul>
+  <li>Customer Name: <%= customer["name"] %></li>
+  <li>Customer Phone: <%= customer["phone"] %></li>
+  <li>Customer Email: <%= customer["email"] %></li> 
+</ul>
+<h3>Agent Basic Info</h3>
+<ul>
+  <li>Agent Name: <%= agent["name"] %></li>
+  <li>Agent Phone: <%= agent["phone"] %></li>
+  <li>Agent Email: <%= agent["email"] %></li> 
+</ul>
+<h3>Contact History</h3>
+<table>
+  <tr>
+    <th>Summary</th>
+    <th>Mode</th>
+    <th>Time</th>
+    <th>Details</th>
+  </tr>
+  <% for (var i = 0: i < contact_history.length;i++) { %>
+    <tr>
+      <td><%= contact_history[i]["TextSummary"] %></td>
+      <td><%= contact_history[i]["mode"] %></td>
+      <td><%= contact_history[i]["time"] %></td> 
+      <td><%= contact_history[i]["data"] %></td></td>
+    </tr>
+  <% } %>
+</table><br />
+
+<button id="customer_view_edit" value="<%= customer["id"] %>" >Edit</button>
