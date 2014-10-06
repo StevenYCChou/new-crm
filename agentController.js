@@ -34,7 +34,7 @@ module.exports = new function () {
     },
 
     getAll: function (req, res) {
-/*      Agent.find().exec(function (err, agents) {
+		/*      Agent.find().exec(function (err, agents) {
         if (err) {
           res.send(500, { error: "Database Error." });
         } else {
@@ -88,7 +88,7 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-        models['Agent'].find({}).where('agentId').equals(agentID).exec(function(err, agent)
+        models['Agent'].find({}).where('id').equals(agentID).exec(function(err, agent)
         {
           if (err){
             res.send(500, { error: "Database Error." });
@@ -119,7 +119,7 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-        models['Agent'].find({}).where('agentId').equals(agentID).customers.find({}).where('customerId').equals(customerID)exec(function(err, customer)
+        models['Agent'].find({}).where('id').equals(agentID).customers.find({}).where('customerId').equals(customerID)exec(function(err, customer)
         {
           if (err){
             res.send(500, { error: "Database Error." });
@@ -143,14 +143,18 @@ module.exports = new function () {
           res.redirect(req.url);
         }
       });*/
-      models['Agent'].findOneAndUpdate({id: agentID}, {name: req.body['name'], phone: req.body['phone'], email: req.body['email']}, function (err, agent) {
-        if (err) {
-          res.send(404, { error: "Agent doesn't exist." });
-        } else {
-          // TODO(wenjun): Verify that redirect to correct page (GET method).
-          res.redirect(req.url);
-        }
-      }); 
+      
+      db.once('open', function callback() {
+        console.log('Connected to MongoDB !');
+        models['Agent'].findOneAndUpdate({id: agentID}, {name: req.body['name'], phone: req.body['phone'], email: req.body['email']}, function (err, agent) {
+          if (err) {
+            res.send(404, { error: "Agent doesn't exist." });
+          } else {
+            // TODO(wenjun): Verify that redirect to correct page (GET method).
+            res.redirect(req.url);
+          }
+        });
+      }
     },
 
     showUpdatePage: function (req, res) {
@@ -165,7 +169,7 @@ module.exports = new function () {
       });*/
        db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-        models['Agent'].find({}).where('agentId').equals(agentID).exec(function(err, agent)
+        models['Agent'].find({}).where('id').equals(agentID).exec(function(err, agent)
         {
           if (err){
             res.send(500, { error: "Database Error." });
