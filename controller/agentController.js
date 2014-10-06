@@ -16,6 +16,10 @@ module.exports = new function () {
       });
     },
 
+    showCreatePage: function (req, res) {
+      res.render('agents/create');
+    },
+
     getAll: function (req, res) {
       Agent.find().exec(function (err, agents) {
         if (err) {
@@ -25,18 +29,16 @@ module.exports = new function () {
           // method. I did not use 'delete agent.[key]' here, cause I think the
           // code is hard to maintain if we add other attributes to the model
           // later. But current method take up more space.
-          filtered_agents = [];
+          data = {agents: []};
           agents.forEach(function (agent) {
-            filtered_agents.push({
+            data.agents.push({
              name: agent.name,
              phone: agent.phone,
              email: agent.email,
              id: agent.id,
             });
           });
-          res.view('agents/index', {
-            agents: filtered_agents,
-          });
+          res.render('agents/index', data);
         }
       });
     },
