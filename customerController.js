@@ -1,4 +1,7 @@
-module.exports = new function () {
+var mongoose = require('mongoose');
+models = require('./model.js');
+
+exports = new function () {
   console.log('Try to connect to MongoDB via Mongoose ...');
   mongoose.connect('mongodb://localhost/27017');
   var db = mongoose.connection;
@@ -99,11 +102,12 @@ module.exports = new function () {
       db.once('open', function callback() {
         cosole.log('Connected to MongoDB');
         models['Customer'].find({}).where('id').equals(customerID).exec(function(err, customer) {
-        if (err) {
-          res.send(500, {error: "Database Error."});
-        } else {
-          res.view('customers/customer_view/update', customer);
-        }
+          if (err) {
+            res.send(500, {error: "Database Error."});
+          } else {
+            res.view('customers/customer_view/update', customer);
+          }
+        });
       });
     },
 

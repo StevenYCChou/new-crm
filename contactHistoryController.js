@@ -1,4 +1,12 @@
+var mongoose = require('mongoose');
+var models = require('./model.js');
+
 module.exports = new function () {
+  console.log('Try to connect to MongoDB via Mongoose ...');
+  mongoose.connect('mongodb://localhost/27017');
+  var db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
+	
   return {
     create: function (req, res) {
       var url = require('url'),
@@ -48,7 +56,7 @@ module.exports = new function () {
           res.view('contact_history/retrieve', contactHistory);
         }
       });*/
-      db.once('open' function callback() {
+      db.once('open', function callback() {
         console.log('Connected to MongoDB !');
 	models['ContactHistory'].find({}).where('id').equals(contactHistoryID).exec(function(err, agent)
         {

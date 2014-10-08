@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var models = require('./model.js');
 
 module.exports = new function () {
@@ -119,7 +120,7 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-        models['Agent'].find({}).where('id').equals(agentID).customers.find({}).where('customerId').equals(customerID)exec(function(err, customer)
+        models['Agent'].find({}).where('id').equals(agentID).customers.find({}).where('customerId').equals(customerID).exec(function(err, customer)
         {
           if (err){
             res.send(500, { error: "Database Error." });
@@ -154,7 +155,7 @@ module.exports = new function () {
             res.redirect(req.url);
           }
         });
-      }
+      });
     },
 
     showUpdatePage: function (req, res) {
