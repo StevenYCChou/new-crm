@@ -1,6 +1,8 @@
 var path = require('path');
 var mongoose = require('mongoose');
 var util = require('util');
+
+
 var Schema = mongoose.Schema;
 
 /* BasicPersonSchema */
@@ -22,11 +24,12 @@ var CustomerSchema = new BasicPersonSchema({
   agent : { type: Schema.Types.ObjectId, ref: 'Agent' }
 });
 
-var Agent = mongoose.model('Agent', AgentSchema);
-var Customer = mongoose.model('Customer', CustomerSchema);
+  console.log('Try to connect to MongoDB via Mongoose ...');
+  mongoose.connect('mongodb://localhost/mydb');
+  var db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 
 var BinaryDataSchema = Schema({data: Schema.Types.Mixed});
-var BinaryData = mongoose.model('BinaryData', BinaryDataSchema);
 
 /* BasicRelationshipSchema */
 function BasicRelationshipSchema() {
@@ -38,17 +41,26 @@ function BasicRelationshipSchema() {
 };
 util.inherits(BasicRelationshipSchema, Schema);
 
-var ContactHistory = new BasicRelationshipSchema({
+var ContactHistorySchema = new BasicRelationshipSchema({
   time: Date,
   model: String, // phone OR email
   data: { type: Schema.Types.ObjectId, ref: 'BinaryData' },
   textSummary: String
 });
+  
+
+db.once('open', function callback() {
+  var Agent = mongoose.model('Agent', AgentSchema);
+  var Customer = mongoose.model('Customer', CustomerSchema);
+  var ContactHistory = mongoose.model('ContactHistory', ContactHistorySchema);
+  var BinaryData = mongoose.model('BinaryData', BinaryDataSchema);
+
+  models = {};
+  models['Agent'] = Agent;
+  models['Customer'] = Customer;
+  models['ContactHistory'] = ContactHistory;
+  models['BinaryData'] = BinaryData;
+  module.exports = models;
+});
 
 
-models = {};
-models['Agent'] = Agent;
-models['Customer'] = Customer;
-models['ContactHistory'] = ContactHistory;
-models['BinaryData'] = BinaryData;
-module.exports = models;

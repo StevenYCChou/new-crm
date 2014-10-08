@@ -1,12 +1,9 @@
 var mongoose = require('mongoose');
-var models = require('./model.js');
+var models = require('../model.js');
+var Agent = require('../model.js').Agent;
+var db = require('../db.js');
 
 module.exports = new function () {
-  console.log('Try to connect to MongoDB via Mongoose ...');
-  mongoose.connect('mongodb://localhost/27017');
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
-  
   return {
     create: function (req, res) {
       var agent = {
@@ -15,6 +12,7 @@ module.exports = new function () {
         phone : req.param('phone'),
       };
 
+    
 /*      Agent.create(agent).exec(function (err, agent) {
         if (err) {
           res.send(500, { error: "Database Error." });
@@ -32,6 +30,10 @@ module.exports = new function () {
           }
         }); 
       });
+    },
+
+    showCreatePage: function (req, res) {
+      res.render('agents/create');
     },
 
     getAll: function (req, res) {
@@ -59,13 +61,23 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-        models['Agent'].find({}).exec(function(err, agent)
+        models['Agent'].find({}).exec(function(err, agents)
+//         Agent.find({}).exec(function(err, agents)
         {
           if (err){
             res.send(500, { error: "Database Error." });
           } else {
-            res.view('agents/index', {
-              agents: {name: agent.name, phone: agent.phone, email: agent.email, id: agent.id},
+            filtered_agents = [];
+            agents.forEach(function (agent) {
+              filtered_agents.push({
+                name: agent.name,
+                phone: agent.phone,
+                email: agent.email,
+                id: agent.id,
+              });
+            });
+            res.render('agents/index', {
+              agents: filtered_agents,
             });
           }
         });

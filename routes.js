@@ -1,6 +1,6 @@
-var AgentController = require('./controller/AgentController.js');
-var CustomerController = require('./controller/CustomerController.js');
-var ContactHistoryController = require('./controller/ContactHistoryController.js');
+var AgentController = require('./controller/agentController.js');
+var CustomerController = require('./controller/customerController.js');
+var ContactHistoryController = require('./controller/contactHistoryController.js');
 
 var express = require('express');
 var http = require('http');

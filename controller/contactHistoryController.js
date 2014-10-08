@@ -1,12 +1,8 @@
 var mongoose = require('mongoose');
-var models = require('./model.js');
+var models = require('../model.js');
+var db = require('../db.js');
 
 module.exports = new function () {
-  console.log('Try to connect to MongoDB via Mongoose ...');
-  mongoose.connect('mongodb://localhost/27017');
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
-  
   return {
     create: function (req, res) {
       var url = require('url'),

@@ -1,12 +1,8 @@
 var mongoose = require('mongoose');
-models = require('./model.js');
+var models = require('../model.js');
+var db = require('../db.js');
 
-exports = new function () {
-  console.log('Try to connect to MongoDB via Mongoose ...');
-  mongoose.connect('mongodb://localhost/27017');
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
-
+module.exports = new function () {
   return {
     create: function (req, res) {
       var customer = {
@@ -131,7 +127,7 @@ exports = new function () {
             // Back to the previous page.
             res.redirect('/agent' + req.param('agentID'));
           }
-  });
+        });
       });
     }
   };
