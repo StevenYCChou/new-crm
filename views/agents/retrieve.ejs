@@ -1,3 +1,4 @@
+<% layout('../layout') -%>
 <h3>Agent Basic Info</h3>
 <ul>
   <li>Agent Name: <%= agent["name"] %></li>
@@ -12,11 +13,11 @@
     <th>Email</th>
     <th>Details</th>
   </tr>
-  <% for (var i = 0; i < customer.length;i++) { %>
+  <% for (var i = 0; i < customers.length;i++) { %>
     <tr>
-      <td><%= customer[i]["name"] %></td>
-      <td><%= customer[i]["phone"] %></td>
-      <td><%= customer[i]["email"] %></td> 
+      <td><%= customers[i]["name"] %></td>
+      <td><%= customers[i]["phone"] %></td>
+      <td><%= customers[i]["email"] %></td> 
       <td><button class="customer_detail" value="<%= customer[i]["id"] %>" name="<%= agent["id"] %>" >Details</button></td>
     </tr>
   <% } %>
