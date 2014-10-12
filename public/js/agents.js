@@ -1,5 +1,5 @@
-require("jquery.1.11.1.js");
 $('#create_agent').click(function() {
+  console.log("Create Agent!");
   location.href="/agent/create"; 
 });
 
