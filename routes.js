@@ -6,8 +6,15 @@ var express = require('express');
 var http = require('http');
 var app = express();
 var engine = require('ejs-locals');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+
 app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(multer());
+//app.use(app.router);
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs'); // default view engine
