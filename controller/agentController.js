@@ -54,42 +54,37 @@ module.exports = new function () {
       console.log('Connected to MongoDB !');
       models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agent)
       {
-        if (err){
-           res.send(500, { error: "Database Error." });
-        } else {
-	          res.render('agents/retrieve', {
-            agent: agent[0],
-            customers: agent[0]["customers"]
-          });
-        }
+        models['Customer'].find({'_id': { $in: agent[0]["customers"]}}, function(err, customers)
+        {
+          if (err){
+             res.send(500, { error: "Database Error." });
+          } else {
+  	          res.render('agents/retrieve', {
+              agent: agent[0],
+              customers: customers
+            });
+          }
+        });
       });
     },
 
     // Same with `retrieve`.
     showCustomer: function (req, res) {
-      var agentID = Number(req.param('agentID'));
-      var customerID = Number(req.param('customerID'));
+      var agentID = req.param('agentID');
+      var customerID = req.param('customerID');
 
       models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
         if (err) {
           res.send(500, { error: "Database Error." });
         } else {
-          var customer;
-          agent.customers.forEach(function (customer_res) {
-            if (customer_res.id == customerID) {
-              customer = customer_res;
-            }
-          })
-          var contact_history = []
-          agent.contactHistory.forEach(function (contact_history_res) {
-            if (contact_history_res.customer == customerID) {
-              contact_history.push(contact_history_res);
-            }
-          })
-          res.render('customers/agent_view/retrieve', {
-            agent: agent,
-            customer: customer,
-            contact_history: contact_history,
+          models['Customer'].find({}).where('_id').equals(customerID).exec(function(err, customers){
+            models['ContactHistory'].find({'_id': { $in: agent[0]["ContactHistory"]}}, function(err, contact_history) {
+              res.render('customers/agent_view/retrieve', {
+                agent: agent[0],
+                customer: customers[0],
+                contact_history: contact_history,
+              });
+            });
           });
         }
       });

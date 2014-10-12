@@ -17,15 +17,19 @@ module.exports = new function () {
         name : req.param('name'),
         email : req.param('email'),
         phone : req.param('phone'),
-        agent : Number(req.param('agentID')),  // int
+        agent : req.param('agentID'),  
       };
+      console.log(customer);
 
       models['Customer'].create(customer, function (err, customer) {
-        if (err) {
-          res.send(500, { error: "Database Error." });
-        } else {
-          res.redirect('/agent/' + req.param('agentID'));
-        }
+        models['Agent'].findOneAndUpdate({_id: req.param('agentID')}, {$push: {customers: customer["_id"]}}, {safe: true, upsert:true}, function(err, agent) {
+          console.log(agent);
+          if (err) {
+            res.send(500, { error: "Database Error." });
+          } else {
+            res.redirect('/agent/' + req.param('agentID'));
+          }
+        });
       });
     },
     retrieve: function (req, res) {
@@ -68,7 +72,7 @@ module.exports = new function () {
     updateViaAgent: function (req, res) {
       var customerID = req.param('customerID');
       var agentID = req.param('agentID');
-
+      console.log("update customers");
       models['Customer'].findOneAndUpdate({_id: customerID}, req.body).exec(function (err, customer) {
         if (err) {
           res.send(404, { error: "Customer doesn't exist." });
@@ -123,7 +127,7 @@ module.exports = new function () {
           res.send(500, { error: "Database Error." });
         } else {
           res.render('customers/agent_view/update', {
-            customer: customer,
+            customer: customer[0],
             agent: {id: agentID},
           });
         }

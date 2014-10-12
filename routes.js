@@ -34,7 +34,7 @@ app.get('/agent/:agentID', AgentController.retrieve);
 app.get('/agent/:agentID/edit', AgentController.showUpdatePage);
 app.put('/agent/:agentID', AgentController.update);
 
-app.get('agent/:agentID/customer/:customerID', AgentController.showCustomer);
+app.get('/agent/:agentID/customer/:customerID', AgentController.showCustomer);
 
 //   // Customer Controller
 app.get('/agent/:agentID/create', CustomerController.showCreate);

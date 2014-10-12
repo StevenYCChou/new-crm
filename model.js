@@ -21,10 +21,12 @@ function BasicPersonSchema() {
 util.inherits(BasicPersonSchema, Schema);
 
 var AgentSchema = new BasicPersonSchema({
-  customers : [{ type: Schema.Types.ObjectId, ref: 'Customer' }]
+  customers : [{ type: Schema.Types.ObjectId, ref: 'Customer' }], 
+  ContactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
 });
 var CustomerSchema = new BasicPersonSchema({
-  agent : { type: Schema.Types.ObjectId, ref: 'Agent' }
+  agent : { type: Schema.Types.ObjectId, ref: 'Agent' }, 
+  ContactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
 });
 
 var BinaryDataSchema = Schema({data: Schema.Types.Mixed});

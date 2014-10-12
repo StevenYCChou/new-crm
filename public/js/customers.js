@@ -19,7 +19,7 @@ $("#create_customer_submit").click(function() {
       '/agent/' + agent_ID,
       {name: customer_name, phone: customer_phone, email: customer_email, agentID: agent_ID},
       function(res) {
-        window.location = "/agent/"+ agent_ID;
+        location.href = "/agent/"+ agent_ID;
       }
     ).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
