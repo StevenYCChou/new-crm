@@ -19,14 +19,14 @@
     <th>Time</th>
     <th>Details</th>
   </tr>
-  <% for (var i = 0: i < contact_history.length;i++) { %>
+  <% for (var i = 0; i < contact_history.length;i++) { %>
     <tr>
-      <td><%= contact_history[i]["TextSummary"] %></td>
-      <td><%= contact_history[i]["mode"] %></td>
+      <td><%= contact_history[i]["textSummary"] %></td>
+      <td><%= contact_history[i]["model"] %></td>
       <td><%= contact_history[i]["time"] %></td> 
       <td><%= contact_history[i]["data"] %></td></td>
     </tr>
   <% } %>
 </table><br />
 
-<button id="customer_view_edit" value="<%= customer["id"] %>" >Edit</button>
+<button id="customer_view_edit" value="<%= customer["id"] %>" >Edit Customer Basic Info</button>

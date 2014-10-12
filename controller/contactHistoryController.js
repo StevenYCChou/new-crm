@@ -20,7 +20,7 @@ module.exports = new function () {
         models['Agent'].findOneAndUpdate({_id: req.param('agentID')}, {$push: {ContactHistory: contactHistory["_id"]}}, {safe: true, upsert:true}, function(err, agent) {
           models['Customer'].findOneAndUpdate({_id: req.param('customerID')}, {$push: {ContactHistory: contactHistory["_id"]}}, {safe: true, upsert:true}, function(err, customer) {
             if (err) {
-              res.send(500, { error: "Database Error." });
+              res.status(500).send({ error: "Database Error." });
             } else {
               res.render('customers/agent_view/retrieve', {
                 agent: agent,
@@ -51,11 +51,8 @@ module.exports = new function () {
         models['Agent'].find({}).where('_id').equals(contact_history[0]["agentId"]).exec(function (err, agent) {
           models['Customer'].find({}).where('_id').equals(contact_history[0]["customerId"]).exec(function (err, customer) {
             if (err) {
-              res.send(500, { error: "Database Error." });
+              res.status(500).send({ error: "Database Error." });
             } else {
-              console.log(contact_history[0]);
-              console.log(agent);
-              console.log(customer);
               res.render('contact_history/retrieve', {
                 contact_history: contact_history[0],
                 agent: agent[0],

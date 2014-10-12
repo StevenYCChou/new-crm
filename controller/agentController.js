@@ -55,9 +55,9 @@ module.exports = new function () {
         models['Customer'].find({'_id': { $in: agent[0]["customers"]}}, function(err, customers)
         {
           if (err){
-             res.send(500, { error: "Database Error." });
+            res.status(500).send({ error: "Database Error." });
           } else {
-  	          res.render('agents/retrieve', {
+  	        res.render('agents/retrieve', {
               agent: agent[0],
               customers: customers
             });
@@ -73,7 +73,7 @@ module.exports = new function () {
 
       models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
         if (err) {
-          res.send(500, { error: "Database Error." });
+          res.status(500).send({ error: "Database Error." });
         } else {
           models['Customer'].find({}).where('_id').equals(customerID).exec(function(err, customers){
             models['ContactHistory'].find({'_id': { $in: customers[0]["ContactHistory"]}}, function(err, contact_history) {
@@ -93,12 +93,12 @@ module.exports = new function () {
 
       models['Agent'].findOneAndUpdate({_id: agentID}, req.body).exec(function (err, agent) {
         if (err) {
-          res.send(404, { error: "Agent doesn't exist." });
+          res.status(404).send({ error: "Agent doesn't exist." });
         } else {
 
           models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
             if (err) {
-              res.send(500, { error: "Database Error." });
+              res.status(500).send({ error: "Database Error." });
             } else {
               res.render('agents/retrieve', {
                 agent: agent[0],
@@ -117,7 +117,7 @@ module.exports = new function () {
       models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agents)
       {
 	      if (err){
-          res.send(500, { error: "Database Error." });
+          res.status(500).send({ error: "Database Error." });
         } else {
           res.render('agents/update', {agent: agents[0]});
         }
