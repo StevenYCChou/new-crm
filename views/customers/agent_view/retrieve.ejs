@@ -5,6 +5,9 @@
   <li>Customer Phone: <%= customer["phone"] %></li>
   <li>Customer Email: <%= customer["email"] %></li> 
 </ul>
+<button id="edit_customer" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Edit Customer Basic Info</button>
+<button id="customer_delete" value="<%= agent["id"] %>" name="<%= customer["id"] %>" >Delete the customer</button>
+
 <h3>Contact History</h3>
 <table>
   <tr>
@@ -13,18 +16,20 @@
     <th>Time</th>
     <th>Details</th>
   </tr>
-  <% for (var i = 0: i < contact_history.length;i++) { %>
+  <% for (var i = 0; i < contact_history.length;i++) { %>
     <tr>
-      <td><%= contact_history[i]["TextSummary"] %></td>
-      <td><%= contact_history[i]["mode"] %></td>
+      <td><%= contact_history[i]["textSummary"] %></td>
+      <td><%= contact_history[i]["model"] %></td>
       <td><%= contact_history[i]["time"] %></td> 
-      <td><button class="contact_history_detail" value="<%= contact_history[i].id %>">Details</button></td>
+      <td><button class="contact_history_detail" value="<%= contact_history[i]["id"] %>">Details</button></td>
     </tr>
   <% } %>
 </table><br />
 
-<button id="create_contact_history" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Add contact History</button>
-<button id="edit_customer" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Edit Basic Info</button>
-<button id="customer_back_agent" value="<%= agent["id"] %>">Go back to the Agent</button>
-<button id="customer_back_agents">Go back to the list</button>
-<button id="customer_delete" value="<%= customer["id"] %>">Go back to the list</button>
+<div>
+  <button id="create_contact_history" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Add contact History</button>
+</div><br />
+<div>
+  <button id="customer_back_agent" value="<%= agent["id"] %>">Go back to the Agent</button>
+  <button id="customer_back_agents">Go back to Agent list</button>
+</div>
