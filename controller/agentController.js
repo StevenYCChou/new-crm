@@ -10,15 +10,14 @@ module.exports = new function () {
         email : req.param('email'),
         phone : req.param('phone'),
       };
-      console.log(req.body);
-      console.log('Connected to MongoDB !');
-      models['Agent'].create(agent, function(err){
-        if (err){
+
+      models['Agent'].create(agent, function (err, agent) {
+        if (err) {
           res.send(500, { error: "Database Error." });
         } else {
           res.redirect('/agents');
         }
-      }); 
+      });
     },
 
     showCreatePage: function (req, res) {
@@ -32,7 +31,6 @@ module.exports = new function () {
           res.send(500, { error: "Database Error." });
         } else {
           filtered_agents = [];
-	  console.log(agents);
           agents.forEach(function (agent) {
             filtered_agents.push({
               name: agent.name,
@@ -59,7 +57,6 @@ module.exports = new function () {
         if (err){
            res.send(500, { error: "Database Error." });
         } else {
-            console.log(agent);
 	          res.render('agents/retrieve', {
             agent: agent[0],
             customers: agent[0]["customers"]
@@ -70,32 +67,52 @@ module.exports = new function () {
 
     // Same with `retrieve`.
     showCustomer: function (req, res) {
-      var agentID = req.param('agentID');
-      var customerID = req.param('customerID');
+      var agentID = Number(req.param('agentID'));
+      var customerID = Number(req.param('customerID'));
 
-      console.log('Connected to MongoDB !');
-      models['Agent'].find({}).where('_id').equals(agentID).customers.find({}).where('customerId').equals(customerID).exec(function(err, customer)
-      {
+      models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
         if (err) {
-	  res.send(500, { error: "Database Error." });
+          res.send(500, { error: "Database Error." });
         } else {
+          var customer;
+          agent.customers.forEach(function (customer_res) {
+            if (customer_res.id == customerID) {
+              customer = customer_res;
+            }
+          })
+          var contact_history = []
+          agent.contactHistory.forEach(function (contact_history_res) {
+            if (contact_history_res.customer == customerID) {
+              contact_history.push(contact_history_res);
+            }
+          })
           res.render('customers/agent_view/retrieve', {
-            customer: customer 
-	  });
+            agent: agent,
+            customer: customer,
+            contact_history: contact_history,
+          });
         }
       });
     },
 
     update: function (req, res) {
-      var agentID = req.param('agent');
-      
-      console.log('Connected to MongoDB !');
-      models['Agent'].findOneAndUpdate({_id: agentID}, {name: req.body['name'], phone: req.body['phone'], email: req.body['email']}, function (err, agent) {
+      var agentID = req.param('agentID');
+
+      models['Agent'].findOneAndUpdate({_id: agentID}, req.body).exec(function (err, agent) {
         if (err) {
           res.send(404, { error: "Agent doesn't exist." });
         } else {
-          // TODO(wenjun): Verify that redirect to correct page (GET method).
-          res.redirect(req.url);
+
+          models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
+            if (err) {
+              res.send(500, { error: "Database Error." });
+            } else {
+              res.render('agents/retrieve', {
+                agent: agent[0],
+                customers: agent[0].customers,
+              });
+            }
+          });
         }
       });
     },
@@ -104,12 +121,12 @@ module.exports = new function () {
       var agentID = req.param('agentID');
 
       console.log('Connected to MongoDB !');
-      models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agent)
+      models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agents)
       {
-	if (err){
+	      if (err){
           res.send(500, { error: "Database Error." });
         } else {
-          res.render('agents/update', agent);
+          res.render('agents/update', {agent: agents[0]});
         }
       });
     }

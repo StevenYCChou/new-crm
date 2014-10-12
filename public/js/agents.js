@@ -47,7 +47,7 @@ $("#edit_agent_submit").click(function() {
       url: '/agent/' + agent_ID,
       data: {name: agent_name, phone: agent_phone, email: agent_email},
       success: function(res) {
-        window.location = "/agent/" + agent_ID;
+        location.href = "/agent/" + agent_ID;
       }
     }).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));

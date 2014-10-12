@@ -4,7 +4,15 @@ var db = require('../db.js');
 
 module.exports = new function () {
   return {
-    create: function (req, res) {
+    showCreate: function (req, res) {
+    var agentID = req.param('agentID');
+
+    res.render('customers/agent_view/create', {
+      agent: { id: agentID },
+      });
+  },
+
+    createViaAgent: function (req, res) {
       var customer = {
         name : req.param('name'),
         email : req.param('email'),
@@ -12,74 +20,136 @@ module.exports = new function () {
         agent : Number(req.param('agentID')),  // int
       };
 
-      console.log('Connected to MongoDB!');
-      models['Customer'].create(customer, function(err, customer){
-        if (err) { 
-	  res.send(500, { error: "Database Error."});
+      models['Customer'].create(customer, function (err, customer) {
+        if (err) {
+          res.send(500, { error: "Database Error." });
         } else {
-          res.redirect('/agent' + customer.id);
+          res.redirect('/agent/' + req.param('agentID'));
         }
-      });    
+      });
     },
-
-    showCreate: function (req, res) {
-      res.view('customers/agent_view/create');
-    },
-
     retrieve: function (req, res) {
       var customerID = req.param('customerID');
 
-      cosole.log('Connected to MongoDB');
-  models['Customer'].find({}).where('_id').equals(customerID).exec(function(err, customer) {
+      models['Customer'].find({}).where('_id').equals(customerID).exec(function (err, customer) {
         if (err) {
-          res.send(500, {error: "Database Error."});
-        } else { 
-	  res.set('Content-Type', 'application/json');
-          res.render('customers/customer_view/retrieve', customer);
+          res.send(500, { error: "Database Error." });
+        } else {
+          res.render('customers/customer_view/retrieve', {
+            customer: customer,
+            agent: customer.agent,
+            contact_history: customer.contactHistory,
+          });
         }
       });
     },
 
-    // This function is shared by agent and customer to update the customer info.
-    update: function (req, res) {
-      var customerID = req.param('customer');
-
-      console.log('Connected to MongoDB !');
-      models['Customer'].findOneAndUpdate({_id: customerID}, {name: req.body['name'], phone: req.body['phone'], email: req.body['email']}, function (err, customer) {
+    updateViaCustomer: function (req, res) {
+      var customerID = req.param('customerID');
+      models['Customer'].findOneAndUpdate({_id: customerID}, req.body).exec(function (err, customer) {
         if (err) {
           res.send(404, { error: "Customer doesn't exist." });
         } else {
-            // TODO(wenjun): Verify that redirect to correct page (GET method).
-          res.redirect(req.url);
+          models['Customer'].find({}).where('_id').equals(customerID).exec(function (err, customer) {
+            if (err) {
+              res.send(500, { error: "Database Error." });
+            } else {
+              res.view('customers/customer_view/retrieve', {
+                customer: customer,
+                agent: customer.agent,
+                contact_history: customer.contactHistory,
+              });
+            }
+          });
         }
       });
     },
 
-    showUpdatePage: function (req, res) {
+    updateViaAgent: function (req, res) {
+      var customerID = req.param('customerID');
+      var agentID = req.param('agentID');
+
+      models['Customer'].findOneAndUpdate({_id: customerID}, req.body).exec(function (err, customer) {
+        if (err) {
+          res.send(404, { error: "Customer doesn't exist." });
+        } else {
+          models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
+            if (err) {
+              res.send(500, { error: "Database Error." });
+            } else {
+              var customer;
+              agent.customers.forEach(function (customer_res) {
+                if (customer_res.id == customerID) {
+                  customer = customer_res;
+                }
+              })
+              var contact_history = []
+              agent.contactHistory.forEach(function (contact_history_res) {
+                if (contact_history_res.customer == customerID) {
+                  contact_history.push(contact_history_res);
+                }
+              })
+              res.render('customers/agent_view/retrieve', {
+                agent: agent,
+                customer: customer,
+                contact_history: contact_history,
+              });
+            }
+          });
+        }
+      });
+    },
+
+     showUpdatePageViaCustomer: function (req, res) {
       var customerID = req.param('customerID');
 
-      cosole.log('Connected to MongoDB');
-      models['Customer'].find({}).where('_id').equals(customerID).exec(function(err, customer) { 
-	if (err) {
-          res.send(500, {error: "Database Error."});
+      models['Customer'].find({}).where('_id').equals(customerID).exec(function (err, customer) {
+        if (err) {
+          res.send(500, { error: "Database Error." });
         } else {
-          res.render('customers/customer_view/update', customer);
+          res.render('customers/customer_view/update', {
+            customer: customer,
+          });
+        }
+      });
+    },
+
+    showUpdatePageViaAgent: function (req, res) {
+      var customerID = req.param('customerID');
+      var agentID = req.param('agentID');
+
+      models['Customer'].find({}).where('_id').equals(customerID).exec(function (err, customer) {
+        if (err) {
+          res.send(500, { error: "Database Error." });
+        } else {
+          res.render('customers/agent_view/update', {
+            customer: customer,
+            agent: {id: agentID},
+          });
         }
       });
     },
 
     delete: function (req, res) {
-      var customerID = req.param('customerID')
+      var customerID = req.param('customerID');
+      var agentID = req.param('agentID');
 
-      console.log('Connected to MongoDB !');
-      models['Customer'].find({}).where('_id').equals(customerID).remove().exec(function(err, customer) {
+      models['Customer'].find({}).where('_id').equals(customerID).remove().exec(function (err) {
         if (err) {
           res.send(404, { error: "Customer doesn't exist." });
         } else {
-            // Back to the previous page.
-          res.redirect('/agent' + req.param('agentID'));
+          models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
+            if (err) {
+              res.send(500, { error: "Database Error." });
+            } else {
+              res.render('agents/retrieve', {
+                agent: agent,
+                customer: agent.customers,
+              });
+            }
+          });
         }
       });
-    }
+    },
   };
 };
