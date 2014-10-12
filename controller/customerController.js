@@ -5,12 +5,12 @@ var db = require('../db.js');
 module.exports = new function () {
   return {
     showCreate: function (req, res) {
-    var agentID = req.param('agentID');
+      var agentID = req.param('agentID');
 
-    res.render('customers/agent_view/create', {
-      agent: { id: agentID },
-      });
-  },
+      res.render('customers/agent_view/create', {
+        agent: { id: agentID },
+        });
+    },
 
     createViaAgent: function (req, res) {
       var customer = {
@@ -19,11 +19,9 @@ module.exports = new function () {
         phone : req.param('phone'),
         agent : req.param('agentID'),  
       };
-      console.log(customer);
 
       models['Customer'].create(customer, function (err, customer) {
         models['Agent'].findOneAndUpdate({_id: req.param('agentID')}, {$push: {customers: customer["_id"]}}, {safe: true, upsert:true}, function(err, agent) {
-          console.log(agent);
           if (err) {
             res.send(500, { error: "Database Error." });
           } else {
@@ -58,7 +56,7 @@ module.exports = new function () {
             if (err) {
               res.send(500, { error: "Database Error." });
             } else {
-              res.view('customers/customer_view/retrieve', {
+              res.render('customers/customer_view/retrieve', {
                 customer: customer,
                 agent: customer.agent,
                 contact_history: customer.contactHistory,
@@ -72,33 +70,22 @@ module.exports = new function () {
     updateViaAgent: function (req, res) {
       var customerID = req.param('customerID');
       var agentID = req.param('agentID');
-      console.log("update customers");
       models['Customer'].findOneAndUpdate({_id: customerID}, req.body).exec(function (err, customer) {
         if (err) {
           res.send(404, { error: "Customer doesn't exist." });
         } else {
           models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
-            if (err) {
-              res.send(500, { error: "Database Error." });
-            } else {
-              var customer;
-              agent.customers.forEach(function (customer_res) {
-                if (customer_res.id == customerID) {
-                  customer = customer_res;
-                }
-              })
-              var contact_history = []
-              agent.contactHistory.forEach(function (contact_history_res) {
-                if (contact_history_res.customer == customerID) {
-                  contact_history.push(contact_history_res);
-                }
-              })
-              res.render('customers/agent_view/retrieve', {
-                agent: agent,
-                customer: customer,
-                contact_history: contact_history,
-              });
-            }
+            models['ContactHistory'].find({'_id': { $in: customer["ContactHistory"]}}, function (err, contact_history) {
+              if (err) {
+                res.send(500, { error: "Database Error." });
+              } else {
+                res.render('customers/agent_view/retrieve', {
+                  agent: agent,
+                  customer: customer,
+                  contact_history: contact_history,
+                });
+              }
+            });
           });
         }
       });
@@ -148,7 +135,7 @@ module.exports = new function () {
             } else {
               res.render('agents/retrieve', {
                 agent: agent,
-                customer: agent.customers,
+                customers: agent[0]["customers"],
               });
             }
           });

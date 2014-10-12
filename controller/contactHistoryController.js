@@ -10,40 +10,26 @@ module.exports = new function () {
         data : req.param('data'),
         textSummary : req.param('textSummary'),
         model : req.param('model'),
-        agent: req.param('agentID'),
-        customer: req.param('customerID'),
+        agentId: req.param('agentID'),
+        customerId: req.param('customerID'),
       };
       var agentID = req.param('agentID');
       var customerID = req.param('customerID');
-     
-      models['ContactHistory'].create(contactHistory, function (err, contactHistory) {
-        if (err) {
-          res.send(500, { error: "Database Error." });
-        } else {
-          models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
+
+      models['ContactHistory'].create(contactHistory, function (err, contactHistory) {  
+        models['Agent'].findOneAndUpdate({_id: req.param('agentID')}, {$push: {ContactHistory: contactHistory["_id"]}}, {safe: true, upsert:true}, function(err, agent) {
+          models['Customer'].findOneAndUpdate({_id: req.param('customerID')}, {$push: {ContactHistory: contactHistory["_id"]}}, {safe: true, upsert:true}, function(err, customer) {
             if (err) {
               res.send(500, { error: "Database Error." });
             } else {
-              var customer;
-              agent.customers.forEach(function (customer_res) {
-                if (customer_res.id == customerID) {
-                  customer = customer_res;
-                }
-              })
-              var contact_history = []
-              agent.contactHistory.forEach(function (contact_history_res) {
-                if (contact_history_res.customer == customerID) {
-                  contact_history.push(contact_history_res);
-                }
-              })
               res.render('customers/agent_view/retrieve', {
                 agent: agent,
                 customer: customer,
-                contact_history: contact_history,
+                contact_history: contactHistory,
               });
             }
           });
-        }
+        });
       });
     },
 
@@ -62,15 +48,22 @@ module.exports = new function () {
       var contactHistoryID = req.param('contactHistoryID');
 
       models['ContactHistory'].find({}).where('_id').equals(contactHistoryID).exec(function (err, contact_history) {
-        if (err) {
-          res.send(500, { error: "Database Error." });
-        } else {
-          res.render('contact_history/retrieve', {
-            contact_history: contact_history,
-            agent: contact_history.agent,
-            customer: contact_history.customer,
+        models['Agent'].find({}).where('_id').equals(contact_history[0]["agentId"]).exec(function (err, agent) {
+          models['Customer'].find({}).where('_id').equals(contact_history[0]["customerId"]).exec(function (err, customer) {
+            if (err) {
+              res.send(500, { error: "Database Error." });
+            } else {
+              console.log(contact_history[0]);
+              console.log(agent);
+              console.log(customer);
+              res.render('contact_history/retrieve', {
+                contact_history: contact_history[0],
+                agent: agent[0],
+                customer: customer[0],
+              });
+            }
           });
-        }
+        });
       });
     },
   };

@@ -41,12 +41,12 @@ app.get('/agent/:agentID/create', CustomerController.showCreate);
 app.post('/agent/:agentID', CustomerController.createViaAgent);
 app.get('/agent/:agentID/customer/:customerID/edit', CustomerController.showUpdatePageViaAgent);
 app.put('/agent/:agentID/customer/:customerID', CustomerController.updateViaAgent);
-app.delete('/customer/:agentID', CustomerController.delete);
+app.delete('/customer/:customerID', CustomerController.delete);
 app.get('/customer/:customerID', CustomerController.retrieve);
 app.get('/customer/:customerID/edit', CustomerController.showUpdatePageViaCustomer);
 app.post('/customer/:customerID', CustomerController.updateViaCustomer);
 
 //   // ContactHistory Controller
-app.get('/contact_history/:contactHistoryID', ContactHistoryController.retrieve);
 app.get('/contact_history/create', ContactHistoryController.showCreate);
+app.get('/contact_history/:contactHistoryID', ContactHistoryController.retrieve);
 app.post('/contact_history', ContactHistoryController.create);

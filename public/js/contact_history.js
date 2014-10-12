@@ -22,7 +22,7 @@ $("#create_contact_submit").click(function() {
         customerID: customer_ID,
       },
       function(res) {
-        window.location = "/agent/"+ agent_ID + "/customer/" + customer_ID;
+        location.href = "/agent/"+ agent_ID + "/customer/" + customer_ID;
       }
     ).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
