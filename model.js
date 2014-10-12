@@ -48,19 +48,18 @@ var ContactHistorySchema = new BasicRelationshipSchema({
   textSummary: String
 });
   
-
+models = {};
 db.once('open', function callback() {
   var Agent = mongoose.model('Agent', AgentSchema);
   var Customer = mongoose.model('Customer', CustomerSchema);
   var ContactHistory = mongoose.model('ContactHistory', ContactHistorySchema);
   var BinaryData = mongoose.model('BinaryData', BinaryDataSchema);
 
-  models = {};
   models['Agent'] = Agent;
   models['Customer'] = Customer;
   models['ContactHistory'] = ContactHistory;
   models['BinaryData'] = BinaryData;
-  module.exports = models;
 });
+module.exports = models;
 
 

@@ -38,7 +38,7 @@ module.exports = new function () {
     },
 
     showCreate: function (req, res) {
-      res.view('contact_history/create');
+      res.render('contact_history/create');
     },
 
     retrieve: function (req, res) {
@@ -60,7 +60,7 @@ module.exports = new function () {
             res.send(500, { error: "Database Error." });
           } else {
             res.set('Content-Type', 'application/json');
-            res.view('contact_history/retrieve', contactHistory);
+            res.render('contact_history/retrieve', contactHistory);
           }
         });
       });

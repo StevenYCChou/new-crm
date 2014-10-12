@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var models = require('../model.js');
 var Agent = require('../model.js').Agent;
-var db = require('../db.js');
 
 module.exports = new function () {
   return {
@@ -22,11 +21,11 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB !');
-  models['Agent'].create(agent, function(err){
+        models['Agent'].create(agent, function(err){
           if (err){
-      res.send(500, { error: "Database Error." });
-    } else {
-      res.redirect('/agents');
+            res.send(500, { error: "Database Error." });
+          } else {
+            res.redirect('/agents');
           }
         }); 
       });
@@ -37,50 +36,24 @@ module.exports = new function () {
     },
 
     getAll: function (req, res) {
-    /*      Agent.find().exec(function (err, agents) {
-        if (err) {
+      models['Agent'].find({}).exec(function(err, agents)
+      {
+        if (err){
           res.send(500, { error: "Database Error." });
         } else {
-          // TODO: Do you guys have some suggestions to improve this
-          // method. I did not use 'delete agent.[key]' here, cause I think the
-          // code is hard to maintain if we add other attributes to the model
-          // later. But current method take up more space.
           filtered_agents = [];
           agents.forEach(function (agent) {
             filtered_agents.push({
-             name: agent.name,
-             phone: agent.phone,
-             email: agent.email,
-             id: agent.id,
+              name: agent.name,
+              phone: agent.phone,
+              email: agent.email,
+              id: agent.id,
             });
           });
-          res.view('agents/index', {
+          res.render('agents/index', {
             agents: filtered_agents,
           });
         }
-      });*/
-      db.once('open', function callback() {
-        console.log('Connected to MongoDB !');
-        models['Agent'].find({}).exec(function(err, agents)
-//         Agent.find({}).exec(function(err, agents)
-        {
-          if (err){
-            res.send(500, { error: "Database Error." });
-          } else {
-            filtered_agents = [];
-            agents.forEach(function (agent) {
-              filtered_agents.push({
-                name: agent.name,
-                phone: agent.phone,
-                email: agent.email,
-                id: agent.id,
-              });
-            });
-            res.render('agents/index', {
-              agents: filtered_agents,
-            });
-          }
-        });
       });
     },
 
@@ -106,7 +79,7 @@ module.exports = new function () {
           if (err){
             res.send(500, { error: "Database Error." });
           } else {
-            res.view('agents/retrieve', {
+            res.render('agents/retrieve', {
               agent: agent[0],
               customer: agent[0].customers,
             });
@@ -137,7 +110,7 @@ module.exports = new function () {
           if (err){
             res.send(500, { error: "Database Error." });
           } else {
-            res.view('customers/agent_view/retrieve', {
+            res.render('customers/agent_view/retrieve', {
               customer: customer,
             });
           }
@@ -187,7 +160,7 @@ module.exports = new function () {
           if (err){
             res.send(500, { error: "Database Error." });
           } else {
-            res.view('agents/update', agent);
+            res.render('agents/update', agent);
           }
         });
       });     

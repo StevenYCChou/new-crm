@@ -21,13 +21,13 @@ module.exports = new function () {
       });*/
       db.once('open', function callback() {
         console.log('Connected to MongoDB!');
-  models['Customer'].create(customer, function(err, customer){
-    if (err) {
+        models['Customer'].create(customer, function(err, customer){
+          if (err) {
             res.send(500, { error: "Database Error."});
-    } else {
-      res.redirect('/agent' + customer.id);
-    }
-  });
+          } else {
+            res.redirect('/agent' + customer.id);
+          }
+        });
       });    
     },
 
@@ -50,11 +50,11 @@ module.exports = new function () {
       db.once('open', function callback() {
         cosole.log('Connected to MongoDB');
   models['Customer'].find({}).where('id').equals(customerID).exec(function(err, customer) {
-    if (err) {
-      res.send(500, {error: "Database Error."});
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.view('customers/customer_view/retrieve', customer);
+          if (err) {
+            res.send(500, {error: "Database Error."});
+          } else {
+            res.set('Content-Type', 'application/json');
+            res.render('customers/customer_view/retrieve', customer);
           }
         });
       });
@@ -101,7 +101,7 @@ module.exports = new function () {
           if (err) {
             res.send(500, {error: "Database Error."});
           } else {
-            res.view('customers/customer_view/update', customer);
+            res.render('customers/customer_view/update', customer);
           }
         });
       });
