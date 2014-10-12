@@ -5,6 +5,10 @@ var ContactHistoryController = require('./controller/contactHistoryController.js
 var express = require('express');
 var http = require('http');
 var app = express();
+var engine = require('ejs-locals');
+app.engine('ejs', engine);
+app.use("/js", express.static(__dirname + '/public/js'));
+
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs'); // default view engine
 
