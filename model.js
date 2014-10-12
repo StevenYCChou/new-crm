@@ -1,9 +1,12 @@
 var path = require('path');
 var mongoose = require('mongoose');
 var util = require('util');
-
-
 var Schema = mongoose.Schema;
+
+console.log('Try to connect to MongoDB via Mongoose ...');
+mongoose.connect('mongodb://localhost/mydb');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 
 /* BasicPersonSchema */
 function BasicPersonSchema() {
@@ -18,16 +21,11 @@ function BasicPersonSchema() {
 util.inherits(BasicPersonSchema, Schema);
 
 var AgentSchema = new BasicPersonSchema({
-  customers : [{ type: Schema.Types.ObjectId, ref: 'Person' }]
+  customers : [{ type: Schema.Types.ObjectId, ref: 'Customer' }]
 });
 var CustomerSchema = new BasicPersonSchema({
   agent : { type: Schema.Types.ObjectId, ref: 'Agent' }
 });
-
-  console.log('Try to connect to MongoDB via Mongoose ...');
-  mongoose.connect('mongodb://localhost/mydb');
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 
 var BinaryDataSchema = Schema({data: Schema.Types.Mixed});
 
