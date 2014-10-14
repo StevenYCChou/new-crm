@@ -46,8 +46,6 @@ module.exports = new function () {
       });
     },
 
-    // I do not delete '[ContactHistory, customer.ContactHistory]' here. I do not
-    // want the function be too specific.
     retrieve: function (req, res) {
       var agentID = req.param('agentID');
       crm_service.getAgentById(agentID, function(err, agent) {
