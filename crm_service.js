@@ -11,3 +11,7 @@ exports.getAllAgents = function(callback) {
 exports.getAgentById = function(agentId, callback) {
   models['Agent'].findById(agentId).populate('customers').exec(callback);
 };
+
+exports.getCustomerById = function(customerId, callback) {
+  models['Customer'].findById(customerId).populate('agent').populate('contactHistory').exec(callback);
+};

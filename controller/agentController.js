@@ -65,23 +65,14 @@ module.exports = new function () {
 
     // Same with `retrieve`.
     showCustomer: function (req, res) {
-      var agentID = req.param('agentID');
-      var customerID = req.param('customerID');
-
-      models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
-        if (err) {
-          res.status(500).send({ error: "Database Error." });
-        } else {
-          models['Customer'].find({}).where('_id').equals(customerID).exec(function(err, customers){
-            models['ContactHistory'].find({'_id': { $in: customers[0]["ContactHistory"]}}, function(err, contact_history) {
-              res.render('customers/agent_view/retrieve', {
-                agent: agent[0],
-                customer: customers[0],
-                contact_history: contact_history,
-              });
-            });
-          });
-        }
+      var agentId = req.param('agentID');
+      var customerId = req.param('customerID');
+      crm_service.getCustomerById(customerId, function(err, customer) {
+        res.render('customers/agent_view/retrieve', {
+          agent: customer.agent,
+          customer: customer,
+          contact_history: customer.contactHistory
+        });
       });
     },
 
