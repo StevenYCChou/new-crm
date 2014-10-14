@@ -27,10 +27,7 @@ exports.getContactHistoryByAgentIdAndCustomerId = function(agentId, customerId, 
 };
 
 exports.getContactHistoryById = function(contactHistoryId, callback) {
-  models['ContactHistory'].findById(contactHistoryId)
-                          .populate('agent')
-                          .populate('customer')
-                          .exec(callback);
+  models['ContactHistory'].findById(contactHistoryId).exec(callback);
 };
 
 exports.addContactHistory = function(newContactHistory, callback) {
