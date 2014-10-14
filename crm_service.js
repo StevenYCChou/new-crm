@@ -17,5 +17,5 @@ exports.getCustomerById = function(customerId, callback) {
 };
 
 exports.updateAgentById = function(agentId, updatedInfo, callback) {
-  models['Agent'].findOneAndUpdate(agentId, updatedInfo, callback);
+  models['Agent'].findByIdAndUpdate(agentId, updatedInfo, callback);
 };
