@@ -19,3 +19,20 @@ exports.getCustomerById = function(customerId, callback) {
 exports.updateAgentById = function(agentId, updatedInfo, callback) {
   models['Agent'].findByIdAndUpdate(agentId, updatedInfo, callback);
 };
+
+exports.getContactHistoryByAgentIdAndCustomerId = function(agentId, customerId, callback) {
+  models['ContactHistory'].where('agent').equals(agentId)
+                          .where('customer').equals(customerId)
+                          .exec(callback);
+};
+
+exports.getContactHistoryById = function(contactHistoryId, callback) {
+  models['ContactHistory'].findById(contactHistoryId)
+                          .populate('agent')
+                          .populate('customer')
+                          .exec(callback);
+};
+
+exports.addContactHistory = function(newContactHistory, callback) {
+  models['ContactHistory'].create(newContactHistory, callback);
+};
