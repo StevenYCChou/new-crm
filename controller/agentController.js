@@ -12,12 +12,13 @@ module.exports = new function () {
         phone : req.param('phone'),
       };
 
-      var err = crm_service.addAgent(agent);
-      if (err) {
-        res.send(500, { error: "Database Error." });
-      } else {
-        res.redirect('/agents');
-      }
+      crm_service.addAgent(agent, function(err) {
+        if (err) {
+          res.send(500, { error: "Database Error." });
+        } else {
+          res.redirect('/agents');
+        }
+      });
     },
 
     showCreatePage: function (req, res) {
