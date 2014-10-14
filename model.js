@@ -33,8 +33,8 @@ var CustomerSchema = new BasicPersonSchema({
 function BasicRelationshipSchema() {
   Schema.apply(this, arguments);
   this.add({
-    agentId: { type: Schema.Types.ObjectId, ref: 'Agent' },
-    customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
+    agent: { type: Schema.Types.ObjectId, ref: 'Agent' },
+    customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
   });
 };
 util.inherits(BasicRelationshipSchema, Schema);
