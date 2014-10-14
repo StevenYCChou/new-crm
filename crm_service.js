@@ -1,11 +1,7 @@
 var model = require('./model.js');
 
-exports.addAgent = function (newAgent) {
-  models['Agent'].create(newAgent, function(err, agentCreated) {
-    if (err) {
-      return err;
-    }
-  });
+exports.addAgent = function (newAgent, callback) {
+  models['Agent'].create(newAgent, callback);
 };
 
 // function retrieveAgentById(agentId, err, agent) {
