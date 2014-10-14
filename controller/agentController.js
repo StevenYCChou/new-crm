@@ -50,16 +50,12 @@ module.exports = new function () {
     // want the function be too specific.
     retrieve: function (req, res) {
       var agentID = req.param('agentID');
-      crm_service.getAgentByID(agentID, function(err, agent) {
+      crm_service.getAgentById(agentID, function(err, agent) {
         if (err){
           res.status(500).send({ error: "Database Error." });
         } else {
           var data = {
-            agent: {
-              phone: agent.phone,
-              email: agent.email,
-              phone: agent.phone
-            },
+            agent: agent,
             customers: agent.customers
           };
           res.render('agents/retrieve', data);
