@@ -15,3 +15,7 @@ exports.getAgentById = function(agentId, callback) {
 exports.getCustomerById = function(customerId, callback) {
   models['Customer'].findById(customerId).populate('agent').populate('contactHistory').exec(callback);
 };
+
+exports.updateAgentById = function(agentId, updatedInfo, callback) {
+  models['Agent'].findOneAndUpdate(agentId, updatedInfo, callback);
+};

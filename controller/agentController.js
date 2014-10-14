@@ -77,37 +77,29 @@ module.exports = new function () {
     },
 
     update: function (req, res) {
-      var agentID = req.param('agentID');
-
-      models['Agent'].findOneAndUpdate({_id: agentID}, req.body).exec(function (err, agent) {
+      var agentId = req.param('agentID');
+      var updateInfo = req.body;
+      crm_service.updateAgentById(agentId, updateInfo, function(err, agent) {
         if (err) {
-          res.status(404).send({ error: "Agent doesn't exist." });
+          res.status(500).send({ error: "Database Error." });
         } else {
-
-          models['Agent'].find({}).where('_id').equals(agentID).exec(function (err, agent) {
-            if (err) {
-              res.status(500).send({ error: "Database Error." });
-            } else {
-              res.render('agents/retrieve', {
-                agent: agent[0],
-                customers: agent[0].customers,
-              });
-            }
+          res.render('agents/retrieve', {
+            agent: agent,
+            customers: agent.customers,
           });
         }
       });
     },
 
     showUpdatePage: function (req, res) {
-      var agentID = req.param('agentID');
-
-      console.log('Connected to MongoDB !');
-      models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agents)
-      {
-	      if (err){
+      var agentId = req.param('agentID');
+      crm_service.getAgentById(agentId, function(err, agent) {
+	      if (err) {
           res.status(500).send({ error: "Database Error." });
+        } else if (agent == null) {
+          res.status(400).send({ error: "Agent doesn't exist." });
         } else {
-          res.render('agents/update', {agent: agents[0]});
+          res.render('agents/update', {agent: agent});
         }
       });
     }
