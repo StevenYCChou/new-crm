@@ -40,7 +40,7 @@ module.exports = new function () {
             });
           });
           res.render('agents/index', {
-            agents: filtered_agents,
+            agents: filtered_agents
           });
         }
       });
@@ -50,19 +50,20 @@ module.exports = new function () {
     // want the function be too specific.
     retrieve: function (req, res) {
       var agentID = req.param('agentID');
-      models['Agent'].find({}).where('_id').equals(agentID).exec(function(err, agent)
-      {
-        models['Customer'].find({'_id': { $in: agent[0]["customers"]}}, function(err, customers)
-        {
-          if (err){
-            res.status(500).send({ error: "Database Error." });
-          } else {
-  	        res.render('agents/retrieve', {
-              agent: agent[0],
-              customers: customers
-            });
-          }
-        });
+      crm_service.getAgentByID(agentID, function(err, agent) {
+        if (err){
+          res.status(500).send({ error: "Database Error." });
+        } else {
+          var data = {
+            agent: {
+              phone: agent.phone,
+              email: agent.email,
+              phone: agent.phone
+            },
+            customers: agent.customers
+          };
+          res.render('agents/retrieve', data);
+        }
       });
     },
 

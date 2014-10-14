@@ -6,4 +6,8 @@ exports.addAgent = function (newAgent, callback) {
 
 exports.getAllAgents = function(callback) {
   models['Agent'].find({}, callback);
-}
+};
+
+exports.getAgentByID = function(agentID, callback) {
+  models['Agent'].findById(agentID).populate('customers').exec(callback);
+};
