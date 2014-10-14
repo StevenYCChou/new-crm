@@ -26,8 +26,7 @@ module.exports = new function () {
     },
 
     getAll: function (req, res) {
-      models['Agent'].find({}).exec(function(err, agents)
-      {
+      crm_service.getAllAgents(function(err, agents){
         if (err){
           res.send(500, { error: "Database Error." });
         } else {
