@@ -13,7 +13,7 @@ exports.getAgentById = function(agentId, callback) {
 };
 
 exports.getCustomerById = function(customerId, callback) {
-  models['Customer'].findById(customerId).populate('agent').populate('contactHistory').exec(callback);
+  models['Customer'].findById(customerId).populate('agent').exec(callback);
 };
 
 exports.updateAgentById = function(agentId, updatedInfo, callback) {
