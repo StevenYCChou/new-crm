@@ -61,16 +61,22 @@ module.exports = new function () {
       });
     },
 
-    // Same with `retrieve`.
     showCustomer: function (req, res) {
       var agentId = req.param('agentID');
       var customerId = req.param('customerID');
       crm_service.getCustomerById(customerId, function(err, customer) {
-        res.render('customers/agent_view/retrieve', {
-          agent: customer.agent,
-          customer: customer,
-          contact_history: customer.contactHistory
-        });
+        if (err) {
+          res.status(500).send({ error: "Database Error." });
+        } else {
+          crm_service.getContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
+            var data = {
+              agent: customer.agent,
+              customer: customer,
+              contact_history: contactHistory
+            };
+            res.render('customers/agent_view/retrieve', data);
+          });
+        }
       });
     },
 
@@ -81,10 +87,11 @@ module.exports = new function () {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          res.render('agents/retrieve', {
+          var data = {
             agent: agent,
-            customers: agent.customers,
-          });
+            customers: agent.customers
+          };
+          res.render('agents/retrieve', data);
         }
       });
     },
