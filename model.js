@@ -22,11 +22,11 @@ util.inherits(BasicPersonSchema, Schema);
 
 var AgentSchema = new BasicPersonSchema({
   customers : [{ type: Schema.Types.ObjectId, ref: 'Customer' }], 
-  ContactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
+  contactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
 });
 var CustomerSchema = new BasicPersonSchema({
   agent : { type: Schema.Types.ObjectId, ref: 'Agent' }, 
-  ContactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
+  contactHistory : [{ type: Schema.Types.ObjectId, ref: 'ContactHistory' }]
 });
 
 /* BasicRelationshipSchema */
