@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var models = require('../model.js');
 var Agent = require('../model.js').Agent;
+var crm_service = require('../crm_service.js');
 
 module.exports = new function () {
   return {
@@ -11,13 +12,12 @@ module.exports = new function () {
         phone : req.param('phone'),
       };
 
-      models['Agent'].create(agent, function (err, agent) {
-        if (err) {
-          res.send(500, { error: "Database Error." });
-        } else {
-          res.redirect('/agents');
-        }
-      });
+      var err = crm_service.addAgent(agent);
+      if (err) {
+        res.send(500, { error: "Database Error." });
+      } else {
+        res.redirect('/agents');
+      }
     },
 
     showCreatePage: function (req, res) {
