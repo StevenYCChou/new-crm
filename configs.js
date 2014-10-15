@@ -2,7 +2,9 @@ var AWS = require('aws-sdk');
 module.exports = new function() {
   return {
     creds: new AWS.SharedIniFileCredentials(),
-    region: 'us-east-1',
-    queueName:'crm-requests'
+    region: 'us-west-2',
+    reqQueue:'crm-req',
+    resQueue:'crm-res'
   };
 }
+
