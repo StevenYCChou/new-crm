@@ -1,4 +1,4 @@
-var crm_service = require('../crm_service.js');
+var dataService = require('../dataService.js');
 
 module.exports = new function () {
   return {
@@ -17,7 +17,7 @@ module.exports = new function () {
         agent : req.param('agentID')
       };
 
-      crm_service.addCustomer(customer, function (err) {
+      dataService.addCustomer(customer, function (err) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -28,11 +28,11 @@ module.exports = new function () {
 
     retrieve: function (req, res) {
       var customerId = req.param('customerID');
-      crm_service.getCustomerById(customerId, function(err, customer) {
+      dataService.getCustomerById(customerId, function(err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          crm_service.getContactHistoryByCustomerId(customerId, function(err, contactHistory) {
+          dataService.getContactHistoryByCustomerId(customerId, function(err, contactHistory) {
             if (err) {
               res.status(500).send({ error: "Database Error." });
             } else {
@@ -50,7 +50,7 @@ module.exports = new function () {
     updateViaCustomer: function (req, res) {
       var customerId = req.param('customerID');
       var newCustomerInfo = req.body;
-      crm_service.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
+      dataService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
         if (err) {
           res.status(500).send({ errpr: "Database Error."});
         } else if (updatedCustomerInfo == null) {
@@ -66,7 +66,7 @@ module.exports = new function () {
       var agentId = req.param('agentID');
       var newCustomerInfo = req.body;
 
-      crm_service.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
+      dataService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
         if (err) {
           res.status(500).send({ errpr: "Database Error."});
         } else if (updatedCustomerInfo == null) {
@@ -80,7 +80,7 @@ module.exports = new function () {
     showUpdatePageViaCustomer: function (req, res) {
       var customerId = req.param('customerID');
 
-      crm_service.getCustomerById(customerId, function (err, customer) {
+      dataService.getCustomerById(customerId, function (err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -95,7 +95,7 @@ module.exports = new function () {
       var customerId = req.param('customerID');
       var agentId = req.param('agentID');
 
-      crm_service.getCustomerById(customerId, function (err, customer) {
+      dataService.getCustomerById(customerId, function (err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -112,7 +112,7 @@ module.exports = new function () {
       var customerId = req.param('customerID');
       var agentId = req.param('agentID');
 
-      crm_service.deleteCustomerById(customerId, function(err) {
+      dataService.deleteCustomerById(customerId, function(err) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {

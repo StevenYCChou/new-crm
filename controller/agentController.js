@@ -1,4 +1,4 @@
-var crm_service = require('../crm_service.js');
+var dataService = require('../dataService.js');
 
 module.exports = new function () {
   return {
@@ -9,7 +9,7 @@ module.exports = new function () {
         phone : req.param('phone'),
       };
 
-      crm_service.addAgent(agent, function(err) {
+      dataService.addAgent(agent, function(err) {
         if (err) {
           res.send(500, { error: "Database Error." });
         } else {
@@ -23,7 +23,7 @@ module.exports = new function () {
     },
 
     getAll: function (req, res) {
-      crm_service.getAllAgents(function(err, agents){
+      dataService.getAllAgents(function(err, agents){
         if (err){
           res.send(500, { error: "Database Error." });
         } else {
@@ -45,11 +45,11 @@ module.exports = new function () {
 
     retrieve: function (req, res) {
       var agentId = req.param('agentID');
-      crm_service.getAgentById(agentId, function(err, agent) {
+      dataService.getAgentById(agentId, function(err, agent) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          crm_service.getCustomersByAgentId(agentId, function(err, customers) {
+          dataService.getCustomersByAgentId(agentId, function(err, customers) {
             if (err) {
               res.status(500).send({ error: "Database Error." });
             } else {
@@ -67,13 +67,13 @@ module.exports = new function () {
     showCustomer: function (req, res) {
       var agentId = req.param('agentID');
       var customerId = req.param('customerID');
-      crm_service.getCustomerById(customerId, function(err, customer) {
+      dataService.getCustomerById(customerId, function(err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else if (customer == null) {
           res.status(400).send({ error: "Customer doesn't exist."});
         } else {
-          crm_service.getContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
+          dataService.getContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
             var data = {
               agent: customer.agent,
               customer: customer,
@@ -88,7 +88,7 @@ module.exports = new function () {
     update: function (req, res) {
       var agentId = req.param('agentID');
       var updateInfo = req.body;
-      crm_service.updateAgentById(agentId, updateInfo, function(err, agent) {
+      dataService.updateAgentById(agentId, updateInfo, function(err, agent) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -99,7 +99,7 @@ module.exports = new function () {
 
     showUpdatePage: function (req, res) {
       var agentId = req.param('agentID');
-      crm_service.getAgentById(agentId, function(err, agent) {
+      dataService.getAgentById(agentId, function(err, agent) {
 	      if (err) {
           res.status(500).send({ error: "Database Error." });
         } else if (agent == null) {

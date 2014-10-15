@@ -1,4 +1,4 @@
-var crm_service = require('../crm_service.js');
+var dataService = require('../dataService.js');
 
 module.exports = new function () {
   return {
@@ -14,7 +14,7 @@ module.exports = new function () {
       var agentId = req.param('agentID');
       var customerId = req.param('customerID');
 
-      crm_service.addContactHistory(newContactHistory, function(err, contactHistory) {
+      dataService.addContactHistory(newContactHistory, function(err, contactHistory) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -35,7 +35,7 @@ module.exports = new function () {
 
     retrieve: function (req, res) {
       var contactHistoryId = req.param('contactHistoryID');
-      crm_service.getContactHistoryById(contactHistoryId, function (err, contactHistory) {
+      dataService.getContactHistoryById(contactHistoryId, function (err, contactHistory) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
