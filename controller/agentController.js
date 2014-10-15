@@ -1,6 +1,3 @@
-var mongoose = require('mongoose');
-var models = require('../model.js');
-var Agent = require('../model.js').Agent;
 var crm_service = require('../crm_service.js');
 
 module.exports = new function () {
