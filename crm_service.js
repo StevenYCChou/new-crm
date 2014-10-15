@@ -24,6 +24,10 @@ exports.getCustomerById = function(customerId, callback) {
   models['Customer'].findById(customerId).populate('agent').exec(callback);
 };
 
+exports.getCustomersByAgentId = function(agentId, callback) {
+  models['Customer'].where('agent').equals(agentId).exec(callback);
+};
+
 exports.addCustomer = function(newCustomer, callback) {
   models['Customer'].create(newCustomer, callback);
 };

@@ -47,16 +47,22 @@ module.exports = new function () {
     },
 
     retrieve: function (req, res) {
-      var agentID = req.param('agentID');
-      crm_service.getAgentById(agentID, function(err, agent) {
-        if (err){
+      var agentId = req.param('agentID');
+      crm_service.getAgentById(agentId, function(err, agent) {
+        if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          var data = {
-            agent: agent,
-            customers: agent.customers
-          };
-          res.render('agents/retrieve', data);
+          crm_service.getCustomersByAgentId(agentId, function(err, customers) {
+            if (err) {
+              res.status(500).send({ error: "Database Error." });
+            } else {
+              var data = {
+                agent: agent,
+                customers: customers
+              };
+              res.render('agents/retrieve', data);
+            }
+          });
         }
       });
     },
@@ -67,6 +73,8 @@ module.exports = new function () {
       crm_service.getCustomerById(customerId, function(err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
+        } else if (customer == null) {
+          res.status(400).send({ error: "Customer doesn't exist."});
         } else {
           crm_service.getContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
             var data = {
