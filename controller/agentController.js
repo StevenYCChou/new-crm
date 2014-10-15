@@ -95,11 +95,7 @@ module.exports = new function () {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          var data = {
-            agent: agent,
-            customers: agent.customers
-          };
-          res.render('agents/retrieve', data);
+          res.send({redirect: '/agent/'+agentId});
         }
       });
     },
