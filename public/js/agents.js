@@ -4,8 +4,8 @@ $('#create_agent').click(function() {
 });
 
 $('.agent_detail').click(function() {
-  var agent_ID = $(this).attr("value");
-  location.href='/agent/' + agent_ID;  
+  var agent_id = $(this).attr("value");
+  location.href='/agent/' + agent_id;  
 });
 
 $("#create_agent_submit").click(function() {
@@ -32,8 +32,8 @@ $("#create_agent_cancel").click(function() {
 });
 
 $("#edit_agent").click(function() {
-  var agent_ID = $(this).attr("value");
-  location.href= '/agent/' + agent_ID +'/edit'; 
+  var agent_id = $(this).attr("value");
+  location.href= '/agent/' + agent_id +'/edit'; 
 });
 
 $("#edit_agent_submit").click(function() {
@@ -41,13 +41,13 @@ $("#edit_agent_submit").click(function() {
   var agent_phone = $("#agent_phone").val();
   var agent_email = $("#agent_email").val();
   if (agent_name && agent_phone && agent_email){
-    var agent_ID = $(this).attr("value");
+    var agent_id = $(this).attr("value");
     $.ajax({
       type: 'PUT',
-      url: '/agent/' + agent_ID,
+      url: '/agent/' + agent_id,
       data: {name: agent_name, phone: agent_phone, email: agent_email},
       success: function(res) {
-        location.href = "/agent/" + agent_ID;
+        location.href = "/agent/" + agent_id;
       }
     }).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -58,8 +58,8 @@ $("#edit_agent_submit").click(function() {
 });
 
 $("#edit_agent_cancel").click(function() {
-  var agent_ID = $(this).attr("value");
-  location.href='/agent/' + agent_ID;
+  var agent_id = $(this).attr("value");
+  location.href='/agent/' + agent_id;
 });
 
 $("#back_agents").click(function() {
