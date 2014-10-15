@@ -44,7 +44,7 @@ module.exports = new function () {
     },
 
     retrieve: function (req, res) {
-      var agentId = req.param('agentid');
+      var agentId = req.param('agentId');
       dataService.getAgentById(agentId, function(err, agent) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
@@ -65,8 +65,8 @@ module.exports = new function () {
     },
 
     showCustomer: function (req, res) {
-      var agentId = req.param('agentid');
-      var customerId = req.param('customerid');
+      var agentId = req.param('agentId');
+      var customerId = req.param('customerId');
       dataService.getCustomerById(customerId, function(err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
@@ -86,7 +86,7 @@ module.exports = new function () {
     },
 
     update: function (req, res) {
-      var agentId = req.param('agentid');
+      var agentId = req.param('agentId');
       var updateInfo = req.body;
       dataService.updateAgentById(agentId, updateInfo, function(err, agent) {
         if (err) {
@@ -98,7 +98,7 @@ module.exports = new function () {
     },
 
     showUpdatePage: function (req, res) {
-      var agentId = req.param('agentid');
+      var agentId = req.param('agentId');
       dataService.getAgentById(agentId, function(err, agent) {
 	      if (err) {
           res.status(500).send({ error: "Database Error." });

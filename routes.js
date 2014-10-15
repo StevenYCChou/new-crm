@@ -30,23 +30,23 @@ app.get('/agents', AgentController.getAll);
 app.get('/agent/create', AgentController.showCreatePage); 
 app.post('/agent', AgentController.create);
 
-app.get('/agent/:agentid', AgentController.retrieve);
-app.get('/agent/:agentid/edit', AgentController.showUpdatePage);
-app.put('/agent/:agentid', AgentController.update);
+app.get('/agent/:agentId', AgentController.retrieve);
+app.get('/agent/:agentId/edit', AgentController.showUpdatePage);
+app.put('/agent/:agentId', AgentController.update);
 
-app.get('/agent/:agentid/customer/:customerid', AgentController.showCustomer);
+app.get('/agent/:agentId/customer/:customerId', AgentController.showCustomer);
 
 //   // Customer Controller
-app.get('/agent/:agentid/create', CustomerController.showCreate);
-app.post('/agent/:agentid', CustomerController.createViaAgent);
-app.get('/agent/:agentid/customer/:customerid/edit', CustomerController.showUpdatePageViaAgent);
-app.put('/agent/:agentid/customer/:customerid', CustomerController.updateViaAgent);
-app.delete('/customer/:customerid', CustomerController.delete);
-app.get('/customer/:customerid', CustomerController.retrieve);
-app.get('/customer/:customerid/edit', CustomerController.showUpdatePageViaCustomer);
-app.post('/customer/:customerid', CustomerController.updateViaCustomer);
+app.get('/agent/:agentId/create', CustomerController.showCreate);
+app.post('/agent/:agentId', CustomerController.createViaAgent);
+app.get('/agent/:agentId/customer/:customerId/edit', CustomerController.showUpdatePageViaAgent);
+app.put('/agent/:agentId/customer/:customerId', CustomerController.updateViaAgent);
+app.delete('/customer/:customerId', CustomerController.delete);
+app.get('/customer/:customerId', CustomerController.retrieve);
+app.get('/customer/:customerId/edit', CustomerController.showUpdatePageViaCustomer);
+app.post('/customer/:customerId', CustomerController.updateViaCustomer);
 
 //   // ContactHistory Controller
 app.get('/contact_history/create', ContactHistoryController.showCreate);
-app.get('/contact_history/:contactHistoryid', ContactHistoryController.retrieve);
+app.get('/contact_history/:contactHistoryId', ContactHistoryController.retrieve);
 app.post('/contact_history', ContactHistoryController.create);

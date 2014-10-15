@@ -8,11 +8,11 @@ module.exports = new function () {
         data : req.param('data'),
         textSummary : req.param('textSummary'),
         model : req.param('model'),
-        agent: req.param('agentid'),
-        customer: req.param('customerid'),
+        agent: req.param('agentId'),
+        customer: req.param('customerId'),
       };
-      var agentId = req.param('agentid');
-      var customerId = req.param('customerid');
+      var agentId = req.param('agentId');
+      var customerId = req.param('customerId');
 
       dataService.addContactHistory(newContactHistory, function(err, contactHistory) {
         if (err) {
@@ -24,8 +24,8 @@ module.exports = new function () {
     },
 
     showCreate: function (req, res) {
-      var agentId = req.param('agentid');
-      var customerId = req.param('customerid');
+      var agentId = req.param('agentId');
+      var customerId = req.param('customerId');
 
       res.render('contact_history/create',{
         agentId: agentId,
@@ -34,7 +34,7 @@ module.exports = new function () {
     },
 
     retrieve: function (req, res) {
-      var contactHistoryId = req.param('contactHistoryid');
+      var contactHistoryId = req.param('contactHistoryId');
       dataService.getContactHistoryById(contactHistoryId, function (err, contactHistory) {
         if (err) {
           res.status(500).send({ error: "Database Error." });

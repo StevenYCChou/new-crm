@@ -3,9 +3,9 @@ var dataService = require('../dataService.js');
 module.exports = new function () {
   return {
     showCreate: function (req, res) {
-      var agentid = req.param('agentid');
+      var agentId = req.param('agentId');
       res.render('customers/agent_view/create', {
-        agent: { id: agentid },
+        agent: { id: agentId },
       });
     },
 
@@ -14,20 +14,20 @@ module.exports = new function () {
         name : req.param('name'),
         email : req.param('email'),
         phone : req.param('phone'),
-        agent : req.param('agentid')
+        agent : req.param('agentId')
       };
 
       dataService.addCustomer(customer, function (err) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
-          res.redirect('/agent/' + req.param('agentid'));
+          res.redirect('/agent/' + req.param('agentId'));
         }
       });
     },
 
     retrieve: function (req, res) {
-      var customerId = req.param('customerid');
+      var customerId = req.param('customerId');
       dataService.getCustomerById(customerId, function(err, customer) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
@@ -48,7 +48,7 @@ module.exports = new function () {
     },
 
     updateViaCustomer: function (req, res) {
-      var customerId = req.param('customerid');
+      var customerId = req.param('customerId');
       var newCustomerInfo = req.body;
       dataService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
         if (err) {
@@ -62,8 +62,8 @@ module.exports = new function () {
     },
 
     updateViaAgent: function (req, res) {
-      var customerId = req.param('customerid');
-      var agentId = req.param('agentid');
+      var customerId = req.param('customerId');
+      var agentId = req.param('agentId');
       var newCustomerInfo = req.body;
 
       dataService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
@@ -78,7 +78,7 @@ module.exports = new function () {
     },
 
     showUpdatePageViaCustomer: function (req, res) {
-      var customerId = req.param('customerid');
+      var customerId = req.param('customerId');
 
       dataService.getCustomerById(customerId, function (err, customer) {
         if (err) {
@@ -92,8 +92,8 @@ module.exports = new function () {
     },
 
     showUpdatePageViaAgent: function (req, res) {
-      var customerId = req.param('customerid');
-      var agentId = req.param('agentid');
+      var customerId = req.param('customerId');
+      var agentId = req.param('agentId');
 
       dataService.getCustomerById(customerId, function (err, customer) {
         if (err) {
@@ -109,8 +109,8 @@ module.exports = new function () {
     },
 
     delete: function (req, res) {
-      var customerId = req.param('customerid');
-      var agentId = req.param('agentid');
+      var customerId = req.param('customerId');
+      var agentId = req.param('agentId');
 
       dataService.deleteCustomerById(customerId, function(err) {
         if (err) {
