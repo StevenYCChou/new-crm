@@ -1,7 +1,7 @@
 $("#create_contact_history").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
-  location.href="/contact_history/create?agentid=" + agent_id + "&customerid=" + customer_id;
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
+  location.href="/contact_history/create?agentId=" + agentId + "&customerId=" + customerId;
 });
 
 $("#create_contact_submit").click(function() {
@@ -10,19 +10,19 @@ $("#create_contact_submit").click(function() {
   var contact_time = $("#time").val();
   var contact_data = $("#data").val();
   if (contact_summary && contact_model && contact_time && contact_data){
-    var agent_id = $(this).attr("value");
-    var customer_id = $(this).attr("name");    
+    var agentId = $(this).attr("value");
+    var customerId = $(this).attr("name");
     $.post(
       '/contact_history',
       { time: contact_time,
         data: contact_data,
         textSummary: contact_summary,
         model: contact_model,
-        agentid: agent_id,
-        customerid: customer_id,
+        agentId: agentId,
+        customerId: customerId,
       },
       function(res) {
-        location.href = "/agent/"+ agent_id + "/customer/" + customer_id;
+        location.href = "/agent/"+ agentId + "/customer/" + customerId;
       }
     ).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -33,25 +33,25 @@ $("#create_contact_submit").click(function() {
 });
 
 $("#create_contact_cancel").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
-  location.href = "/agent/"+ agent_id + "/customer/" + customer_id;
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
+  location.href = "/agent/"+ agentId + "/customer/" + customerId;
 });
 
 $(".contact_history_detail").click(function() {
-  var contact_history_id = $(this).attr("value");
-  location.href = '/contact_history/' + contact_history_id;
+  var contact_historyId = $(this).attr("value");
+  location.href = '/contact_history/' + contact_historyId;
 });
 
 $("#contact_history_back_customer").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
-  location.href='/agent/' + agent_id + '/customer/' + customer_id;
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
+  location.href='/agent/' + agentId+ '/customer/' + customerId;
 });
 
 $("#contact_history_back_agent").click(function() {
-  var agent_id = $(this).attr("value");
-  location.href='/agent/' + agent_id;
+  var agentId = $(this).attr("value");
+  location.href='/agent/' + agentId;
 });
 
 $("#contact_history_back_agents").click(function() {
