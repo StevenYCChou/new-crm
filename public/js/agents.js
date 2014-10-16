@@ -1,11 +1,11 @@
 $('#create_agent').click(function() {
   console.log("Create Agent!");
-  location.href="/agent/create"; 
+  location.href="/agent/create";
 });
 
 $('.agent_detail').click(function() {
-  var agent_id = $(this).attr("value");
-  location.href='/agent/' + agent_id;  
+  var agentId = $(this).attr("value");
+  location.href='/agent/' + agentId;
 });
 
 $("#create_agent_submit").click(function() {
@@ -20,7 +20,7 @@ $("#create_agent_submit").click(function() {
         window.location = "/agents";
       }
     ).fail(function(res) {
-    	alert("Error: " + res.getResponseHeader("error"));
+      alert("Error: " + res.getResponseHeader("error"));
     });
   } else {
     alert("Name, phone, email is required");
@@ -28,12 +28,12 @@ $("#create_agent_submit").click(function() {
 });
 
 $("#create_agent_cancel").click(function() {
-  location.href="/agents";   
+  location.href="/agents";
 });
 
 $("#edit_agent").click(function() {
-  var agent_id = $(this).attr("value");
-  location.href= '/agent/' + agent_id +'/edit'; 
+  var agentId = $(this).attr("value");
+  location.href= '/agent/' + agentId +'/edit';
 });
 
 $("#edit_agent_submit").click(function() {
@@ -41,13 +41,13 @@ $("#edit_agent_submit").click(function() {
   var agent_phone = $("#agent_phone").val();
   var agent_email = $("#agent_email").val();
   if (agent_name && agent_phone && agent_email){
-    var agent_id = $(this).attr("value");
+    var agentId = $(this).attr("value");
     $.ajax({
       type: 'PUT',
-      url: '/agent/' + agent_id,
+      url: '/agent/' + agentId,
       data: {name: agent_name, phone: agent_phone, email: agent_email},
       success: function(res) {
-        location.href = "/agent/" + agent_id;
+        location.href = "/agent/" + agentId;
       }
     }).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -58,10 +58,10 @@ $("#edit_agent_submit").click(function() {
 });
 
 $("#edit_agent_cancel").click(function() {
-  var agent_id = $(this).attr("value");
-  location.href='/agent/' + agent_id;
+  var agentId = $(this).attr("value");
+  location.href='/agent/' + agentId;
 });
 
 $("#back_agents").click(function() {
-  location.href='/agents';  
+  location.href='/agents';
 });
