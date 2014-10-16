@@ -4,6 +4,10 @@ $("#create_contact_history").click(function() {
   location.href="/contact_history/create?agentId=" + agentId + "&customerId=" + customerId;
 });
 
+$(function() {
+  $( "#time" ).datepicker();
+});
+
 $("#create_contact_submit").click(function() {
   var contact_summary = $("#TextSummary").val();
   var contact_model = $("#model_select").val();

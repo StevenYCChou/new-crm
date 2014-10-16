@@ -11,6 +11,8 @@ var multer = require('multer');
 
 app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
+app.use("/jquery-ui-1.11.1", express.static(__dirname + '/public/jquery-ui-1.11.1'));
+app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-ui-themes-1.11.1'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multer());
