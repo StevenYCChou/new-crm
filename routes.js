@@ -1,6 +1,6 @@
-var AgentController = require('./controller/agentController.js');
-var CustomerController = require('./controller/customerController.js');
-var ContactHistoryController = require('./controller/contactHistoryController.js');
+var managerFacade = require('./roles/managerFacade.js');
+var agentFacade = require('./roles/agentFacade.js');
+var customerFacade = require('./roles/customerFacade.js');
 
 var express = require('express');
 var http = require('http');
@@ -24,29 +24,39 @@ app.get('/', function(req, res) {
   res.render('homepage.ejs');
 });
 
-// Agent Controller
-app.get('/agents', AgentController.getAll);
 
-app.get('/agent/create', AgentController.showCreatePage); 
-app.post('/agent', AgentController.create);
+////////////////////
+// Manager Facade //
+////////////////////
+app.get('/agents', managerFacade.showAllAgents);
+app.get('/agent/create', managerFacade.showAgentCreationPage);
+app.post('/agent', managerFacade.createNewAgent);
 
-app.get('/agent/:agentId', AgentController.retrieve);
-app.get('/agent/:agentId/edit', AgentController.showUpdatePage);
-app.put('/agent/:agentId', AgentController.update);
+//////////////////
+// Agent Facade //
+//////////////////
 
-app.get('/agent/:agentId/customer/:customerId', AgentController.showCustomer);
+// profile related
+app.get('/agent/:agentId', agentFacade.showProfile);
+app.get('/agent/:agentId/edit', agentFacade.showProfileUpdatePage);
+app.put('/agent/:agentId', agentFacade.updateProfile);
 
-//   // Customer Controller
-app.get('/agent/:agentId/create', CustomerController.showCreate);
-app.post('/agent/:agentId', CustomerController.createViaAgent);
-app.get('/agent/:agentId/customer/:customerId/edit', CustomerController.showUpdatePageViaAgent);
-app.put('/agent/:agentId/customer/:customerId', CustomerController.updateViaAgent);
-app.delete('/customer/:customerId', CustomerController.delete);
-app.get('/customer/:customerId', CustomerController.retrieve);
-app.get('/customer/:customerId/edit', CustomerController.showUpdatePageViaCustomer);
-app.post('/customer/:customerId', CustomerController.updateViaCustomer);
+// customer related
+app.get('/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerId);
+app.get('/agent/:agentId/create', agentFacade.showCustomerCreationPage);
+app.get('/agent/:agentId/customer/:customerId/edit', agentFacade.showCustomerUpdatePage);
+app.post('/agent/:agentId', agentFacade.createCustomer);
+app.put('/agent/:agentId/customer/:customerId', agentFacade.updateCustomer);
+app.delete('/customer/:customerId', agentFacade.removeCustomerById);
 
-//   // ContactHistory Controller
-app.get('/contact_history/create', ContactHistoryController.showCreate);
-app.get('/contact_history/:contactHistoryId', ContactHistoryController.retrieve);
-app.post('/contact_history', ContactHistoryController.create);
+// contact record related
+app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);
+app.get('/contact_history/:contactHistoryId', agentFacade.getContactRecordById);
+app.post('/contact_history', agentFacade.CreateContactRecord);
+
+/////////////////////
+// Customer Facade //
+/////////////////////
+app.get('/customer/:customerId', customerFacade.getProfilePage);
+app.get('/customer/:customerId/edit', customerFacade.showProfileUpdatePage);
+app.post('/customer/:customerId', customerFacade.updateProfile);
