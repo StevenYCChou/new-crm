@@ -1,12 +1,12 @@
 $('#create_customer').click(function() {
-  var agent_id = $(this).attr("value");
-  location.href='/agent/' + agent_id +'/create'; 
+  var agentId = $(this).attr("value");
+  location.href='/agent/' + agentId +'/create';
 });
 
 $('.customer_detail').click(function() {
-  var customer_id = $(this).attr("value");
-  var agent_id = $(this).attr("name");
-  location.href='/agent/' + agent_id + '/customer/' + customer_id;  
+  var customerId = $(this).attr("value");
+  var agentId = $(this).attr("name");
+  location.href='/agent/' + agentId + '/customer/' + customerId;
 });
 
 $("#create_customer_submit").click(function() {
@@ -14,12 +14,14 @@ $("#create_customer_submit").click(function() {
   var customer_phone = $("#customer_phone").val();
   var customer_email = $("#customer_email").val();
   if (customer_name && customer_phone && customer_email){
-    var agent_id = $(this).attr("value");
-    $.post(
-      '/agent/' + agent_id,
-      {name: customer_name, phone: customer_phone, email: customer_email, agentid: agent_id},
+    var agentId = $(this).attr("value");
+    $.post('/agent/' + agentId,
+      { name: customer_name,
+        phone: customer_phone,
+        email: customer_email,
+        agentId: agentId },
       function(res) {
-        location.href = "/agent/"+ agent_id;
+        location.href = "/agent/"+ agentId;
       }
     ).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -30,8 +32,8 @@ $("#create_customer_submit").click(function() {
 });
 
 $("#create_customer_cancel").click(function() {
-  var agent_id = $(this).attr("value");
-  location.href='/agent/' + agent_id;
+  var agentId = $(this).attr("value");
+  location.href='/agent/' + agentId;
 });
 
 $("#edit_customer_submit").click(function() {
@@ -39,14 +41,14 @@ $("#edit_customer_submit").click(function() {
   var customer_phone = $("#customer_phone").val();
   var customer_email = $("#customer_email").val();
   if (customer_name && customer_phone && customer_email){
-    var agent_id = $(this).attr("value");
-    var customer_id = $(this).attr("name");
+    var agentId = $(this).attr("value");
+    var customerId = $(this).attr("name");
     $.ajax({
       type: 'PUT',
-      url: '/agent/' + agent_id + '/customer/' + customer_id,
+      url: '/agent/' + agentId + '/customer/' + customerId,
       data: {name: customer_name, phone: customer_phone, email: customer_email},
       success: function(res) {
-        window.location = '/agent/' + agent_id + '/customer/' + customer_id;
+        window.location = '/agent/' + agentId + '/customer/' + customerId;
       }
     }).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -57,23 +59,23 @@ $("#edit_customer_submit").click(function() {
 });
 
 $("#edit_customer_cancel").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
-  location.href='/agent/' + agent_id + '/customer/' + customer_id;
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
+  location.href='/agent/' + agentId + '/customer/' + customerId;
 });
 
 $("#edit_customer").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
-  location.href='/agent/' + agent_id + '/customer/' + customer_id + '/edit';
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
+  location.href='/agent/' + agentId + '/customer/' + customerId + '/edit';
 });
 
 $(".customer_delete").click(function() {
-  var customer_id = $(".customer_id").val();
-  if (customer_id){
+  var customerId = $(".customerId").val();
+  if (customerId){
     $.post(
       '/customer/:id/delete',
-      {customer_id: customer_id},
+      {customerId: customerId},
       function(res) {
         window.location = "/customers";
       }
@@ -86,8 +88,8 @@ $(".customer_delete").click(function() {
 });
 
 $("#customer_back_agent").click(function() {
-  var agent_id = $(this).attr("value");
-  location.href= '/agent/' + agent_id; 
+  var agentId = $(this).attr("value");
+  location.href= '/agent/' + agentId;
 });
 
 $("#customer_back_agents").click(function() {
@@ -95,24 +97,24 @@ $("#customer_back_agents").click(function() {
 });
 
 $("#customer_delete").click(function() {
-  var agent_id = $(this).attr("value");
-  var customer_id = $(this).attr("name");
+  var agentId = $(this).attr("value");
+  var customerId = $(this).attr("name");
   $.ajax({
     type: 'delete',
-    data: {agentid: agent_id, customerid: customer_id},
-    url: '/customer/' + customer_id,
+    data: {agentid: agentId, customerid: customerId},
+    url: '/customer/' + customerId,
     success: function(res) {
-      window.location="/agent/" + agent_id;
+      window.location="/agent/" + agentId;
     }
   })
   .fail(function(res) {
-    alert("Error: " + res.getResponseHeader("error"));   
-  });  
+    alert("Error: " + res.getResponseHeader("error"));
+  });
 });
 
 $('#customer_view_edit').click(function() {
-  var customer_id = $(this).attr("value");
-  location.href= '/customer/' + customer_id + '/edit'; 
+  var customerId = $(this).attr("value");
+  location.href= '/customer/' + customerId + '/edit';
 });
 
 $("#customer_view_edit_customer_submit").click(function() {
@@ -120,12 +122,12 @@ $("#customer_view_edit_customer_submit").click(function() {
   var customer_phone = $("#customer_phone").val();
   var customer_email = $("#customer_email").val();
   if (customer_name && customer_phone && customer_email){
-    var customer_id = $(this).attr("value");
+    var customerId = $(this).attr("value");
     $.post(
-      '/customer/' + customer_id,
+      '/customer/' + customerId,
       {name: customer_name, phone: customer_phone, email: customer_email},
       function(res) {
-        window.location = '/customer/' + customer_id ;
+        window.location = '/customer/' + customerId;
       }
     ).fail(function(res) {
       alert("Error: " + res.getResponseHeader("error"));
@@ -136,6 +138,6 @@ $("#customer_view_edit_customer_submit").click(function() {
 });
 
 $("#customer_view_edit_customer_cancel").click(function() {
-  var customer_id = $(this).attr("value");
-  location.href= '/customer/' + customer_id;  
+  var customerId = $(this).attr("value");
+  location.href= '/customer/' + customerId;
 });
