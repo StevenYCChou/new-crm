@@ -21,7 +21,18 @@ app.use(multer());
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs'); // default view engine
 
+
+////////////////////
+//   Web Server   //
+////////////////////
 http.createServer(app).listen(3000);
+
+////////////////////
+//  MessageQueue  //
+////////////////////
+var mq = require('./message_queue/main.js');
+mq.startMessageQueueService(8000); 
+
 app.get('/', function(req, res) {
   res.render('homepage.ejs');
 });
