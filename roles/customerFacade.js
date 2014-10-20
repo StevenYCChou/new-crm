@@ -1,4 +1,4 @@
-var dataService = require('../dataService.js');
+var dataService = require('../data_service/crm_data_service.js');
 
 exports.getProfilePage = function (req, res) {
   var customerId = req.param('customerId');
