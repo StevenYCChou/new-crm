@@ -2,40 +2,20 @@ var path = require('path');
 var mongoose = require('mongoose');
 var util = require('util');
 var Schema = mongoose.Schema;
+var crmSchema = require('./data_service/crm_schema.js');
+
 
 console.log('Try to connect to MongoDB via Mongoose ...');
 mongoose.connect('mongodb://localhost/mydb');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 
-/* BasicPersonSchema */
-function BasicPersonSchema() {
-  Schema.apply(this, arguments);
-
-  this.add({
-    name: String,
-    phone: String,
-    email: String
-  });
-}
-util.inherits(BasicPersonSchema, Schema);
-
-var AgentSchema = new BasicPersonSchema();
-var CustomerSchema = new BasicPersonSchema({
+var AgentSchema = new crmSchema.BasicPersonSchema();
+var CustomerSchema = new crmSchema.BasicPersonSchema({
   agent : { type: Schema.Types.ObjectId, ref: 'Agent' }
 });
 
-/* BasicRelationshipSchema */
-function BasicRelationshipSchema() {
-  Schema.apply(this, arguments);
-  this.add({
-    agent: { type: Schema.Types.ObjectId, ref: 'Agent' },
-    customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
-  });
-};
-util.inherits(BasicRelationshipSchema, Schema);
-
-var ContactHistorySchema = new BasicRelationshipSchema({
+var ContactHistorySchema = new crmSchema.BasicRelationshipSchema({
   time: Date,
   model: String, // phone OR email
   data: String,
