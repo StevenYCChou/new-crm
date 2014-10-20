@@ -2,35 +2,20 @@ var path = require('path');
 var mongoose = require('mongoose');
 var util = require('util');
 var Schema = mongoose.Schema;
-var crmSchema = require('./data_service/crm_schema.js');
-
+var agentDataService = require('./data_service/agent_data_service.js');
+var customerDataService = require('./data_service/customer_data_service.js');
+var contactRecordDataService = require('./data_service/contact_record_data_service.js');
 
 console.log('Try to connect to MongoDB via Mongoose ...');
 mongoose.connect('mongodb://localhost/mydb');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 
-var AgentSchema = new crmSchema.BasicPersonSchema();
-var CustomerSchema = new crmSchema.BasicPersonSchema({
-  agent : { type: Schema.Types.ObjectId, ref: 'Agent' }
-});
-
-var ContactHistorySchema = new crmSchema.BasicRelationshipSchema({
-  time: Date,
-  model: String, // phone OR email
-  data: String,
-  textSummary: String
-});
-  
 models = {};
 db.once('open', function callback() {
-  var Agent = mongoose.model('Agent', AgentSchema);
-  var Customer = mongoose.model('Customer', CustomerSchema);
-  var ContactHistory = mongoose.model('ContactHistory', ContactHistorySchema);
-
-  models['Agent'] = Agent;
-  models['Customer'] = Customer;
-  models['ContactHistory'] = ContactHistory;
+  models['Agent'] = agentDataService;
+  models['Customer'] = customerDataService;
+  models['ContactHistory'] = contactRecordDataService;
 });
 module.exports = models;
 
