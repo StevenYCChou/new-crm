@@ -12,6 +12,11 @@ module.exports = new function() {
       creds: new AWS.SharedIniFileCredentials(),
       region: 'us-west-2',
       reqQueueTopic: 'arn:aws:sns:us-west-2:308426674213:crm_req_queue', 
+    },
+
+    mongoDb: {
+      server_address: 'mongodb://localhost',
+      db_name: 'mydb'
     }
   };
 }
