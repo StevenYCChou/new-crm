@@ -1,7 +1,7 @@
-var dataService = require('../data_service/crm_data_service.js');
+var crmService = require('./crm_service.js');
 
 exports.showAllAgents = function (req, res) {
-  dataService.getAllAgents(function(err, agents){
+  crmService.retrieveAllAgents(function(err, agents){
     if (err){
       res.send(500, { error: "Database Error." });
     } else {
@@ -32,7 +32,7 @@ exports.createNewAgent = function (req, res) {
     phone : req.param('phone'),
   };
 
-  dataService.addAgent(agent, function(err) {
+  crmService.createAgent(agent, function(err) {
     if (err) {
       res.send(500, { error: "Database Error." });
     } else {

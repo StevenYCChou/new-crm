@@ -1,12 +1,12 @@
-var dataService = require('../data_service/crm_data_service.js');
+var crmService = require('./crm_service.js');
 
 exports.showProfile = function (req, res) {
   var agentId = req.param('agentId');
-  dataService.getAgentById(agentId, function(err, agent) {
+  crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
-      dataService.getCustomersByAgentId(agentId, function(err, customers) {
+      crmService.retrieveCustomersByAgentId(agentId, function(err, customers) {
         if (err) {
           res.status(500).send({ error: "Database Error." });
         } else {
@@ -24,13 +24,13 @@ exports.showProfile = function (req, res) {
 exports.showCustomerByCustomerId = function (req, res) {
   var agentId = req.param('agentId');
   var customerId = req.param('customerId');
-  dataService.getCustomerById(customerId, function(err, customer) {
+  crmService.retrieveCustomerById(customerId, function(err, customer) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else if (customer == null) {
       res.status(400).send({ error: "Customer doesn't exist."});
     } else {
-      dataService.getContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
+      crmService.retrieveContactHistoryByAgentIdAndCustomerId(agentId, customerId, function(err, contactHistory) {
         var data = {
           agent: customer.agent,
           customer: customer,
@@ -44,7 +44,7 @@ exports.showCustomerByCustomerId = function (req, res) {
 
 exports.showProfileUpdatePage = function (req, res) {
   var agentId = req.param('agentId');
-  dataService.getAgentById(agentId, function(err, agent) {
+  crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else if (agent == null) {
@@ -58,7 +58,7 @@ exports.showProfileUpdatePage = function (req, res) {
 exports.updateProfile = function (req, res) {
   var agentId = req.param('agentId');
   var updateInfo = req.body;
-  dataService.updateAgentById(agentId, updateInfo, function(err, agent) {
+  crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
@@ -82,7 +82,7 @@ exports.createCustomer = function (req, res) {
     agent : req.param('agentId')
   };
 
-  dataService.addCustomer(customer, function (err) {
+  crmService.createCustomer(customer, function (err) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
@@ -95,7 +95,7 @@ exports.showCustomerUpdatePage = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
 
-  dataService.getCustomerById(customerId, function (err, customer) {
+  crmService.retrieveCustomerById(customerId, function (err, customer) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
@@ -113,7 +113,7 @@ exports.updateCustomer = function (req, res) {
   var agentId = req.param('agentId');
   var newCustomerInfo = req.body;
 
-  dataService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
+  crmService.updateCustomerById(customerId, newCustomerInfo, function(err, updatedCustomerInfo) {
     if (err) {
       res.status(500).send({ errpr: "Database Error."});
     } else if (updatedCustomerInfo == null) {
@@ -128,7 +128,7 @@ exports.removeCustomerById = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
 
-  dataService.deleteCustomerById(customerId, function(err) {
+  crmService.deleteCustomerById(customerId, function(err) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
@@ -147,7 +147,7 @@ exports.showContactRecordCreationPage = function (req, res) {
   });
 };
 
-exports.CreateContactRecord = function (req, res) {
+exports.createContactRecord = function (req, res) {
   var newContactHistory = {
     time : req.param('time'),
     data : req.param('data'),
@@ -159,7 +159,7 @@ exports.CreateContactRecord = function (req, res) {
   var agentId = req.param('agentId');
   var customerId = req.param('customerId');
 
-  dataService.addContactHistory(newContactHistory, function(err, contactHistory) {
+  crmService.createContactHistory(newContactHistory, function(err, contactHistory) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
@@ -168,9 +168,9 @@ exports.CreateContactRecord = function (req, res) {
   });
 };
 
-exports.getContactRecordById = function (req, res) {
+exports.retrieveContactRecordById = function (req, res) {
   var contactHistoryId = req.param('contactHistoryId');
-  dataService.getContactHistoryById(contactHistoryId, function (err, contactHistory) {
+  crmService.retrieveContactHistoryById(contactHistoryId, function (err, contactHistory) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {

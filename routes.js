@@ -1,6 +1,7 @@
-var managerFacade = require('./roles/managerFacade.js');
-var agentFacade = require('./roles/agentFacade.js');
-var customerFacade = require('./roles/customerFacade.js');
+var businessService = require('./business_service/business_service.js');
+var managerFacade = businessService.managerFacade;
+var agentFacade = businessService.agentFacade;
+var customerFacade = businessService.customerFacade;
 
 var express = require('express');
 var http = require('http');
@@ -30,8 +31,8 @@ http.createServer(app).listen(3000);
 ////////////////////
 //  MessageQueue  //
 ////////////////////
-var mq = require('./message_queue/main.js');
-mq.startMessageQueueService(8000); 
+// var mq = require('./message_queue/main.js');
+// mq.startMessageQueueService(8000); 
 
 app.get('/', function(req, res) {
   res.render('homepage.ejs');
@@ -64,12 +65,12 @@ app.delete('/customer/:customerId', agentFacade.removeCustomerById);
 
 // contact record related
 app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);
-app.get('/contact_history/:contactHistoryId', agentFacade.getContactRecordById);
-app.post('/contact_history', agentFacade.CreateContactRecord);
+app.get('/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordById);
+app.post('/contact_history', agentFacade.createContactRecord);
 
 /////////////////////
 // Customer Facade //
 /////////////////////
-app.get('/customer/:customerId', customerFacade.getProfilePage);
+app.get('/customer/:customerId', customerFacade.retrieveProfilePage);
 app.get('/customer/:customerId/edit', customerFacade.showProfileUpdatePage);
 app.post('/customer/:customerId', customerFacade.updateProfile);
