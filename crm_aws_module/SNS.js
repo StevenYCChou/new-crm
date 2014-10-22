@@ -1,8 +1,7 @@
 var AWS = require('aws-sdk');
-var sns = new AWS.SNS();
 var configs = require('../configs.js');
-var sns = new AWS.SNS({ credentials: configs.awsSqs.creds, region: configs.awsSqs.region });
 
+var sns = new AWS.SNS({credentials: configs.awsSqs.creds, region: configs.awsSqs.region});
 
 var publish = function snsPublish(message) {
 

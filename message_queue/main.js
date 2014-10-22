@@ -2,7 +2,6 @@ var http = require('http');
 var httpProxy = require('http-proxy');
 var AWS = require('aws-sdk');
 
-// setup AWS and SQS
 var configs = require('../configs.js');
 var crmSqs = require('../crm_aws_module/SQS.js');
 var crmSns = require('../crm_aws_module/SNS.js');
@@ -12,13 +11,9 @@ var reqQueue = configs.awsSqs.reqQueue;
 var webServerAddress = 'http://localhost:3000';
 var requests = {};
 var messagedReq = [[/^\/contact_history\/(?:([^\/]+?))\/?$/i, 'GET']];
-
 var proxy = httpProxy.createProxyServer();
 
 
-// --- Start
-//console.log('Starting HTTP server...');
-//startHttpServer();
 var startMessageQueueService = function startMessageQueueService(port) {
   console.log('Starting proxy server...');
   startProxyServer(port);
@@ -26,19 +21,14 @@ var startMessageQueueService = function startMessageQueueService(port) {
   console.log('Starting Queue handler...');
   processing = setInterval(function(){
     crmSqs.receiveMessage(reqQueue, crmProxyProcessor);
-  }, 100);
+  }, 1000);
 }
-
-// --- functions
 
 var crmProxyProcessor = function crmProxyProcessor(message) {
 
   var requestId = JSON.parse(message).Message;
-
   if (requestId in requests) {
-    // req, res
     proxy.web(requests[requestId][0], requests[requestId][1], {target: webServerAddress});
-
     delete requests[requestId];
   }
 }
@@ -51,8 +41,6 @@ function crmProxyFilter(req, res) {
       console.log('Sending a message ...', req.url)
       var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
       var requestId = randLetter + Date.now();
-
-      // need lock here.
       requests[requestId] = [req, res];
       crmSns.publish(requestId);
 
@@ -73,14 +61,11 @@ function startProxyServer(port, messageAll) {
   var proxy = httpProxy.createProxyServer({});
   http.createServer(function (req, res) {
     if (messageAll) {
-        console.log('Sending a message ...', req.url)
-        var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-        var requestId = randLetter + Date.now();
-
-        // need lock here.
-        requests[requestId] = [req, res];
-        crmSns.publish(requestId);
-
+      console.log('Sending a message ...', req.url)
+      var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      var requestId = randLetter + Date.now();
+      requests[requestId] = [req, res];
+      crmSns.publish(requestId);
     } else {
       crmProxyFilter(req, res);
     }
