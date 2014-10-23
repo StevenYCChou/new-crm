@@ -8,10 +8,15 @@ var crmSns = require('../crm_aws_module/SNS.js');
 var routes = require('../routes.js');
 
 var reqQueue = configs.awsSqs.reqQueue;
-var webServerAddress = 'http://localhost:3000';
-var requests = {};
-var messagedReq = [[/^\/contact_history\/(?:([^\/]+?))\/?$/i, 'GET']];
 var proxy = httpProxy.createProxyServer();
+
+var webServerAddress = 'http://localhost:3000';
+var messagedReq = [[/^\/contact_history\/(?:([^\/]+?))\/?$/i, 'GET']];
+
+var mqThreshold = 2;
+var mqFlag = false
+var requests = {};
+var counter = 0;
 
 
 var startMessageQueueService = function startMessageQueueService(port) {
@@ -19,13 +24,17 @@ var startMessageQueueService = function startMessageQueueService(port) {
   startProxyServer(port);
 
   console.log('Starting Queue handler...');
-  processing = setInterval(function(){
+  processing = setInterval(function() {
     crmSqs.receiveMessage(reqQueue, crmProxyProcessor);
   }, 1000);
+
+  console.log('Starting Counter checking...');
+  counting = setInterval(function() {
+    trafficWatcher();
+  }, 5000)
 }
 
 var crmProxyProcessor = function crmProxyProcessor(message) {
-
   var requestId = JSON.parse(message).Message;
   if (requestId in requests) {
     proxy.web(requests[requestId][0], requests[requestId][1], {target: webServerAddress});
@@ -33,17 +42,34 @@ var crmProxyProcessor = function crmProxyProcessor(message) {
   }
 }
 
-function crmProxyFilter(req, res) {
+function trafficWatcher() {
+  if (counter >= mqThreshold) {
+    mqFlag = true;
+  } else {
+    mqFlag = false;
+  }
+  counter = 0;
+}
 
+function requestIdGenerator(){
+  var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+  var requestId = randLetter + Date.now();
+
+  return requestId;
+}
+
+function mqSnsPublish(req, res){
+  console.log('Sending a message ...', req.url)
+  var requestId = requestIdGenerator();
+  requests[requestId] = [req, res];
+  crmSns.publish(requestId);
+}
+
+function crmProxyFilter(req, res) {
   for (i = 0; i < messagedReq.length; i++) {
     var re = new RegExp(messagedReq[i][0]);
     if (new RegExp(messagedReq[i][0]).test(req.url) && messagedReq[i][1] == req.method) {
-      console.log('Sending a message ...', req.url)
-      var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      var requestId = randLetter + Date.now();
-      requests[requestId] = [req, res];
-      crmSns.publish(requestId);
-
+      mqSnsPublish(req, res);
       return;
     };
   }
@@ -53,21 +79,20 @@ function crmProxyFilter(req, res) {
 }
 
 function startProxyServer(port, messageAll) {
-
-  if (typeof(messageAll) === 'undefined') {
-    messageAll = true;
-  }
+  if (typeof(messageAll) === 'undefined') messageAll = true;
 
   var proxy = httpProxy.createProxyServer({});
   http.createServer(function (req, res) {
-    if (messageAll) {
-      console.log('Sending a message ...', req.url)
-      var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      var requestId = randLetter + Date.now();
-      requests[requestId] = [req, res];
-      crmSns.publish(requestId);
+    counter ++;
+    console.log('[server]', mqFlag);
+    if(mqFlag) {
+      if (messageAll) {
+        mqSnsPublish(req, res);
+      } else{
+        crmProxyFilter(req, res);
+      }
     } else {
-      crmProxyFilter(req, res);
+      proxy.web(req, res, {target: webServerAddress});
     }
   }).listen(port);
 }
