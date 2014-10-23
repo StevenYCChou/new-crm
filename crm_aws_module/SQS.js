@@ -19,7 +19,7 @@ var sendMessage = function sendMessage(queue, message) {
   });
 };
 
-var receiveMessage = function receiveMessage(queue, processor) {
+var receiveMessage = function receiveMessage(queue, callback) {
   sqs.getQueueUrl({QueueName: queue}, function(err, data) {
     if (err) {
       console.log(err, err.stack);
@@ -31,7 +31,7 @@ var receiveMessage = function receiveMessage(queue, processor) {
       sqs.receiveMessage({QueueUrl: data.QueueUrl}, function(err, data) {
         if (data.Messages) {
           data.Messages.forEach(function(item) {
-            processor(item.Body);
+            callback(item.Body);
           });
 
           console.log('Got a message from the Queue!');
