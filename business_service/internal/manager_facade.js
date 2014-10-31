@@ -14,9 +14,10 @@ exports.showAllAgents = function (req, res) {
           id: agent.id,
         });
       });
-      res.render('agents/index', {
-        agents: filtered_agents
-      });
+//      res.render('agents/index', {
+//        agents: filtered_agents
+//      });
+      res.json(filtered_agents);
     }
   });
 };

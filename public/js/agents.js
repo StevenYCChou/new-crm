@@ -1,3 +1,10 @@
+angular.module('crmApp', []).
+  controller('agentController', ['$scope', '$http', function($scope, $http) {
+  
+  }]);
+
+
+
 $('#create_agent').click(function() {
   console.log("Create Agent!");
   location.href="/agent/create";

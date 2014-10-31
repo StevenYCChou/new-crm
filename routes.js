@@ -10,7 +10,8 @@ var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
-app.engine('ejs', engine);
+app.engine('.html', require('ejs').renderFile);
+//app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
 app.use("/jquery-ui-1.11.1", express.static(__dirname + '/public/jquery-ui-1.11.1'));
 app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-ui-themes-1.11.1'));
@@ -20,7 +21,7 @@ app.use(multer());
 //app.use(app.router);
 
 app.set('views', __dirname+'/views');
-app.set('view engine', 'ejs'); // default view engine
+app.set('view engine', 'html'); // default view engine
 
 
 ////////////////////
