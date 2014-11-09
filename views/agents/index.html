@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="crmApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system</title>
+
+    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+  </head>
+  <body>
+    <div ng-controller="agentController">
+      <h3>Agent List</h3>
+      <table>
+        <tr>
+	  <th>Name</th>
+	  <th>Phone</th>
+	  <th>Email</th>
+	  <th>Details</th>
+	</tr>
+        <tr ng-repeat="agent in agents">
+	  <td>{{ agent.name }}</td>
+	  <td>{{ agent.phone }}</td>
+	  <td>{{ agent.email }}</td>
+	  <td><input type="button" ng-click="agentDetail(agent.id)" value="Details" /></td>
+	</tr>
+      </table><br />
+      <input type="button" ng-click="createAgent()" value="Create Agent" />
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>
+  </body>
+</html>
