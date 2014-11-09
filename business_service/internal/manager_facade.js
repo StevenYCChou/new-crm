@@ -37,8 +37,6 @@ exports.createNewAgentAPI = function (req, res) {
   crmService.createAgent(agent, function(err) {
     if (err) {
       res.send(500, { error: "Database Error." });
-    } else {
-      res.redirect('/agents');
     }
   });
 };

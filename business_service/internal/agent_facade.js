@@ -1,6 +1,6 @@
 var crmService = require('./crm_service.js');
 
-exports.showProfile = function (req, res) {
+exports.showProfileAPI = function (req, res) {
   var agentId = req.param('agentId');
   crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
@@ -14,13 +14,15 @@ exports.showProfile = function (req, res) {
             agent: agent,
             customers: customers
           };
-          res.render('agents/retrieve', data);
+          res.json(data);
         }
       });
     }
   });
 };
-
+exports.showProfile = function (req, res) {
+  res.render('agents/retrieve');
+}
 exports.showCustomerByCustomerId = function (req, res) {
   var agentId = req.param('agentId');
   var customerId = req.param('customerId');

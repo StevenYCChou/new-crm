@@ -55,6 +55,7 @@ app.post('/api/agent', managerFacade.createNewAgentAPI);
 
 // profile related
 app.get('/agent/:agentId', agentFacade.showProfile);
+app.get('/api/agent/:agentId', agentFacade.showProfileAPI);
 app.get('/agent/:agentId/edit', agentFacade.showProfileUpdatePage);
 app.put('/agent/:agentId', agentFacade.updateProfile);
 
