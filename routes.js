@@ -10,7 +10,7 @@ var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
-app.engine('.html', require('ejs').renderFile);
+app.engine('html', require('ejs').renderFile);
 //app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
 app.use("/jquery-ui-1.11.1", express.static(__dirname + '/public/jquery-ui-1.11.1'));
@@ -18,6 +18,7 @@ app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-u
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multer());
+app.use(express.static(__dirname + '/views'));
 //app.use(app.router);
 
 app.set('views', __dirname+'/views');
@@ -44,8 +45,9 @@ app.get('/', function(req, res) {
 // Manager Facade //
 ////////////////////
 app.get('/agents', managerFacade.showAllAgents);
+app.get('/api/agents', managerFacade.showAllAgentsAPI);
 app.get('/agent/create', managerFacade.showAgentCreationPage);
-app.post('/agent', managerFacade.createNewAgent);
+app.post('/api/agent', managerFacade.createNewAgentAPI);
 
 //////////////////
 // Agent Facade //
