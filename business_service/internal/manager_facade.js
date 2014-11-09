@@ -1,6 +1,6 @@
 var crmService = require('./crm_service.js');
 
-exports.showAllAgents = function (req, res) {
+exports.showAllAgentsAPI = function (req, res) {
   crmService.retrieveAllAgents(function(err, agents){
     if (err){
       res.send(500, { error: "Database Error." });
@@ -14,19 +14,20 @@ exports.showAllAgents = function (req, res) {
           id: agent.id,
         });
       });
-//      res.render('agents/index', {
-//        agents: filtered_agents
-//      });
-      res.json(filtered_agents);
+      res.json(filtered_agents.slice(0));
     }
   });
+};
+
+exports.showAllAgents = function(req, res) {
+  res.render('agents/index');
 };
 
 exports.showAgentCreationPage = function (req, res) {
   res.render('agents/create');
 };
 
-exports.createNewAgent = function (req, res) {
+exports.createNewAgentAPI = function (req, res) {
   var agent = {
     name : req.param('name'),
     email : req.param('email'),
