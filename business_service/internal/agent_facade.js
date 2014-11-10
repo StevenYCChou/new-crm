@@ -23,7 +23,11 @@ exports.showProfileAPI = function (req, res) {
 exports.showProfile = function (req, res) {
   res.render('agents/retrieve');
 }
+
 exports.showCustomerByCustomerId = function (req, res) {
+  res.render('customers/agent_view/retrieve');
+}
+exports.showCustomerByCustomerIdAPI = function (req, res) {
   var agentId = req.param('agentId');
   var customerId = req.param('customerId');
   crmService.retrieveCustomerById(customerId, function(err, customer) {
@@ -38,7 +42,7 @@ exports.showCustomerByCustomerId = function (req, res) {
           customer: customer,
           contact_history: contactHistory
         };
-        res.render('customers/agent_view/retrieve', data);
+        res.json(data);
       });
     }
   });

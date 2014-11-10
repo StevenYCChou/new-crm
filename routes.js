@@ -62,6 +62,7 @@ app.put('/api/agent/:agentId', agentFacade.updateProfileAPI);
 
 // customer related
 app.get('/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerId);
+app.get('/api/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerIdAPI);
 app.get('/agent/:agentId/create', agentFacade.showCustomerCreationPage);
 app.get('/agent/:agentId/customer/:customerId/edit', agentFacade.showCustomerUpdatePage);
 app.post('/api/agent/:agentId', agentFacade.createCustomerAPI);
