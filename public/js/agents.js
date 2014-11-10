@@ -24,15 +24,36 @@ angular.module('crmApp', []).
       $window.location.href="/agents";
     };
   }]).
-  controller('agentDetailController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-
-
+  controller('agentDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+    $scope.agent = [];
+    $scope.customers = [];
+    $scope.routes = $location.absUrl().split("/")[4];
+    $http.get('/api/agent/' + $scope.routes)
+      .success(function(data, status, headers, config) {
+        $scope.agent = data.agent;
+	$scope.customers = data.customers;
+      });
+    $scope.editAgent = function(agentId) {
+      $window.location.href="/agent/" + agentId + "/edit";
+    };
+  }]).
+  controller('agentEditController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+    $scope.agent = [];
+    $scope.routes = $location.absUrl().split("/")[4];
+    $http.get('/api/agent/' + $scope.routes)
+      .success(function(data, status, headers, config) {
+        $scope.agent = data.agent;
+      });
+    $scope.editAgentSubmit = function(agent_id, agent_name, agent_phone, agent_email) {
+      $http.put('/api/agent/' + agent_id, {name: agent_name, phone: agent_phone, email: agent_email})          
+      .success(function(data, status, headers, config) {
+          $window.location.href="/agent/" + agent_id;
+         });
+       };
+    $scope.editAgentCancel = function(agent_id) {
+      $window.location.href="/agent/" + agent_id;
+    };  
   }]);
-
-$('.agent_detail').click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId;
-});
 
 $("#edit_agent").click(function() {
   var agentId = $(this).attr("value");

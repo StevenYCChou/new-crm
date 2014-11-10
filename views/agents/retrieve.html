@@ -10,11 +10,11 @@
     <div ng-controller="agentDetailController">
       <h3>Agent Basic Info</h3>
       <ul>
-        <li>Agent Name: <%= agent["name"] %></li>
-        <li>Agent Phone: <%= agent["phone"] %></li>
-        <li>Agent Email: <%= agent["email"] %></li> 
+        <li>Agent Name: {{ agent.name }}</li>
+        <li>Agent Phone: {{ agent.phone }}</li>
+        <li>Agent Email: {{ agent.email }}</li> 
       </ul>
-      <button id="edit_agent" value="<%= agent["id"] %>">Edit Agent Basic Info</button>
+      <input type="button" ng-click="editAgent(agent._id)" value="Edit Agent Basic Info" />
       <h3>Customers</h3>
       <table>
         <tr>
@@ -23,19 +23,17 @@
           <th>Email</th>
           <th>Details</th>
         </tr>
-        <% for (var i = 0; i < customers.length;i++) { %>
-          <tr>
-            <td><%= customers[i]["name"] %></td>
-            <td><%= customers[i]["phone"] %></td>
-            <td><%= customers[i]["email"] %></td> 
-            <td><button class="customer_detail" value="<%= customers[i]["id"] %>" name="<%= agent["id"] %>" >Details</button></td>
-          </tr>
-        <% } %>
+        <tr ng-repeat="customer in customers">
+          <td>{{ customer.name }}</td>
+          <td>{{ customer.phone }}</td>
+          <td>{{ customer.email }}</td> 
+          <td><input type="button" ng-click="customerDetail(agent.id, customer.id)" value="Edit Details" /></td>
+        </tr>
       </table><br />
       <div>
-        <button id="create_customer" value="<%= agent["id"] %>">Create New Customer</button>
+        <input type="button" ng-click="createCustomer()" value="Create New Customer" />
       </div><br/>
-      <button id="back_agents">Go back to Agent list</button>
+      <input type="button" ng-click="backAgents()" value="Go back to Agent list" />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>

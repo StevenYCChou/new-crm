@@ -44,7 +44,7 @@ exports.showCustomerByCustomerId = function (req, res) {
   });
 };
 
-exports.showProfileUpdatePage = function (req, res) {
+exports.showProfileUpdatePageAPI = function (req, res) {
   var agentId = req.param('agentId');
   crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
@@ -52,19 +52,22 @@ exports.showProfileUpdatePage = function (req, res) {
     } else if (agent == null) {
       res.status(400).send({ error: "Agent doesn't exist." });
     } else {
-      res.render('agents/update', {agent: agent});
+      res.json({agent: agent});
     }
   });
 };
+exports.showProfileUpdatePage = function (req, res) {
+  res.render('agents/update');
+};
 
-exports.updateProfile = function (req, res) {
+exports.updateProfileAPI = function (req, res) {
   var agentId = req.param('agentId');
-  var updateInfo = req.body;
+  var updateInfo = {name: req.param('name'), phone: req.param('phone'), email: req.param('email')};
   crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
-      res.send({redirect: '/agent/'+agentId});
+      res.json({agentId: agentId});
     }
   });
 };
