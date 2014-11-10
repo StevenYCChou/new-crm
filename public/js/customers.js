@@ -12,39 +12,6 @@ angular.module('crmCustomerApp',[]).
   };
   }]);
 
-$('.customer_detail').click(function() {
-  var customerId = $(this).attr("value");
-  var agentId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId;
-});
-
-$("#create_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var agentId = $(this).attr("value");
-    $.post('/agent/' + agentId,
-      { name: customer_name,
-        phone: customer_phone,
-        email: customer_email,
-        agentId: agentId },
-      function(res) {
-        location.href = "/agent/"+ agentId;
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Name, phone, email is required");
-  }
-});
-
-$("#create_customer_cancel").click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId;
-});
-
 $("#edit_customer_submit").click(function() {
   var customer_name = $("#customer_name").val();
   var customer_phone = $("#customer_phone").val();

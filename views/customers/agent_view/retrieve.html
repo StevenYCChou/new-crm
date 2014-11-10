@@ -1,0 +1,53 @@
+<% layout('../../layout') -%>
+<!DOCTYPE html>
+<html ng-app="crmApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system</title>
+
+    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+  </head>
+  <body>
+    <div ng-controller="customerDetailController"><h3>Customer Basic Info</h3>
+<ul>
+  <li>Customer Name: <%= customer["name"] %></li>
+  <li>Customer Phone: <%= customer["phone"] %></li>
+  <li>Customer Email: <%= customer["email"] %></li> 
+</ul>
+<button id="edit_customer" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Edit Customer Basic Info</button>
+<button id="customer_delete" value="<%= agent["id"] %>" name="<%= customer["id"] %>" >Delete the customer</button>
+
+<h3>Contact History</h3>
+<table>
+  <tr>
+    <th>Summary</th>
+    <th>Mode</th>
+    <th>Time</th>
+    <th>Details</th>
+  </tr>
+  <% for (var i = 0; i < contact_history.length;i++) { %>
+    <tr>
+      <td><%= contact_history[i]["textSummary"] %></td>
+      <td><%= contact_history[i]["model"] %></td>
+      <td><%= contact_history[i]["time"] %></td> 
+      <td><button class="contact_history_detail" value="<%= contact_history[i]["id"] %>">Details</button></td>
+    </tr>
+  <% } %>
+</table><br />
+
+<div>
+  <button id="create_contact_history" value="<%= agent["id"] %>" name="<%= customer["id"] %>">Add contact History</button>
+</div><br />
+<div>
+  <button id="customer_back_agent" value="<%= agent["id"] %>">Go back to the Agent</button>
+  <button id="customer_back_agents">Go back to Agent list</button>
+</div>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>
+  </body>
+</html>

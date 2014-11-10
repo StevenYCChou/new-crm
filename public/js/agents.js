@@ -41,6 +41,9 @@ angular.module('crmApp', []).
     };
     $scope.createCustomer = function(agentId) {
       $window.location.href="/agent/" + agentId + "/create";
+    };
+    $scope.customerDetail = function(agentId, customerId) {
+      $window.location.href="/agent/" + agentId + "/customer/" + customerId;
     }
   }]).
   controller('agentEditController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
