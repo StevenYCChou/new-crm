@@ -11,14 +11,20 @@ angular.module('crmCustomerApp',[]).
     $window.location.href="/agent/" + $scope.agentId;
   };
   }]).
-  controller('customerDetailController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+  controller('customerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.customerId = $location.absUrl().split("/")[6];
-    $http.get('/api/agent/' + $scope.agentId + "/customer/" + $scope.customerId)      .success(function(data, status, headers, config)  {
+  $http.get('/api/agent/' + $scope.agentId + "/customer/" + $scope.customerId)      .success(function(data, status, headers, config)  {
         $scope.customer = data.customer;
 	$scope.contact_historys = data.contact_history;
 	$scope.agent = data.agent;
     });
+  $scope.customerBackAgent = function(agentId) {
+    $window.location.href="/agent/" + agentId;
+  };
+  $scope.customerBackAgents = function() {
+    $window.location.href="/agents"
+  };
   }]);
 
 $("#edit_customer_submit").click(function() {
