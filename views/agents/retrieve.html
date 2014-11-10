@@ -27,11 +27,10 @@
           <td>{{ customer.name }}</td>
           <td>{{ customer.phone }}</td>
           <td>{{ customer.email }}</td> 
-          <td><input type="button" ng-click="customerDetail(agent.id, customer.id)" value="Edit Details" /></td>
         </tr>
       </table><br />
       <div>
-        <input type="button" ng-click="createCustomer()" value="Create New Customer" />
+        <input type="button" ng-click="createCustomer(agent._id)" value="Create New Customer" />
       </div><br/>
       <input type="button" ng-click="backAgents()" value="Go back to Agent list" />
     </div>

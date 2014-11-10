@@ -1,7 +1,16 @@
-$('#create_customer').click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId +'/create';
-});
+angular.module('crmCustomerApp',[]).
+  controller('createCustomerController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.agentId = $location.absUrl().split("/")[4];
+  $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email) {
+    $http.post('/api/agent/' + $scope.agentId, {name: customer_name, phone: customer_phone, email: customer_email})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/agent/" + $scope.agentId;    
+      });
+  };
+  $scope.createCustomerCancel = function() {
+    $window.location.href="/agent/" + $scope.agentId;
+  };
+  }]);
 
 $('.customer_detail').click(function() {
   var customerId = $(this).attr("value");

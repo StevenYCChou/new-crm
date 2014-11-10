@@ -74,12 +74,10 @@ exports.updateProfileAPI = function (req, res) {
 
 exports.showCustomerCreationPage = function (req, res) {
   var agentId = req.param('agentId');
-  res.render('customers/agent_view/create', {
-    agent: { id: agentId },
-  });
+  res.render('customers/agent_view/create');
 };
 
-exports.createCustomer = function (req, res) {
+exports.createCustomerAPI = function (req, res) {
   var customer = {
     name : req.param('name'),
     email : req.param('email'),

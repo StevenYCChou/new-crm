@@ -9,19 +9,19 @@
     <div ng-controller="agentEditController">
       <h3>Edit Agent</h3>
       <div>
-        <label>Name: <input type="text" ng-model=agent.name placeholder="{{ agent.name }}" />
+        <label>Name: <input type="text" ng-model=agent_name placeholder="{{ agent.name }}" />
         </label>
       <div>
       </div>
-       <label>Phone: <input type="text" ng-model=agent.phone placeholder="{{ agent.phone }}" />
+       <label>Phone: <input type="text" ng-model=agent_phone placeholder="{{ agent.phone }}" />
         </label>
       </div>
       <div>
-        <label>Email: <input type="email" ng-model=agent.email placeholder= "{{ agent.email }}" />
+        <label>Email: <input type="email" ng-model=agent_email placeholder= "{{ agent.email }}" />
         </label>
       </div>
       <div>
-        <input type="button" ng-click="editAgentSubmit(agent._id, agent.name, agent.phone, agent.email)" value="Submit" />
+        <input type="button" ng-click="editAgentSubmit(agent._id, agent_name, agent_phone, agent_email)" value="Submit" />
         <input type="button" ng-click="editAgentCancel(agent._id)" value="Return" />
       </div>
     </div>

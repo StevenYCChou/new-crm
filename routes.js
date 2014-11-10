@@ -64,7 +64,7 @@ app.put('/api/agent/:agentId', agentFacade.updateProfileAPI);
 app.get('/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerId);
 app.get('/agent/:agentId/create', agentFacade.showCustomerCreationPage);
 app.get('/agent/:agentId/customer/:customerId/edit', agentFacade.showCustomerUpdatePage);
-app.post('/agent/:agentId', agentFacade.createCustomer);
+app.post('/api/agent/:agentId', agentFacade.createCustomerAPI);
 app.put('/agent/:agentId/customer/:customerId', agentFacade.updateCustomer);
 app.delete('/customer/:customerId', agentFacade.removeCustomerById);
 
