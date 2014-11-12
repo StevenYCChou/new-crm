@@ -1,3 +1,4 @@
+var api = require('./api.js');
 var businessService = require('./business_service/business_service.js');
 var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;
@@ -40,6 +41,7 @@ app.get('/', function(req, res) {
   res.render('homepage.ejs');
 });
 
+app.get('/api/v1.00/entities/agents.json', api.getAgents);
 
 ////////////////////
 // Manager Facade //
