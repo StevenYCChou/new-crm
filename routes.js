@@ -68,8 +68,8 @@ app.get('/api/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCu
 app.get('/agent/:agentId/create', agentFacade.showCustomerCreationPage);
 app.get('/agent/:agentId/customer/:customerId/edit', agentFacade.showCustomerUpdatePage);
 app.post('/api/agent/:agentId', agentFacade.createCustomerAPI);
-app.put('/agent/:agentId/customer/:customerId', agentFacade.updateCustomer);
-app.delete('/customer/:customerId', agentFacade.removeCustomerById);
+app.put('/api/agent/:agentId/customer/:customerId', agentFacade.updateCustomerAPI);
+app.delete('/api/customer/:customerId', agentFacade.removeCustomerByIdAPI);
 
 // contact record related
 app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);

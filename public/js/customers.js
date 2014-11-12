@@ -19,12 +19,41 @@ angular.module('crmCustomerApp',[]).
 	$scope.contact_historys = data.contact_history;
 	$scope.agent = data.agent;
     });
+  $scope.editCustomer = function(agentId, customerId) {
+    $window.location.href="/agent/" + agentId + "/customer/" + customerId + "/edit";
+  }
+  $scope.deleteCustomer = function(agentId, customerId) {
+    $http.delete('/api/customer/' + customerId)
+      .success(function(data, status, headers, config) {
+        $window.location.href="/agent/" + agentId;
+      });
+  }
   $scope.customerBackAgent = function(agentId) {
     $window.location.href="/agent/" + agentId;
   };
   $scope.customerBackAgents = function() {
     $window.location.href="/agents"
   };
+  }]).
+  controller('customerEditController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.agent = [];
+  $scope.customer = [];
+  $scope.agentId = $location.absUrl().split("/")[4];
+  $scope.customerId = $location.absUrl().split("/")[6];
+    $http.get('/api/agent/' + $scope.agentId + '/customer/' + $scope.customerId)
+      .success(function(data, status, headers, config) {
+        $scope.agent = data.agent;
+        $scope.customer = data.customer;
+      });
+    $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email) {
+      $http.put('/api/agent/' + agent_id + + '/customer/' + customer_id, {name: customer_name, phone: customer_phone, email: customer_email})          
+        .success(function(data, status, headers, config) {
+            $window.location.href="/agent/" + agent_id + "/customer/" + customerId;
+        });
+      };
+    $scope.editCustomerCancel = function(agent_id, customer_id) {
+      $window.location.href="/agent/" + agent_id + "/customer/" + customerId;
+    };  
   }]);
 
 $("#edit_customer_submit").click(function() {
@@ -55,12 +84,6 @@ $("#edit_customer_cancel").click(function() {
   location.href='/agent/' + agentId + '/customer/' + customerId;
 });
 
-$("#edit_customer").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId + '/edit';
-});
-
 $(".customer_delete").click(function() {
   var customerId = $(".customerId").val();
   if (customerId){
@@ -76,31 +99,6 @@ $(".customer_delete").click(function() {
   } else {
     alert("Id is required");
   }
-});
-
-$("#customer_back_agent").click(function() {
-  var agentId = $(this).attr("value");
-  location.href= '/agent/' + agentId;
-});
-
-$("#customer_back_agents").click(function() {
-  location.href= '/agents';
-});
-
-$("#customer_delete").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  $.ajax({
-    type: 'delete',
-    data: {agentid: agentId, customerid: customerId},
-    url: '/customer/' + customerId,
-    success: function(res) {
-      window.location="/agent/" + agentId;
-    }
-  })
-  .fail(function(res) {
-    alert("Error: " + res.getResponseHeader("error"));
-  });
 });
 
 $('#customer_view_edit').click(function() {

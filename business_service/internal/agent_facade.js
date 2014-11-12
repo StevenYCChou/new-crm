@@ -115,7 +115,7 @@ exports.showCustomerUpdatePage = function (req, res) {
   });
 };
 
-exports.updateCustomer = function (req, res) {
+exports.updateCustomerAPI = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
   var newCustomerInfo = req.body;
@@ -131,7 +131,7 @@ exports.updateCustomer = function (req, res) {
   });
 };
 
-exports.removeCustomerById = function (req, res) {
+exports.removeCustomerByIdAPI = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
 
