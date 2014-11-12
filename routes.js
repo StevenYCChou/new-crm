@@ -40,6 +40,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/api/v1.00/entities/agents.json', api.getAgents);
+app.get('/api/v1.00/entities/customers.json', api.getCustomers);
+app.get('/api/v1.00/entities/contact-records.json', api.getContactRecords);
 
 ////////////////////
 // Manager Facade //
