@@ -1,7 +1,7 @@
 angular.module('crmApp', []).
   controller('agentController', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.agents = [];
-    $http.get('/api/agents')
+    $http.get('/api/v1.00/entities/agents.json?all=true')
       .success(function(data, status, headers, config) {
          $scope.agents = data;
     });
