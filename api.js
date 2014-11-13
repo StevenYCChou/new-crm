@@ -155,3 +155,27 @@ exports.updateAgent = function (req, res) {
     }
   });
 };
+
+exports.updateCustomer = function (req, res) {
+  var customerId = req.param('customerId');
+  var updateInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email')
+  };
+
+  crmService.updateCustomerById(customerId, updateInfo, function(err, customer) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        customer: {
+          id: customer.id
+        }
+      });
+    }
+  });
+};
