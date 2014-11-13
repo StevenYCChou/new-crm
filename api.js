@@ -1,6 +1,8 @@
 var mongodbService = require('./data_service/mongodb_service.js');
 var Promise = require('promise');
 
+var crmService = require('./business_service/internal/crm_service.js');
+
 var without_internal_field = {
   _id: 0,
   name: 1,
@@ -128,4 +130,28 @@ exports.getContactRecords = function (req, res) {
   } else {
     getContactRecordsPromise(page_no, per_page).done(fulfill, reject);
   }
+};
+
+exports.updateAgent = function (req, res) {
+  var agentId = req.param('agentId');
+  var updateInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email')
+  };
+
+  crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        agent: {
+          id: agent.id
+        }
+      });
+    }
+  });
 };

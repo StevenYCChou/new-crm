@@ -40,6 +40,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/api/v1.00/entities/agents.json', api.getAgents);
+app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
+
 app.get('/api/v1.00/entities/customers.json', api.getCustomers);
 app.get('/api/v1.00/entities/contact-records.json', api.getContactRecords);
 
