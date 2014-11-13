@@ -81,5 +81,6 @@ app.post('/api/contact_history', agentFacade.createContactRecordAPI);
 // Customer Facade //
 /////////////////////
 app.get('/customer/:customerId', customerFacade.retrieveProfilePage);
+app.get('/api/customer/:customerId', customerFacade.retrieveProfilePageAPI)
 app.get('/customer/:customerId/edit', customerFacade.showProfileUpdatePage);
-app.post('/customer/:customerId', customerFacade.updateProfile);
+app.post('/api/customer/:customerId', customerFacade.updateProfileAPI);

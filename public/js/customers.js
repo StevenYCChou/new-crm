@@ -41,6 +41,18 @@ angular.module('crmCustomerApp',[]).
     $window.location.href="/agents"
   };
   }]).
+  controller('customerDetailCustomerViewController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.customerId = $location.absUrl().split("/")[4];
+  $http.get('/api/customer/' + $scope.customerId)
+    .success(function(data, status, headers, config) {
+      $scope.customer = data.customer;
+      $scope.agent = data.agent;
+      $scope.contact_history = data.contact_history;
+    });
+  $scope.customerViewEdit = function(customerId) {
+    $window.location.href = "/customer/" + customerId + "/edit";
+  };
+  }]).
   controller('customerEditController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agent = [];
   $scope.customer = [];
@@ -60,34 +72,20 @@ angular.module('crmCustomerApp',[]).
   $scope.editCustomerCancel = function(agent_id, customer_id) {
       $window.location.href="/agent/" + agent_id + "/customer/" + customer_id;
     };  
-  }]);
-
-$('#customer_view_edit').click(function() {
-  var customerId = $(this).attr("value");
-  location.href= '/customer/' + customerId + '/edit';
-});
-
-$("#customer_view_edit_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var customerId = $(this).attr("value");
-    $.post(
-      '/customer/' + customerId,
-      {name: customer_name, phone: customer_phone, email: customer_email},
-      function(res) {
-        window.location = '/customer/' + customerId;
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
+  }]).
+  controller('customerEditCustomerViewController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.customerId = $location.absUrl().split("/")[4];
+  $http.get('/api/customer/' + $scope.customerId)
+    .success(function(data, status, headers, config) {
+      $scope.customer = data.customer;
     });
-  } else {
-    alert("Name, phone, email is required");
-  }
-});
-
-$("#customer_view_edit_customer_cancel").click(function() {
-  var customerId = $(this).attr("value");
-  location.href= '/customer/' + customerId;
-});
+  $scope.customerViewEditCustomerSubmit = function(customerId, name, phone, email) {
+    $http.post('/api/customer/' + $scope.customerId, {name: name, phone: phone, email: email})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/customer/" + $scope.customerId;
+      });
+  };
+  $scope.customerViewEditCustomerCancel = function(customerId) {
+    $window.location.href = "/customer/" + customerId;
+  };
+  }]);
