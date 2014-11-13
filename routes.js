@@ -41,10 +41,11 @@ app.get('/', function(req, res) {
 
 app.get('/api/v1.00/entities/agents.json', api.getAgents);
 app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
+app.post('/api/v1.00/entities/agents/create', api.createAgent);
 
 app.get('/api/v1.00/entities/customers.json', api.getCustomers);
 app.put('/api/v1.00/entities/customers/:customerId', api.updateCustomer);
-
+app.post('/api/v1.00/entities/customers/create', api.createCustomer);
 
 app.get('/api/v1.00/entities/contact-records.json', api.getContactRecords);
 

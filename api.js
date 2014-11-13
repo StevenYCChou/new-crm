@@ -156,6 +156,27 @@ exports.updateAgent = function (req, res) {
   });
 };
 
+exports.createAgent = function (req, res) {
+  var agentInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email')
+  };
+
+  crmService.createAgent(agentInfo, function(err) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        code: 202
+      });
+    }
+  });
+};
+
 exports.updateCustomer = function (req, res) {
   var customerId = req.param('customerId');
   var updateInfo = {
@@ -175,6 +196,27 @@ exports.updateCustomer = function (req, res) {
         customer: {
           id: customer.id
         }
+      });
+    }
+  });
+};
+
+exports.createCustomer = function (req, res) {
+  var customerInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email')
+  };
+
+  crmService.createCustomer(customerInfo, function(err) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        code: 202
       });
     }
   });
