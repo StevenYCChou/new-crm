@@ -40,19 +40,19 @@ angular.module('crmCustomerApp',[]).
   $scope.customer = [];
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.customerId = $location.absUrl().split("/")[6];
-    $http.get('/api/agent/' + $scope.agentId + '/customer/' + $scope.customerId)
+  $http.get('/api/agent/' + $scope.agentId + '/customer/' + $scope.customerId)
+    .success(function(data, status, headers, config) { 
+    $scope.agent = data.agent;
+    $scope.customer = data.customer;
+  });
+  $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email) {
+    $http.put('/api/agent/' + agent_id + '/customer/' + customer_id, {name: customer_name, phone: customer_phone, email: customer_email})          
       .success(function(data, status, headers, config) {
-        $scope.agent = data.agent;
-        $scope.customer = data.customer;
+         $window.location.href="/agent/" + agent_id + "/customer/" + customer_id;
       });
-    $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email) {
-      $http.put('/api/agent/' + agent_id + + '/customer/' + customer_id, {name: customer_name, phone: customer_phone, email: customer_email})          
-        .success(function(data, status, headers, config) {
-            $window.location.href="/agent/" + agent_id + "/customer/" + customerId;
-        });
-      };
-    $scope.editCustomerCancel = function(agent_id, customer_id) {
-      $window.location.href="/agent/" + agent_id + "/customer/" + customerId;
+    };
+  $scope.editCustomerCancel = function(agent_id, customer_id) {
+      $window.location.href="/agent/" + agent_id + "/customer/" + customer_id;
     };  
   }]);
 
