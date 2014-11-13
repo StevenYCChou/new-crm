@@ -73,8 +73,9 @@ app.delete('/api/customer/:customerId', agentFacade.removeCustomerByIdAPI);
 
 // contact record related
 app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);
+app.get('/api/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordByIdAPI);
 app.get('/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordById);
-app.post('/contact_history', agentFacade.createContactRecord);
+app.post('/api/contact_history', agentFacade.createContactRecordAPI);
 
 /////////////////////
 // Customer Facade //

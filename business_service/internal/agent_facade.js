@@ -154,7 +154,7 @@ exports.showContactRecordCreationPage = function (req, res) {
   });
 };
 
-exports.createContactRecord = function (req, res) {
+exports.createContactRecordAPI = function (req, res) {
   var newContactHistory = {
     time : req.param('time'),
     data : req.param('data'),
@@ -175,13 +175,13 @@ exports.createContactRecord = function (req, res) {
   });
 };
 
-exports.retrieveContactRecordById = function (req, res) {
+exports.retrieveContactRecordByIdAPI = function (req, res) {
   var contactHistoryId = req.param('contactHistoryId');
   crmService.retrieveContactHistoryById(contactHistoryId, function (err, contactHistory) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
-      res.render('contact_history/retrieve', {
+      res.json({
         contact_history: contactHistory,
         agentId: contactHistory['agent'],
         customerId: contactHistory['customer']
@@ -190,3 +190,6 @@ exports.retrieveContactRecordById = function (req, res) {
   });
 };
 
+exports.retrieveContactRecordById = function (req, res) {
+  res.render('contact_history/retrieve');
+}

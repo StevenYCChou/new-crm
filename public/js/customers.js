@@ -27,7 +27,13 @@ angular.module('crmCustomerApp',[]).
       .success(function(data, status, headers, config) {
         $window.location.href="/agent/" + agentId;
       });
-  }
+  };
+  $scope.createContactHistory = function(agentId, customerId) {
+    $window.location.href="/contact_history/create?agentId=" + agentId + "&customerId=" + customerId;
+  };
+  $scope.contactHistoryDetail = function(contactHistoryId) {
+    $window.location.href="/contact_history/" + contactHistoryId;
+  };
   $scope.customerBackAgent = function(agentId) {
     $window.location.href="/agent/" + agentId;
   };

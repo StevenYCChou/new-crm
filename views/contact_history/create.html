@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="crmContactHistoryApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system</title>
+    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+  </head>
+  <body>
+    <div ng-controller="createContactHistoryController">
+			<h3>Create Contact History</h3>
+			<div>
+				<label>Summary: <input type="text" ng-model="TextSummary" placeholder="TextSummary" />
+				</label>
+			<div>
+			</div>
+				<label>Model: </label>
+				<select ng-model="model_select" ng-options="model.name for model in models"></select>
+			</div>
+			<div>
+				<label>Time: <input type="text" id="time" ng-model="time" placeholder="time" />
+				</label>
+			</div>
+			<div>
+				<label>Data: <input type="text" ng-model="data" placeholder="data" />
+				</label>
+			</div>
+			<div>
+        <input type="button" ng-click="createContactSubmit(TextSummary, model_select.name, time, data)" value="Submit" />
+        <input type="button" ng-click="createContactCancel()" value="Return" />
+			</div>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>
+  </body>
+</html>
