@@ -42,11 +42,6 @@ $("#create_contact_cancel").click(function() {
   location.href = "/agent/"+ agentId + "/customer/" + customerId;
 });
 
-$(".contact_history_detail").click(function() {
-  var contact_historyId = $(this).attr("value");
-  location.href = '/contact_history/' + contact_historyId;
-});
-
 $("#contact_history_back_customer").click(function() {
   var agentId = $(this).attr("value");
   var customerId = $(this).attr("name");

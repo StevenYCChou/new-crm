@@ -56,51 +56,6 @@ angular.module('crmCustomerApp',[]).
     };  
   }]);
 
-$("#edit_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var agentId = $(this).attr("value");
-    var customerId = $(this).attr("name");
-    $.ajax({
-      type: 'PUT',
-      url: '/agent/' + agentId + '/customer/' + customerId,
-      data: {name: customer_name, phone: customer_phone, email: customer_email},
-      success: function(res) {
-        window.location = '/agent/' + agentId + '/customer/' + customerId;
-      }
-    }).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Name, phone, email is required");
-  }
-});
-
-$("#edit_customer_cancel").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId;
-});
-
-$(".customer_delete").click(function() {
-  var customerId = $(".customerId").val();
-  if (customerId){
-    $.post(
-      '/customer/:id/delete',
-      {customerId: customerId},
-      function(res) {
-        window.location = "/customers";
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Id is required");
-  }
-});
-
 $('#customer_view_edit').click(function() {
   var customerId = $(this).attr("value");
   location.href= '/customer/' + customerId + '/edit';
