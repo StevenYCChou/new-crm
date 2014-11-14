@@ -38,7 +38,7 @@ var mq = require('./message_queue/main.js');
 mq.startMessageQueueService(8000);
 
 app.get('/', function(req, res) {
-  res.render('homepage.ejs');
+  res.render('homepage');
 });
 
 app.get('/api/v1.00/entities/agents.json', api.getAgents);

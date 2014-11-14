@@ -2,28 +2,27 @@
 <html ng-app="crmCustomerApp">
   <head>
     <meta charset="utf-8">
-    <title>CRM system</title>
-    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+    <title>CRM system-Customer-Customer Update</title>
   </head>
   <body>
     <div ng-controller="customerEditCustomerViewController">
-<h3>Edit Customer</h3>
-<div>
-  <label>Name: <input type="text" ng-model="customer_name" placeholder="{{ customer.name }}" />
-  </label>
-<div>
-</div>
-  <label>Phone: <input type="text" ng-model="customer_phone" placeholder="{{ customer.phone }}" />
-  </label>
-</div>
-<div>
-  <label>Email: <input type="email" ng-model="customer_email" placeholder="{{ customer.email }}" />
-  </label>
-</div>
-<div>
-  <input type="button" ng-click="customerViewEditCustomerSubmit(customer._id, customer_name, customer_phone, customer_email)" value="Submit" />
-  <input type="button" ng-click="customerViewEditCustomerCancel(customer._id)" value="Return" />
-</div>
+			<h3>Edit Customer</h3>
+			<div>
+				<label>Name: <input type="text" ng-model="customer_name" placeholder="{{ customer.name }}" />
+				</label>
+			<div>
+			</div>
+				<label>Phone: <input type="text" ng-model="customer_phone" placeholder="{{ customer.phone }}" />
+				</label>
+			</div>
+			<div>
+				<label>Email: <input type="email" ng-model="customer_email" placeholder="{{ customer.email }}" />
+				</label>
+			</div>
+			<div>
+				<input type="button" ng-click="customerViewEditCustomerSubmit(customer._id, customer_name, customer_phone, customer_email)" value="Submit" />
+				<input type="button" ng-click="customerViewEditCustomerCancel(customer._id)" value="Return" />
+			</div>
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>

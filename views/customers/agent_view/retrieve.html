@@ -2,43 +2,41 @@
 <html ng-app="crmCustomerApp">
   <head>
     <meta charset="utf-8">
-    <title>CRM system</title>
-    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+    <title>CRM system-Agent-Customer Details</title>
   </head>
   <body>
     <div ng-controller="customerDetailController">
      <h3>Customer Basic Info</h3>
       <ul>
-  <li>Customer Name: {{ customer.name }}</li>
-  <li>Customer Phone: {{ customer.phone }}</li>
-  <li>Customer Email: {{ customer.email }}</li> 
-</ul>
-<input type="button" value="Edit Customer Basic Info" ng-click="editCustomer(agent._id, customer._id)"/>
-<input type="button" value="Delete the customer" ng-click="deleteCustomer(agent._id, customer._id)"/>
+				<li>Customer Name: {{ customer.name }}</li>
+				<li>Customer Phone: {{ customer.phone }}</li>
+				<li>Customer Email: {{ customer.email }}</li> 
+			</ul>
+			<input type="button" value="Edit Customer Basic Info" ng-click="editCustomer(agent._id, customer._id)"/>
+			<input type="button" value="Delete the customer" ng-click="deleteCustomer(agent._id, customer._id)"/>
 
-<h3>Contact History</h3>
-<table>
-  <tr>
-    <th>Summary</th>
-    <th>Mode</th>
-    <th>Time</th>
-    <th>Details</th>
-  </tr>
-    <tr ng-repeat="contact_history in contact_historys">
-      <td>{{ contact_history.textSummary }}</td>
-      <td>{{ contact_history.model }}</td>
-      <td>{{ contact_history.time }}</td> 
-      <td><input type="button" value="Details" ng-click="contactHistoryDetail(contact_history._id)" /></td>
-    </tr>
-</table><br />
-
-<div>
-  <input type="button" value="Add contact History" ng-click="createContactHistory(agent._id, customer._id)" />
-</div><br />
-<div>
-  <input type="button" value="Go back to the Agent" ng-click="customerBackAgent(agent._id)" />
-  <input type="button" value="Go back to Agent list" ng-click="customerBackAgents()"/>
-</div>
+			<h3>Contact History</h3>
+			<table>
+				<tr>
+					<th>Summary</th>
+					<th>Mode</th>
+					<th>Time</th>
+					<th>Details</th>
+				</tr>
+				<tr ng-repeat="contact_history in contact_historys">
+					<td>{{ contact_history.textSummary }}</td>
+					<td>{{ contact_history.model }}</td>
+					<td>{{ contact_history.time | date:'yyyy-MM-dd HH:mm:ss' }}</td> 
+					<td><input type="button" value="Details" ng-click="contactHistoryDetail(contact_history._id)" /></td>
+				</tr>
+			</table><br />
+			<div>
+				<input type="button" value="Add contact History" ng-click="createContactHistory(agent._id, customer._id)" />
+			</div><br />
+			<div>
+				<input type="button" value="Go back to the Agent" ng-click="customerBackAgent(agent._id)" />
+				<input type="button" value="Go back to Agent list" ng-click="customerBackAgents()"/>
+			</div>
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>

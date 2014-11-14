@@ -2,17 +2,16 @@
 <html ng-app="crmContactHistoryApp">
   <head>
     <meta charset="utf-8">
-    <title>CRM system</title>
-    <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
+    <title>CRM system-Contact History Details</title>
   </head>
   <body>
     <div ng-controller="contactDetailController">
-<h3>Contact History</h3>
-<p>Data: {{ contact_history.data }}</p>
+			<h3>Contact History</h3>
+			<p>Data: {{ contact_history.data }}</p>
 
-<input type="button" ng-click="contactHistoryBackCustomer(agentId, customerId)" value="Go back to customer Info" />
-<input type="button" ng-click="contactHistoryBackAgent(agentId)" value="Go back to agent Info" />
-<input type="button" ng-click="contactHistoryBackAgents" value="Go back to the list" />
+			<input type="button" ng-click="contactHistoryBackCustomer(agentId, customerId)" value="Go back to customer Info" />
+			<input type="button" ng-click="contactHistoryBackAgent(agentId)" value="Go back to agent Info" />
+			<input type="button" ng-click="contactHistoryBackAgents" value="Go back to the list" />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>

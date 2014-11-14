@@ -1,4 +1,4 @@
-angular.module('crmApp', []).
+angular.module('crmAgentApp', []).
   controller('agentController', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.agents = [];
     $http.get('/api/v1.00/entities/agents.json?all=true')
