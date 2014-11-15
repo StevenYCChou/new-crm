@@ -18,6 +18,7 @@ exports.getAgents = function (req, res) {
     res.json({error: err});
   }
 
+
   var name_q = new RegExp(req.param('name'));
   var is_all = (req.param('all')) ? true : false;
   var page_no =(req.param('p')) ? req.param('p') : 1;
@@ -140,18 +141,43 @@ exports.updateAgent = function (req, res) {
     email: req.param('email')
   };
 
-  crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
+  crmService.retrieveResponseByNonce(req.param('nonce'), function(err, responseEntry) {
     if (err) {
       res.json({
         code: 500,
         message: "Database Error."
       });
     } else {
-      res.json({
-        agent: {
-          id: agent.id
-        }
-      });
+      if (responseEntry == null) {
+        crmService.createResponse({nonce: req.param('nonce')}, function(err, data) {
+          if (err) {
+            res.json({
+              code: 500,
+              message: "Database Error."
+            });
+          } else {
+            res.json({code: 202});
+            // processing data here
+            crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
+              if (err) {
+                console.log("cannot update Agent By Id");
+              } else {
+                crmService.updateResponseByNonce(req.param('nonce'), agent, function(err, response) {
+                  if (err) {
+                    console.log("cannot update response By nonce");
+                  } else {
+                    console.log(response);
+                  }
+                });
+              }
+            });
+          }
+        });
+      } else if (responseEntry.status == "COMPLETED") {
+        res.json(responseEntry.response);
+      } else {
+        res.json({code: 202});
+      }
     }
   });
 };
@@ -209,6 +235,47 @@ exports.createCustomer = function (req, res) {
   };
 
   crmService.createCustomer(customerInfo, function(err) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        code: 202
+      });
+    }
+  });
+};
+
+exports.createContactRecord = function (req, res) {
+  var newContactHistory = {
+    time : req.param('time'),
+    data : req.param('data'),
+    textSummary : req.param('textSummary'),
+    model : req.param('model'),
+    agent: req.param('agentId'),
+    customer: req.param('customerId'),
+  };
+
+  crmService.createContactHistory(newContactHistory, function(err, contactHistory) {
+    if (err) {
+      res.json({
+        code: 500,
+        message: "Database Error."
+      });
+    } else {
+      res.json({
+        code: 202
+      });
+    }
+  });
+};
+
+exports.removeCustomer = function (req, res) {
+  var customerId = req.param('customerId');
+
+  crmService.deleteCustomerById(customerId, function(err) {
     if (err) {
       res.json({
         code: 500,

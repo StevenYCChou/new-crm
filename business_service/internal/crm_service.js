@@ -62,6 +62,10 @@ exports.createContactHistory = function(newContactHistory, callback) {
   ContactRecord.create(newContactHistory, callback);
 };
 
+exports.retrieveResponseByNonce = function(nonce, callback) {
+  Response.findOne({nonce: nonce}, callback);
+};
+
 exports.createResponse = function(newResponse, callback) {
   Response.create(newResponse, callback);
 };
