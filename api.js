@@ -148,7 +148,7 @@ exports.updateAgent = function (req, res) {
         message: "Database Error."
       });
     } else {
-      if (responseEntry == null) {
+      if (responseEntry === null) {
         crmService.createResponse({nonce: req.param('nonce')}, function(err, data) {
           if (err) {
             res.json({
@@ -173,7 +173,7 @@ exports.updateAgent = function (req, res) {
             });
           }
         });
-      } else if (responseEntry.status == "COMPLETED") {
+      } else if (responseEntry.status === "COMPLETED") {
         res.json(responseEntry.response);
       } else {
         res.json({code: 202});
