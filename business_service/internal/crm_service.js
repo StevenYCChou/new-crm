@@ -2,6 +2,7 @@ var mongodbService = require('../../data_service/mongodb_service.js');
 var Agent = mongodbService.Agent;
 var Customer = mongodbService.Customer;
 var ContactRecord = mongodbService.ContactRecord;
+var Response = mongodbService.Response;
 
 exports.createAgent = function (newAgent, callback) {
   Agent.create(newAgent, callback);
@@ -59,4 +60,12 @@ exports.retrieveContactHistoryById = function(contactHistoryId, callback) {
 
 exports.createContactHistory = function(newContactHistory, callback) {
   ContactRecord.create(newContactHistory, callback);
+};
+
+exports.createResponse = function(newResponse, callback) {
+  Response.create(newResponse, callback);
+};
+
+exports.updateResponseByNonce = function(nonce, response, callback) {
+  Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}, callback);
 };

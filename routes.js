@@ -46,8 +46,10 @@ app.post('/api/v1.00/entities/agents/create', api.createAgent);
 app.get('/api/v1.00/entities/customers.json', api.getCustomers);
 app.put('/api/v1.00/entities/customers/:customerId', api.updateCustomer);
 app.post('/api/v1.00/entities/customers/create', api.createCustomer);
+app.delete('/api/v1.00/entities/customers/:customerId', api.removeCustomer);
 
 app.get('/api/v1.00/entities/contact-records.json', api.getContactRecords);
+app.post('/api/v1.00/entities/contact-records/create', api.createContactRecord);
 
 ////////////////////
 // Manager Facade //
