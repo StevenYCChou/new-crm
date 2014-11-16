@@ -35,7 +35,7 @@ exports.createCustomerValidation = function (agentId, callback) {
           if (err) {
             callback(err);
           }
-          else if (count >= MAX_CUSTOMER) {
+          else if (count >= AGENT_MAX_CUSTOMER) {
             callback(new Error('Unable to create customer.'));
           } else {
             callback(null);
