@@ -10,6 +10,7 @@ var app = express();
 var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var uuid = require('uuid');
 
 app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
@@ -18,6 +19,11 @@ app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-u
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multer());
+app.use(function(req,res,next) {
+  res.set('uuid', uuid.v1());
+  next();
+});
+
 //app.use(app.router);
 
 app.set('views', __dirname+'/views');
