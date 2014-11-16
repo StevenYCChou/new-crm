@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="crmHomeApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system</title>
+  </head>
+  <body>
+    <div ng-controller="homeController">
+		  <h3 style="text-align:center">CRM system</h3>
+		  <h4>Team member</h4>
+      <ul>
+        <li>Fan Su (fs2488)</li>
+        <li>Yen-Cheng Chou (yc2901)</li>
+        <li>Wenjun Xu (wx2148)</li>
+      </ul>
+      <h4>Manager start</h4>
+      <input type="button" ng-click="managerStartCRM()" value="Manager Start" /><br />
+      <h4>Customer start</h4>
+			<label>CustomerId: <input type="text" ng-model="customerId" placeholder="customerId" /></label>
+      <input type="button" ng-click="customerStartCRM(customerId)" value="Customer Start" />
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/home.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>  
+  </body>
+</html>

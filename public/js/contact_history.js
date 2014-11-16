@@ -1,63 +1,42 @@
-$("#create_contact_history").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href="/contact_history/create?agentId=" + agentId + "&customerId=" + customerId;
-});
+angular.module('crmContactHistoryApp',[]).
+  controller('createContactHistoryController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.agentId = $location.absUrl().split("/")[4].split("?")[1].split("=")[1].split("&")[0];
+  $scope.customerId = $location.absUrl().split("/")[4].split("?")[1].split("=")[2];
+  $scope.models = [
+    {name: 'phone'},
+    {name: 'email'}
+  ];
+  $scope.model_select = $scope.models[0];
+  $scope.createContactCancel = function() {
+    $window.location.href="/agent/" + $scope.agentId + "/customer/" + $scope.customerId;
+  };
+  $scope.createContactSubmit = function(textSummary, model_select, time, data) {
+    $http.post('/api/contact_history', {textSummary: textSummary, model: model_select, time: time, data: data, agentId: $scope.agentId, customerId: $scope.customerId})
+    .success(function(data, status, headers, config) {
+      $window.location.href="/agent/" + $scope.agentId + "/customer/" + $scope.customerId;
+    });
+  };
+  }]).
+  controller('contactDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.contactId = $location.absUrl().split("/")[4];
+  $http.get('/api/contact_history/' + $scope.contactId)
+    .success(function(data, status, headers, config){
+      $scope.contact_history = data.contact_history;
+      $scope.agentId = data.agentId;
+      $scope.customerId = data.customerId;
+  });
+  $scope.contactHistoryBackCustomer = function(agentId, customerId) {
+    $window.location.href="/agent/" + agentId + "/customer/" + customerId;
+  };
+  $scope.contactHistoryBackAgent = function(agentId) {
+    $window.location.href = "/agent/" + agentId;
+  };
+  $scope.contactHistoryBackAgents = function() {
+    $window.location.href = "/agents";
+  };
+  }]);
 
 $(function() {
   $( "#time" ).datepicker();
 });
 
-$("#create_contact_submit").click(function() {
-  var contact_summary = $("#TextSummary").val();
-  var contact_model = $("#model_select").val();
-  var contact_time = $("#time").val();
-  var contact_data = $("#data").val();
-  if (contact_summary && contact_model && contact_time && contact_data){
-    var agentId = $(this).attr("value");
-    var customerId = $(this).attr("name");
-    $.post(
-      '/contact_history',
-      { time: contact_time,
-        data: contact_data,
-        textSummary: contact_summary,
-        model: contact_model,
-        agentId: agentId,
-        customerId: customerId,
-      },
-      function(res) {
-        location.href = "/agent/"+ agentId + "/customer/" + customerId;
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Summary, model, time, data is required");
-  }
-});
-
-$("#create_contact_cancel").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href = "/agent/"+ agentId + "/customer/" + customerId;
-});
-
-$(".contact_history_detail").click(function() {
-  var contact_historyId = $(this).attr("value");
-  location.href = '/contact_history/' + contact_historyId;
-});
-
-$("#contact_history_back_customer").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href='/agent/' + agentId+ '/customer/' + customerId;
-});
-
-$("#contact_history_back_agent").click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId;
-});
-
-$("#contact_history_back_agents").click(function() {
-  location.href= '/agents';
-});

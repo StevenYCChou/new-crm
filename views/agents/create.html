@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="crmAgentApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system-Agent Creation</title>
+  </head>
+  <body>
+    <div ng-controller="createAgentController">
+      <h3>Create Agent</h3>
+      <div>
+        <label>Name: <input type="text" ng-model="agent_name" placeholder="name" />
+	</label>
+      </div>
+      <div>
+        <label>Phone: <input type="text" ng-model="agent_phone" placeholder="phone" /></label>
+      </div>
+      <div>
+        <label>Email: <input type="email" ng-model="agent_email" placeholder="email" /></label>
+      </div>
+      <div>
+        <input type="button" ng-click="createAgentSubmit(agent_name, agent_phone, agent_email)" value="Submit" />
+        <input type="button" ng-click="createAgentCancel()" value="Return" />Agent
+      </div>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>
+  </body>
+</html>

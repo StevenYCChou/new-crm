@@ -1,6 +1,6 @@
 var crmService = require('./crm_service.js');
 
-exports.showProfile = function (req, res) {
+exports.showProfileAPI = function (req, res) {
   var agentId = req.param('agentId');
   crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
@@ -14,14 +14,20 @@ exports.showProfile = function (req, res) {
             agent: agent,
             customers: customers
           };
-          res.render('agents/retrieve', data);
+          res.json(data);
         }
       });
     }
   });
 };
+exports.showProfile = function (req, res) {
+  res.render('agents/retrieve');
+}
 
 exports.showCustomerByCustomerId = function (req, res) {
+  res.render('customers/agent_view/retrieve');
+}
+exports.showCustomerByCustomerIdAPI = function (req, res) {
   var agentId = req.param('agentId');
   var customerId = req.param('customerId');
   crmService.retrieveCustomerById(customerId, function(err, customer) {
@@ -36,13 +42,13 @@ exports.showCustomerByCustomerId = function (req, res) {
           customer: customer,
           contact_history: contactHistory
         };
-        res.render('customers/agent_view/retrieve', data);
+        res.json(data);
       });
     }
   });
 };
 
-exports.showProfileUpdatePage = function (req, res) {
+exports.showProfileUpdatePageAPI = function (req, res) {
   var agentId = req.param('agentId');
   crmService.retrieveAgentById(agentId, function(err, agent) {
     if (err) {
@@ -50,31 +56,32 @@ exports.showProfileUpdatePage = function (req, res) {
     } else if (agent == null) {
       res.status(400).send({ error: "Agent doesn't exist." });
     } else {
-      res.render('agents/update', {agent: agent});
+      res.json({agent: agent});
     }
   });
 };
+exports.showProfileUpdatePage = function (req, res) {
+  res.render('agents/update');
+};
 
-exports.updateProfile = function (req, res) {
+exports.updateProfileAPI = function (req, res) {
   var agentId = req.param('agentId');
-  var updateInfo = req.body;
+  var updateInfo = {name: req.param('name'), phone: req.param('phone'), email: req.param('email')};
   crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
-      res.send({redirect: '/agent/'+agentId});
+      res.json({agentId: agentId});
     }
   });
 };
 
 exports.showCustomerCreationPage = function (req, res) {
   var agentId = req.param('agentId');
-  res.render('customers/agent_view/create', {
-    agent: { id: agentId },
-  });
+  res.render('customers/agent_view/create');
 };
 
-exports.createCustomer = function (req, res) {
+exports.createCustomerAPI = function (req, res) {
   var customer = {
     name : req.param('name'),
     email : req.param('email'),
@@ -108,7 +115,7 @@ exports.showCustomerUpdatePage = function (req, res) {
   });
 };
 
-exports.updateCustomer = function (req, res) {
+exports.updateCustomerAPI = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
   var newCustomerInfo = req.body;
@@ -124,7 +131,7 @@ exports.updateCustomer = function (req, res) {
   });
 };
 
-exports.removeCustomerById = function (req, res) {
+exports.removeCustomerByIdAPI = function (req, res) {
   var customerId = req.param('customerId');
   var agentId = req.param('agentId');
 
@@ -147,7 +154,7 @@ exports.showContactRecordCreationPage = function (req, res) {
   });
 };
 
-exports.createContactRecord = function (req, res) {
+exports.createContactRecordAPI = function (req, res) {
   var newContactHistory = {
     time : req.param('time'),
     data : req.param('data'),
@@ -168,13 +175,13 @@ exports.createContactRecord = function (req, res) {
   });
 };
 
-exports.retrieveContactRecordById = function (req, res) {
+exports.retrieveContactRecordByIdAPI = function (req, res) {
   var contactHistoryId = req.param('contactHistoryId');
   crmService.retrieveContactHistoryById(contactHistoryId, function (err, contactHistory) {
     if (err) {
       res.status(500).send({ error: "Database Error." });
     } else {
-      res.render('contact_history/retrieve', {
+      res.json({
         contact_history: contactHistory,
         agentId: contactHistory['agent'],
         customerId: contactHistory['customer']
@@ -183,3 +190,6 @@ exports.retrieveContactRecordById = function (req, res) {
   });
 };
 
+exports.retrieveContactRecordById = function (req, res) {
+  res.render('contact_history/retrieve');
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="crmAgentApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system-Agent Details</title>
+  </head>
+  <body>
+    <div ng-controller="agentDetailController">
+      <h3>Agent Basic Info</h3>
+      <ul>
+        <li>Agent Name: {{ agent.name }}</li>
+        <li>Agent Phone: {{ agent.phone }}</li>
+        <li>Agent Email: {{ agent.email }}</li> 
+      </ul>
+      <input type="button" ng-click="editAgent(agent._id)" value="Edit Agent Basic Info" />
+      <h3>Customers</h3>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Details</th>
+        </tr>
+        <tr ng-repeat="customer in customers">
+          <td>{{ customer.name }}</td>
+          <td>{{ customer.phone }}</td>
+          <td>{{ customer.email }}</td> 
+          <td><input type="button" ng-click="customerDetail(agent._id, customer._id)" value="Details" /></td>
+        </tr>
+      </table><br />
+      <div>
+        <input type="button" ng-click="createCustomer(agent._id)" value="Create New Customer" />
+      </div><br/>
+      <input type="button" ng-click="backAgents()" value="Go back to Agent list" />
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+    <script src="/js/customers.js"></script>
+    <script src="/js/contact_history.js"></script>
+  </body>
+</html>
