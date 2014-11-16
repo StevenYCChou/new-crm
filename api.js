@@ -133,6 +133,30 @@ exports.getContactRecords = function (req, res) {
   }
 };
 
+function getCachedResponse(nonce, callback, res) {
+  mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
+    if (responseEntry === null) {
+      console.log("[api.getCachedResponse] Response is not cached.");
+      res.json({code: 202});
+      mongodbService.Response.create({nonce: nonce}).then(function() {
+        console.log("[api.getCachedResponse] process data");
+        return callback();
+      }).then(function(response) {
+        console.log("[api.getCachedResponse] Update response cache");
+        return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
+      }).then(function() {
+        console.log("[api.getCachedResponse] finish process.");
+      });
+    } else if (responseEntry.status === "COMPLETED") {
+      console.log("[api.getCachedResponse] Response is processed and cached.");
+      res.json({code: 200, response: responseEntry.response});
+    } else {
+      console.log("[api.getCachedResponse] Response is processed but not cached.");
+      res.json({code: 202});
+    }
+  });
+}
+
 exports.updateAgent = function (req, res) {
   var agentId = req.param('agentId');
   var updateInfo = {
@@ -140,46 +164,10 @@ exports.updateAgent = function (req, res) {
     phone: req.param('phone'),
     email: req.param('email')
   };
-
-  crmService.retrieveResponseByNonce(req.param('nonce'), function(err, responseEntry) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      if (responseEntry === null) {
-        crmService.createResponse({nonce: req.param('nonce')}, function(err, data) {
-          if (err) {
-            res.json({
-              code: 500,
-              message: "Database Error."
-            });
-          } else {
-            res.json({code: 202});
-            // processing data here
-            crmService.updateAgentById(agentId, updateInfo, function(err, agent) {
-              if (err) {
-                console.log("cannot update Agent By Id");
-              } else {
-                crmService.updateResponseByNonce(req.param('nonce'), agent, function(err, response) {
-                  if (err) {
-                    console.log("cannot update response By nonce");
-                  } else {
-                    console.log(response);
-                  }
-                });
-              }
-            });
-          }
-        });
-      } else if (responseEntry.status === "COMPLETED") {
-        res.json(responseEntry.response);
-      } else {
-        res.json({code: 202});
-      }
-    }
-  });
+  var update = function () {
+    return mongodbService.Agent.findByIdAndUpdate(agentId, updateInfo).exec();
+  };
+  getCachedResponse(req.param('nonce'), update, res);
 };
 
 exports.createAgent = function (req, res) {
@@ -189,18 +177,10 @@ exports.createAgent = function (req, res) {
     email: req.param('email')
   };
 
-  crmService.createAgent(agentInfo, function(err) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      res.json({
-        code: 202
-      });
-    }
-  });
+  var creation = function () {
+    return mongodbService.Agent.create(agentInfo);
+  };
+  getCachedResponse(req.param('nonce'), creation, res);
 };
 
 exports.updateCustomer = function (req, res) {
@@ -210,21 +190,10 @@ exports.updateCustomer = function (req, res) {
     phone: req.param('phone'),
     email: req.param('email')
   };
-
-  crmService.updateCustomerById(customerId, updateInfo, function(err, customer) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      res.json({
-        customer: {
-          id: customer.id
-        }
-      });
-    }
-  });
+  var update = function () {
+    return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
+  };
+  getCachedResponse(req.param('nonce'), update, res);
 };
 
 exports.createCustomer = function (req, res) {
@@ -233,19 +202,10 @@ exports.createCustomer = function (req, res) {
     phone: req.param('phone'),
     email: req.param('email')
   };
-
-  crmService.createCustomer(customerInfo, function(err) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      res.json({
-        code: 202
-      });
-    }
-  });
+  var creation = function () {
+    return mongodbService.Customer.create(customerInfo);
+  };
+  getCachedResponse(req.param('nonce'), update, res);
 };
 
 exports.createContactRecord = function (req, res) {
@@ -257,34 +217,16 @@ exports.createContactRecord = function (req, res) {
     agent: req.param('agentId'),
     customer: req.param('customerId'),
   };
-
-  crmService.createContactHistory(newContactHistory, function(err, contactHistory) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      res.json({
-        code: 202
-      });
-    }
-  });
+  var creation = function () {
+    return mongodbService.ContactHistory.create(newContactHistory);
+  };
+  getCachedResponse(req.param('nonce'), creation, res);
 };
 
 exports.removeCustomer = function (req, res) {
   var customerId = req.param('customerId');
-
-  crmService.deleteCustomerById(customerId, function(err) {
-    if (err) {
-      res.json({
-        code: 500,
-        message: "Database Error."
-      });
-    } else {
-      res.json({
-        code: 202
-      });
-    }
-  });
+  var deletion = function () {
+    mongodbService.Customer.findByIdAndRemove(customerId);
+  };
+  getCachedResponse(req.param('nonce'), deletion, res);
 };
