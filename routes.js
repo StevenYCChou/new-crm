@@ -10,6 +10,7 @@ var app = express();
 var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var cors = require('cors');
 
 app.engine('html', require('ejs').renderFile);
 //app.engine('ejs', engine);
@@ -21,17 +22,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(multer());
 app.use(express.static(__dirname + '/views'));
 //app.use(app.router);
+app.use(cors());
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'html'); // default view engine
 
-app.all('/*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "GET, POST","PUT");
-  next();
- 
-});
 ////////////////////
 //   Web Server   //
 ////////////////////
