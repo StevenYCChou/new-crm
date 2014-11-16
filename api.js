@@ -165,6 +165,7 @@ exports.updateAgent = function (req, res) {
     email: req.param('email')
   };
   var update = function () {
+    console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
     return mongodbService.Agent.findByIdAndUpdate(agentId, updateInfo).exec();
   };
   getCachedResponse(req.param('nonce'), update, res);
@@ -178,6 +179,7 @@ exports.createAgent = function (req, res) {
   };
 
   var creation = function () {
+    console.log("[api.createAgent] Create New Agent:" + agentInfo.name);
     return mongodbService.Agent.create(agentInfo);
   };
   getCachedResponse(req.param('nonce'), creation, res);
@@ -191,6 +193,7 @@ exports.updateCustomer = function (req, res) {
     email: req.param('email')
   };
   var update = function () {
+   console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
     return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
   };
   getCachedResponse(req.param('nonce'), update, res);
@@ -203,6 +206,7 @@ exports.createCustomer = function (req, res) {
     email: req.param('email')
   };
   var creation = function () {
+    console.log("[api.createCustomer] Create Customer:" + customerInfo.name);
     return mongodbService.Customer.create(customerInfo);
   };
   getCachedResponse(req.param('nonce'), update, res);
@@ -218,6 +222,7 @@ exports.createContactRecord = function (req, res) {
     customer: req.param('customerId'),
   };
   var creation = function () {
+    console.log("[api.createContactRecord] Create Contact Record:" + newContactHistory.textSummary);
     return mongodbService.ContactHistory.create(newContactHistory);
   };
   getCachedResponse(req.param('nonce'), creation, res);
@@ -226,6 +231,7 @@ exports.createContactRecord = function (req, res) {
 exports.removeCustomer = function (req, res) {
   var customerId = req.param('customerId');
   var deletion = function () {
+    console.log("[api.removeCustomer] Remove Customer:" + customerId);
     mongodbService.Customer.findByIdAndRemove(customerId);
   };
   getCachedResponse(req.param('nonce'), deletion, res);
