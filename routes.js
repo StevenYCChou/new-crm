@@ -48,23 +48,29 @@ app.get('/', function(req, res) {
   res.render('homepage');
 });
 
-app.get('/api/v1.00/entities/agents.json', api.getAgents);
-app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
-app.post('/api/v1.00/entities/agents/create', api.createAgent);
+app.get('/api/v1.00/entities/agents', api.getAgents);
+// app.post('/api/v1.00/entities/agents', api.createAgent);
+// app.get('/api/v1.00/entities/agents/:id', api.getAgent);
+// app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
+// app.delete('/api/v1.00/entities/agents/:id', api.createAgent);
 
-app.get('/api/v1.00/entities/customers.json', api.getCustomers);
+// app.get('/api/v1.00/entities/agents/:agentId', api.getAgent);
+// app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
+// app.post('/api/v1.00/entities/agents/create', api.createAgent);
+
+app.get('/api/v1.00/entities/customers', api.getCustomers);
 app.put('/api/v1.00/entities/customers/:customerId', api.updateCustomer);
 app.post('/api/v1.00/entities/customers/create', api.createCustomer);
 app.delete('/api/v1.00/entities/customers/:customerId', api.removeCustomer);
 
-app.get('/api/v1.00/entities/contact-records.json', api.getContactRecords);
+app.get('/api/v1.00/entities/contact-records', api.getContactRecords);
 app.post('/api/v1.00/entities/contact-records/create', api.createContactRecord);
 
 ////////////////////
 // Manager Facade //
 ////////////////////
 app.get('/agents', managerFacade.showAllAgents);
-app.get('/api/agents', managerFacade.showAllAgentsAPI);
+// app.get('/api/agents', managerFacade.showAllAgentsAPI);
 app.get('/agent/create', managerFacade.showAgentCreationPage);
 app.post('/api/agent', managerFacade.createNewAgentAPI);
 
