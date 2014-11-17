@@ -176,7 +176,7 @@ function getCachedResponse(nonce, callback, res) {
 }
 
 exports.updateAgent = function (req, res) {
-  var agentId = req.param('agentId');
+  var agentId = req.param('id');
   var updateInfo = {
     name: req.param('name'),
     phone: req.param('phone'),

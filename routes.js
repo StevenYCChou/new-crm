@@ -50,9 +50,9 @@ app.get('/', function(req, res) {
 
 app.get('/api/v1.00/entities/agents', api.getAgents);
 app.get('/api/v1.00/entities/agents/:id', api.getAgent);
-// app.post('/api/v1.00/entities/agents', api.createAgent);
-// app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
-// app.delete('/api/v1.00/entities/agents/:id', api.createAgent);
+app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
+app.post('/api/v1.00/entities/agents', api.createAgent);
+// app.delete('/api/v1.00/entities/agents/:id', api.deleteAgent);
 
 // app.get('/api/v1.00/entities/agents/:agentId', api.getAgent);
 // app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
@@ -70,20 +70,15 @@ app.post('/api/v1.00/entities/contact-records/create', api.createContactRecord);
 // Manager Facade //
 ////////////////////
 app.get('/agents', managerFacade.showAllAgents);
-// app.get('/api/agents', managerFacade.showAllAgentsAPI);
-app.get('/agent/create', managerFacade.showAgentCreationPage);
-app.post('/api/agent', managerFacade.createNewAgentAPI);
+app.get('/agents/create', managerFacade.showAgentCreationPage);
 
 //////////////////
 // Agent Facade //
 //////////////////
 
 // profile related
-app.get('/agent/:agentId', agentFacade.showProfile);
-app.get('/api/agent/:agentId', agentFacade.showProfileAPI);
-app.get('/agent/:agentId/edit', agentFacade.showProfileUpdatePage);
-app.get('/api/agent/:agentId/edit', agentFacade.showProfileUpdatePageAPI);
-app.put('/api/agent/:agentId', agentFacade.updateProfileAPI);
+app.get('/agents/:agentId', agentFacade.showProfile);
+app.get('/agents/:agentId/edit', agentFacade.showProfileUpdatePage);
 
 // customer related
 app.get('/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerId);
