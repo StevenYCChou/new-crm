@@ -221,13 +221,14 @@ exports.createCustomer = function (req, res) {
   var customerInfo = {
     name: req.param('name'),
     phone: req.param('phone'),
-    email: req.param('email')
+    email: req.param('email'),
+    agent: req.param('agentId')
   };
   var creation = function () {
     console.log("[api.createCustomer] Create Customer:" + customerInfo.name);
     return mongodbService.Customer.create(customerInfo);
   };
-  getCachedResponse(req.param('nonce'), update, res);
+  getCachedResponse(req.param('nonce'), creation, res);
 };
 
 exports.removeCustomer = function (req, res) {
