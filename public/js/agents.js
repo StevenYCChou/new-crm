@@ -28,10 +28,14 @@ angular.module('crmAgentApp', []).
     $scope.agent = [];
     $scope.customers = [];
     $scope.routes = $location.absUrl().split("/")[4];
-    $http.get('/api/agent/' + $scope.routes)
+    $http.get('/api/v1.00/entities/agents/' + $scope.routes)
       .success(function(data, status, headers, config) {
         $scope.agent = data.agent;
-	$scope.customers = data.customers;
+        // $scope.customers = data.customers;
+      });
+    $http.get('/api/v1.00/entities/customers?q=agent=' + $scope.routes)
+      .success(function(data, status, headers, config) {
+        $scope.customers = data.customers;
       });
     $scope.editAgent = function(agentId) {
       $window.location.href="/agent/" + agentId + "/edit";

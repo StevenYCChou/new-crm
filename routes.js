@@ -49,8 +49,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/api/v1.00/entities/agents', api.getAgents);
+app.get('/api/v1.00/entities/agents/:id', api.getAgent);
 // app.post('/api/v1.00/entities/agents', api.createAgent);
-// app.get('/api/v1.00/entities/agents/:id', api.getAgent);
 // app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
 // app.delete('/api/v1.00/entities/agents/:id', api.createAgent);
 

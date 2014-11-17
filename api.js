@@ -22,7 +22,8 @@ var validCustomerQueryField = {
   id: undefined,
   name: undefined,
   phone: undefined,
-  email: undefined
+  email: undefined,
+  agent: undefined
 };
 
 var validContactRecordQueryField = {
@@ -88,6 +89,26 @@ exports.getAgents = function (req, res) {
   });
 };
 
+exports.getAgent = function(req, res) {
+  var id = req.params.id;
+
+  var promise = mongodbService.Agent.findOne({_id: id}, {__v: 0}).exec();
+  promise.then(function(agent) {
+    agent = agent.toJSON();
+    console.log(agent);
+    agent.link = {
+      rel: "self",
+      href: "/api/v1.00/entities/agents/"+agent._id
+    };
+    res.json({
+      _type: "agent",
+      agent: agent
+    });
+  }, function(err) {
+    res.json({error: err});
+  });
+}
+
 exports.getCustomers = function (req, res) {
   var offset = req.query.offset;
   var limit = req.query.limit;
@@ -102,7 +123,10 @@ exports.getCustomers = function (req, res) {
                                     .limit(limit)
                                     .exec();
   promise.then(function(customers) {
-    res.json(customers);
+    res.json({
+      _type: "customer",
+      customers: customers
+    });
   }, function(err) {
     res.json({error: err});
   });
