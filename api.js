@@ -53,6 +53,30 @@ var filter = function(obj, predicate) {
 //   }
 // }
 
+function getCachedResponse(nonce, callback, res) {
+  mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
+    if (responseEntry === null) {
+      console.log("[api.getCachedResponse] Response is not cached.");
+      res.json({code: 202});
+      mongodbService.Response.create({nonce: nonce}).then(function() {
+        console.log("[api.getCachedResponse] process data");
+        return callback();
+      }).then(function(response) {
+        console.log("[api.getCachedResponse] Update response cache");
+        return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
+      }).then(function() {
+        console.log("[api.getCachedResponse] finish process.");
+      });
+    } else if (responseEntry.status === "COMPLETED") {
+      console.log("[api.getCachedResponse] Response is processed and cached.");
+      res.json({code: 200, response: responseEntry.response});
+    } else {
+      console.log("[api.getCachedResponse] Response is processed but not cached.");
+      res.json({code: 202});
+    }
+  });
+}
+
 exports.getAgents = function (req, res) {
   var offset = req.query.offset;
   var limit = req.query.limit;
@@ -109,72 +133,6 @@ exports.getAgent = function(req, res) {
   });
 }
 
-exports.getCustomers = function (req, res) {
-  var offset = req.query.offset;
-  var limit = req.query.limit;
-
-  var q = req.query.q;
-  var query = Qs.parse(q, { delimiter: ',' });
-  var filteredQuery = filter(query, function(key) {return key in validCustomerQueryField;});
-  // var name_q = new RegExp(req.param('name'));
-
-  var promise = mongodbService.Customer.find(filteredQuery, {_id: 0, __v: 0})
-                                    .skip(offset)
-                                    .limit(limit)
-                                    .exec();
-  promise.then(function(customers) {
-    res.json({
-      _type: "customer",
-      customers: customers
-    });
-  }, function(err) {
-    res.json({error: err});
-  });
-};
-
-exports.getContactRecords = function (req, res) {
-  var offset = req.query.offset;
-  var limit = req.query.limit;
-
-  var q = req.query.q;
-  var query = Qs.parse(q, { delimiter: ',' });
-  var filteredQuery = filter(query, function(key) {return key in validContactRecordQueryField;});
-
-  var promise = mongodbService.ContactRecord.find(filteredQuery, {_id: 0, __v: 0})
-                                    .skip(offset)
-                                    .limit(limit)
-                                    .exec();
-  promise.then(function(contactRecords) {
-    res.json(contactRecords);
-  }, function(err) {
-    res.json({error: err});
-  });
-};
-
-function getCachedResponse(nonce, callback, res) {
-  mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
-    if (responseEntry === null) {
-      console.log("[api.getCachedResponse] Response is not cached.");
-      res.json({code: 202});
-      mongodbService.Response.create({nonce: nonce}).then(function() {
-        console.log("[api.getCachedResponse] process data");
-        return callback();
-      }).then(function(response) {
-        console.log("[api.getCachedResponse] Update response cache");
-        return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
-      }).then(function() {
-        console.log("[api.getCachedResponse] finish process.");
-      });
-    } else if (responseEntry.status === "COMPLETED") {
-      console.log("[api.getCachedResponse] Response is processed and cached.");
-      res.json({code: 200, response: responseEntry.response});
-    } else {
-      console.log("[api.getCachedResponse] Response is processed but not cached.");
-      res.json({code: 202});
-    }
-  });
-}
-
 exports.updateAgent = function (req, res) {
   var agentId = req.param('id');
   var updateInfo = {
@@ -201,6 +159,48 @@ exports.createAgent = function (req, res) {
     return mongodbService.Agent.create(agentInfo);
   };
   getCachedResponse(req.param('nonce'), creation, res);
+};
+
+exports.getCustomers = function (req, res) {
+  var offset = req.query.offset;
+  var limit = req.query.limit;
+
+  var q = req.query.q;
+  var query = Qs.parse(q, { delimiter: ',' });
+  var filteredQuery = filter(query, function(key) {return key in validCustomerQueryField;});
+  // var name_q = new RegExp(req.param('name'));
+
+  var promise = mongodbService.Customer.find(filteredQuery, {_id: 0, __v: 0})
+                                    .skip(offset)
+                                    .limit(limit)
+                                    .exec();
+  promise.then(function(customers) {
+    res.json({
+      _type: "customer",
+      customers: customers
+    });
+  }, function(err) {
+    res.json({error: err});
+  });
+};
+
+exports.getCustomer = function (req, res) {
+  var id = req.params.id;
+  var promise = mongodbService.Customer.findOne({_id: id}, {__v: 0}).exec();
+  promise.then(function(customer) {
+    customer = customer.toJSON();
+    console.log(customer);
+    customer.link = {
+      rel: "self",
+      href: "/api/v1.00/entities/customer/"+customer._id
+    };
+    res.json({
+      _type: "customer",
+      customer: customer
+    });
+  }, function(err) {
+    res.json({error: err});
+  });
 };
 
 exports.updateCustomer = function (req, res) {
@@ -230,6 +230,34 @@ exports.createCustomer = function (req, res) {
   getCachedResponse(req.param('nonce'), update, res);
 };
 
+exports.removeCustomer = function (req, res) {
+  var customerId = req.param('customerId');
+  var deletion = function () {
+    console.log("[api.removeCustomer] Remove Customer:" + customerId);
+    mongodbService.Customer.findByIdAndRemove(customerId);
+  };
+  getCachedResponse(req.param('nonce'), deletion, res);
+};
+
+exports.getContactRecords = function (req, res) {
+  var offset = req.query.offset;
+  var limit = req.query.limit;
+
+  var q = req.query.q;
+  var query = Qs.parse(q, { delimiter: ',' });
+  var filteredQuery = filter(query, function(key) {return key in validContactRecordQueryField;});
+
+  var promise = mongodbService.ContactRecord.find(filteredQuery, {_id: 0, __v: 0})
+                                    .skip(offset)
+                                    .limit(limit)
+                                    .exec();
+  promise.then(function(contactRecords) {
+    res.json(contactRecords);
+  }, function(err) {
+    res.json({error: err});
+  });
+};
+
 exports.createContactRecord = function (req, res) {
   var newContactHistory = {
     time : req.param('time'),
@@ -246,11 +274,3 @@ exports.createContactRecord = function (req, res) {
   getCachedResponse(req.param('nonce'), creation, res);
 };
 
-exports.removeCustomer = function (req, res) {
-  var customerId = req.param('customerId');
-  var deletion = function () {
-    console.log("[api.removeCustomer] Remove Customer:" + customerId);
-    mongodbService.Customer.findByIdAndRemove(customerId);
-  };
-  getCachedResponse(req.param('nonce'), deletion, res);
-};
