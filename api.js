@@ -1,5 +1,6 @@
 var mongodbService = require('./data_service/mongodb_service.js');
 var Promise = require('promise');
+var Qs = require('qs');
 
 var crmService = require('./business_service/internal/crm_service.js');
 
@@ -10,127 +11,120 @@ var without_internal_field = {
   phone: 1
 };
 
+var validAgentQueryField = {
+  id: undefined,
+  name: undefined,
+  phone: undefined,
+  email: undefined
+};
+
+var validCustomerQueryField = {
+  id: undefined,
+  name: undefined,
+  phone: undefined,
+  email: undefined
+};
+
+var validContactRecordQueryField = {
+  id: undefined,
+  time: undefined,
+  model: undefined,
+  agent: undefined,
+  customer: undefined
+};
+
+var filter = function(obj, predicate) {
+  console.log(obj);
+  var result = {}, key;
+  for (key in obj) {
+      if (obj.hasOwnProperty(key) && predicate(key)) {
+          result[key] = obj[key];
+      }
+  }
+  return result;
+};
+
+// function(base, query) {
+//   var links;
+//   var prev = {
+//     rel: "prev",
+//     href: base,
+//   }
+// }
+
 exports.getAgents = function (req, res) {
-  var fulfill = function(agents) {
-    res.json(agents);
-  }
-  var reject = function(err) {
+  var offset = req.query.offset;
+  var limit = req.query.limit;
+  // var offset = (!req.query.offset) ? 5 : req.query.offset;
+  // var limit = (!req.query.limit) ? 5 : req.query.limit;
+
+  var q = req.query.q;
+  var query = Qs.parse(q, { delimiter: ',' });
+
+  var filteredQuery = filter(query, function(key) {return key in validAgentQueryField;});
+  // var name_q = new RegExp(req.param('name'));
+
+  var promise = mongodbService.Agent.find(filteredQuery, {__v: 0})
+                                    .skip(offset)
+                                    .limit(limit)
+                                    .exec();
+  promise.then(function(agents) {
+    agents.forEach(function(agent, idx, agents) {
+      agents[idx] = agents[idx].toJSON();
+      agents[idx].link = {
+        rel: "self",
+        href: "/api/v1.00/entities/agents/"+agent._id
+      };
+    });
+    res.json({
+      _type: "agent",
+      agents: agents,
+      // links: [
+      //   {rel: "prev", href: "/api/v1.00/entities/agents?"+Qs.stringify(req.query)}
+      // ]
+    });
+  }, function(err) {
     res.json({error: err});
-  }
-
-
-  var name_q = new RegExp(req.param('name'));
-  var is_all = (req.param('all')) ? true : false;
-  var page_no =(req.param('p')) ? req.param('p') : 1;
-  var per_page = (req.param('per_page')) ? req.param('per_page') : 10;
-
-  var getAllAgentsPromise = function() {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.Agent.find({}).exec(function(err, agents) {
-        if (err) reject(err);
-        else fulfill(agents);
-      });
-    });
-  };
-
-  var getAgentsPromise = function(name_q, page_no, per_page) {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.Agent.find({name: name_q}, {_id: 0, __v: 0})
-                            .skip((page_no - 1) * per_page)
-                            .limit(per_page).exec(function(err, agents) {
-        if (err) reject(err);
-        else fulfill(agents);
-      });
-    });
-  };
-
-  if (is_all) {
-    getAllAgentsPromise().done(fulfill, reject);
-  } else {
-    getAgentsPromise(name_q, page_no, per_page).done(fulfill, reject);
-  }
+  });
 };
 
 exports.getCustomers = function (req, res) {
-  var fulfill = function(customers) {
+  var offset = req.query.offset;
+  var limit = req.query.limit;
+
+  var q = req.query.q;
+  var query = Qs.parse(q, { delimiter: ',' });
+  var filteredQuery = filter(query, function(key) {return key in validCustomerQueryField;});
+  // var name_q = new RegExp(req.param('name'));
+
+  var promise = mongodbService.Customer.find(filteredQuery, {_id: 0, __v: 0})
+                                    .skip(offset)
+                                    .limit(limit)
+                                    .exec();
+  promise.then(function(customers) {
     res.json(customers);
-  }
-  var reject = function(err) {
+  }, function(err) {
     res.json({error: err});
-  }
-
-  var getAllCustomersPromise = function() {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.Customer.find({}).exec(function(err, customers) {
-        if (err) reject(err);
-        else fulfill(customers);
-      });
-    });
-  };
-
-  var is_all = (req.param('all')) ? true : false;
-  var name_q = new RegExp(req.param('name'));
-  var page_no =(req.param('p')) ? req.param('p') : 1;
-  var per_page = (req.param('per_page')) ? req.param('per_page') : 10;
-
-  var getCustomersPromise = function(name_q, page_no, per_page) {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.Customer.find({name: name_q}, without_internal_field)
-                               .populate('agent', without_internal_field)
-                               .skip((page_no - 1) * per_page)
-                               .limit(per_page).exec(function(err, customers) {
-        if (err) reject(err);
-        else fulfill(customers);
-      });
-    });
-  };
-
-  if (is_all) {
-    getAllCustomersPromise().done(fulfill, reject);
-  } else {
-    getCustomersPromise(name_q, page_no, per_page).done(fulfill, reject);
-  }
+  });
 };
 
 exports.getContactRecords = function (req, res) {
-  var fulfill = function(contactRecords) {
+  var offset = req.query.offset;
+  var limit = req.query.limit;
+
+  var q = req.query.q;
+  var query = Qs.parse(q, { delimiter: ',' });
+  var filteredQuery = filter(query, function(key) {return key in validContactRecordQueryField;});
+
+  var promise = mongodbService.ContactRecord.find(filteredQuery, {_id: 0, __v: 0})
+                                    .skip(offset)
+                                    .limit(limit)
+                                    .exec();
+  promise.then(function(contactRecords) {
     res.json(contactRecords);
-  }
-  var reject = function(err) {
+  }, function(err) {
     res.json({error: err});
-  }
-
-  var is_all = (req.param('all')) ? true : false;
-  var page_no =(req.param('p')) ? req.param('p') : 1;
-  var per_page = (req.param('per_page')) ? req.param('per_page') : 10;
-
-  var getAllContactRecordsPromise = function() {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.ContactRecord.find({}).exec(function(err, contactRecords) {
-        if (err) reject(err);
-        else fulfill(contactRecords);
-      });
-    });
-  };
-
-  var getContactRecordsPromise = function(page_no, per_page) {
-      return new Promise(function(fulfill, reject) {
-        mongodbService.ContactRecord.find({}, {_id: 0, __v: 0})
-                                    .populate('agent', without_internal_field)
-                                    .populate('customer', without_internal_field)
-                                    .skip((page_no - 1) * per_page)
-                                    .limit(per_page).exec(function(err, contactRecords) {
-        if (err) reject(err);
-        else fulfill(contactRecords);
-      });
-    });
-  };
-
-  if (is_all) {
-    getAllContactRecordsPromise().done(fulfill, reject);
-  } else {
-    getContactRecordsPromise(page_no, per_page).done(fulfill, reject);
-  }
+  });
 };
 
 function getCachedResponse(nonce, callback, res) {
