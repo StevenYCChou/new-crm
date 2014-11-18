@@ -4,6 +4,6 @@ angular.module('crmHomeApp', []).
     $window.location.href="/agents";
 	};
   $scope.customerStartCRM = function(customerId) {
-    $window.location.href="/customer/" + customerId;
+    $window.location.href="/customers/" + customerId;
 	};
 }]);
