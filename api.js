@@ -168,7 +168,7 @@ exports.getCustomers = function (req, res) {
   var filteredQuery = filter(query, function(key) {return key in validCustomerQueryField;});
   // var name_q = new RegExp(req.param('name'));
 
-  var promise = mongodbService.Customer.find(filteredQuery, {_id: 0, __v: 0})
+  var promise = mongodbService.Customer.find(filteredQuery, {__v: 0})
                                     .skip(offset)
                                     .limit(limit)
                                     .exec();
@@ -245,12 +245,15 @@ exports.getContactRecords = function (req, res) {
   var query = Qs.parse(q, { delimiter: ',' });
   var filteredQuery = filter(query, function(key) {return key in validContactRecordQueryField;});
 
-  var promise = mongodbService.ContactRecord.find(filteredQuery, {_id: 0, __v: 0})
+  var promise = mongodbService.ContactRecord.find(filteredQuery, {__v: 0})
                                     .skip(offset)
                                     .limit(limit)
                                     .exec();
-  promise.then(function(contactRecords) {
-    res.json(contactRecords);
+  promise.then(function(contact_records) {
+    res.json({
+      _type: 'contact_record',
+      contact_records: contact_records
+    });
   }, function(err) {
     res.json({error: err});
   });
