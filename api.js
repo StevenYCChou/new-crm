@@ -259,6 +259,25 @@ exports.getContactRecords = function (req, res) {
   });
 };
 
+exports.getContactRecord = function (req, res) {
+  var id = req.params.id;
+  console.log("[api.getContactRecord] Get Contact Record:" + id);
+  var promise = mongodbService.ContactRecord.findOne({_id: id}, {__v: 0}).exec();
+  promise.then(function(contact_record) {
+    contact_record = contact_record.toJSON();
+    contact_record.link = {
+      rel: "self",
+      href: "/api/v1.00/entities/customer/"+contact_record._id
+    };
+    res.json({
+      _type: "contact_record",
+      contact_record: contact_record
+    });
+  }, function(err) {
+    res.json({error: err});
+  });
+};
+
 exports.createContactRecord = function (req, res) {
   var newContactHistory = {
     time : req.param('time'),
