@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html ng-app="crmAgentApp">
+<html ng-app="crmManagerApp">
   <head>
     <meta charset="utf-8">
     <title>CRM system-Agent Creation</title>
   </head>
   <body>
-    <div ng-controller="createAgentController">
+    <div ng-controller="agentCreateController">
       <h3>Create Agent</h3>
       <div>
         <label>Name: <input type="text" ng-model="agent_name" placeholder="name" />
@@ -22,11 +22,7 @@
         <input type="button" ng-click="createAgentCancel()" value="Return" />
       </div>
     </div>
-    <script src="/js/jquery-1.11.1.js"></script>
-    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
-    <script src="/js/angular.min.js"></script>
-    <script src="/js/agents.js"></script>
-    <script src="/js/customers.js"></script>
-    <script src="/js/contact_history.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/managers.js"></script>
   </body>
 </html>
