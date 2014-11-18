@@ -204,7 +204,7 @@ exports.getCustomer = function (req, res) {
 };
 
 exports.updateCustomer = function (req, res) {
-  var customerId = req.param('customerId');
+  var customerId = req.param('id');
   var updateInfo = {
     name: req.param('name'),
     phone: req.param('phone'),
