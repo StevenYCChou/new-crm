@@ -49,22 +49,20 @@ app.get('/', function(req, res) {
 });
 
 app.get('/api/v1.00/entities/agents', api.getAgents);
+app.post('/api/v1.00/entities/agents', api.createAgent);
 app.get('/api/v1.00/entities/agents/:id', api.getAgent);
 app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
-app.post('/api/v1.00/entities/agents', api.createAgent);
-// app.delete('/api/v1.00/entities/agents/:id', api.deleteAgent);
-
-// app.get('/api/v1.00/entities/agents/:agentId', api.getAgent);
-// app.put('/api/v1.00/entities/agents/:agentId', api.updateAgent);
-// app.post('/api/v1.00/entities/agents/create', api.createAgent);
+// app.delete('/api/v1.00/entities/agents/:id', api.removeAgent);
 
 app.get('/api/v1.00/entities/customers', api.getCustomers);
-app.put('/api/v1.00/entities/customers/:customerId', api.updateCustomer);
-app.post('/api/v1.00/entities/customers/create', api.createCustomer);
-app.delete('/api/v1.00/entities/customers/:customerId', api.removeCustomer);
+app.post('/api/v1.00/entities/customers', api.createCustomer);
+app.get('/api/v1.00/entities/customers/:id', api.getCustomer);
+app.put('/api/v1.00/entities/customers/:id', api.updateCustomer);
+app.delete('/api/v1.00/entities/customers/:id', api.removeCustomer);
 
-app.get('/api/v1.00/entities/contact-records', api.getContactRecords);
-app.post('/api/v1.00/entities/contact-records/create', api.createContactRecord);
+app.get('/api/v1.00/entities/contact_records', api.getContactRecords);
+app.get('/api/v1.00/entities/contact_records/:id', api.getContactRecord);
+app.post('/api/v1.00/entities/contact_records/create', api.createContactRecord);
 
 ////////////////////
 // Manager Facade //
@@ -81,24 +79,16 @@ app.get('/agents/:agentId', agentFacade.showProfile);
 app.get('/agents/:agentId/edit', agentFacade.showProfileUpdatePage);
 
 // customer related
-app.get('/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerId);
-app.get('/api/agent/:agentId/customer/:customerId', agentFacade.showCustomerByCustomerIdAPI);
-app.get('/agent/:agentId/create', agentFacade.showCustomerCreationPage);
-app.get('/agent/:agentId/customer/:customerId/edit', agentFacade.showCustomerUpdatePage);
-app.post('/api/agent/:agentId', agentFacade.createCustomerAPI);
-app.put('/api/agent/:agentId/customer/:customerId', agentFacade.updateCustomerAPI);
-app.delete('/api/customer/:customerId', agentFacade.removeCustomerByIdAPI);
+app.get('/agents/:agentId/customers/:customerId', agentFacade.showCustomerDetailPage);
+app.get('/agents/:agentId/create', agentFacade.showCustomerCreationPage);
+app.get('/agents/:agentId/customers/:customerId/edit', agentFacade.showCustomerUpdatePage);
 
 // contact record related
 app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);
-app.get('/api/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordByIdAPI);
 app.get('/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordById);
-app.post('/api/contact_history', agentFacade.createContactRecordAPI);
 
 /////////////////////
 // Customer Facade //
 /////////////////////
-app.get('/customer/:customerId', customerFacade.retrieveProfilePage);
-app.get('/api/customer/:customerId', customerFacade.retrieveProfilePageAPI)
-app.get('/customer/:customerId/edit', customerFacade.showProfileUpdatePage);
-app.post('/api/customer/:customerId', customerFacade.updateProfileAPI);
+app.get('/customers/:customerId', customerFacade.retrieveProfilePage);
+app.get('/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
