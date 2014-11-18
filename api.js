@@ -35,7 +35,6 @@ var validContactRecordQueryField = {
 };
 
 var filter = function(obj, predicate) {
-  console.log(obj);
   var result = {}, key;
   for (key in obj) {
       if (obj.hasOwnProperty(key) && predicate(key)) {
@@ -119,7 +118,6 @@ exports.getAgent = function(req, res) {
   var promise = mongodbService.Agent.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(agent) {
     agent = agent.toJSON();
-    console.log(agent);
     agent.link = {
       rel: "self",
       href: "/api/v1.00/entities/agents/"+agent._id
@@ -189,7 +187,6 @@ exports.getCustomer = function (req, res) {
   var promise = mongodbService.Customer.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(customer) {
     customer = customer.toJSON();
-    console.log(customer);
     customer.link = {
       rel: "self",
       href: "/api/v1.00/entities/customer/"+customer._id
