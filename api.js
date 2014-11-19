@@ -53,27 +53,31 @@ var filter = function(obj, predicate) {
 // }
 
 function getCachedResponse(nonce, callback, res) {
-  mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
-    if (responseEntry === null) {
-      console.log("[api.getCachedResponse] Response is not cached.");
-      res.json({code: 202});
-      mongodbService.Response.create({nonce: nonce}).then(function() {
-        console.log("[api.getCachedResponse] process data");
-        return callback();
-      }).then(function(response) {
-        console.log("[api.getCachedResponse] Update response cache");
-        return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
-      }).then(function() {
-        console.log("[api.getCachedResponse] finish process.");
-      });
-    } else if (responseEntry.status === "COMPLETED") {
-      console.log("[api.getCachedResponse] Response is processed and cached.");
-      res.json({code: 200, response: responseEntry.response});
-    } else {
-      console.log("[api.getCachedResponse] Response is processed but not cached.");
-      res.json({code: 202});
-    }
-  });
+  if (!nonce) {
+    res.json({code: 404, msg: "Modification request doesn't include nonce."});
+  } else {
+    mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
+      if (responseEntry === null) {
+        console.log("[api.getCachedResponse] Response is not cached.");
+        res.json({code: 202});
+        mongodbService.Response.create({nonce: nonce}).then(function() {
+          console.log("[api.getCachedResponse] process data");
+          return callback();
+        }).then(function(response) {
+          console.log("[api.getCachedResponse] Update response cache");
+          return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
+        }).then(function() {
+          console.log("[api.getCachedResponse] finish process.");
+        });
+      } else if (responseEntry.status === "COMPLETED") {
+        console.log("[api.getCachedResponse] Response is processed and cached.");
+        res.json({code: 200, response: responseEntry.response});
+      } else {
+        console.log("[api.getCachedResponse] Response is processed but not cached.");
+        res.json({code: 202});
+      }
+    });
+  }
 }
 
 exports.getAgents = function (req, res) {
@@ -142,7 +146,7 @@ exports.updateAgent = function (req, res) {
     console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
     return mongodbService.Agent.findByIdAndUpdate(agentId, updateInfo).exec();
   };
-  getCachedResponse(req.param('nonce'), update, res);
+  getCachedResponse(req.get('nonce'), update, res);
 };
 
 exports.createAgent = function (req, res) {
@@ -156,7 +160,7 @@ exports.createAgent = function (req, res) {
     console.log("[api.createAgent] Create New Agent:" + agentInfo.name);
     return mongodbService.Agent.create(agentInfo);
   };
-  getCachedResponse(req.param('nonce'), creation, res);
+  getCachedResponse(req.get('nonce'), creation, res);
 };
 
 exports.getCustomers = function (req, res) {
@@ -211,7 +215,7 @@ exports.updateCustomer = function (req, res) {
    console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
     return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
   };
-  getCachedResponse(req.param('nonce'), update, res);
+  getCachedResponse(req.get('nonce'), update, res);
 };
 
 exports.createCustomer = function (req, res) {
@@ -225,7 +229,7 @@ exports.createCustomer = function (req, res) {
     console.log("[api.createCustomer] Create Customer:" + customerInfo.name);
     return mongodbService.Customer.create(customerInfo);
   };
-  getCachedResponse(req.param('nonce'), creation, res);
+  getCachedResponse(req.get('nonce'), creation, res);
 };
 
 exports.removeCustomer = function (req, res) {
@@ -234,7 +238,7 @@ exports.removeCustomer = function (req, res) {
     console.log("[api.removeCustomer] Remove Customer:" + customerId);
     mongodbService.Customer.findByIdAndRemove(customerId);
   };
-  getCachedResponse(req.param('nonce'), deletion, res);
+  getCachedResponse(req.get('nonce'), deletion, res);
 };
 
 exports.getContactRecords = function (req, res) {
@@ -291,6 +295,6 @@ exports.createContactRecord = function (req, res) {
     console.log("[api.createContactRecord] Create Contact Record:" + newContactHistory.textSummary);
     return mongodbService.ContactHistory.create(newContactHistory);
   };
-  getCachedResponse(req.param('nonce'), creation, res);
+  getCachedResponse(req.get('nonce'), creation, res);
 };
 
