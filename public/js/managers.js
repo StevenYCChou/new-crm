@@ -40,7 +40,7 @@ managerApp.controller('agentIndexController', ['$scope', '$http', '$window', fun
   }
 }]);
 
-managerApp.controller('agentCreateController', ['$scope', '$http', '$window', 'uuid2' function($scope, $http, $window, uuid2) {
+managerApp.controller('agentCreateController', ['$scope', '$http', '$window', 'uuid2', function($scope, $http, $window, uuid2) {
   $scope.uuid = uuid2.newuuid();
   $scope.createAgentSubmit = function(agent_name, agent_phone, agent_email) {
     var data = {name: agent_name, phone: agent_phone, email: agent_email};

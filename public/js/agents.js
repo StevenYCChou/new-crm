@@ -121,7 +121,7 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
     $http({
       url: '/api/v1.00/entities/customers/' + customerId,
       method: 'DELETE',
-      headers: {'nonce' : 'DELETE' + $scope.uuid})
+      headers: {'nonce' : 'DELETE' + $scope.uuid}})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + agentId;
       });
