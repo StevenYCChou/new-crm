@@ -10,8 +10,8 @@ function BasicPersonSchema() {
     phone: String,
     email: String,
     location: String,
-    created: Date,
-    lastUpdated: Date,
+    createdAt: { type: Date, default: Date.now()},
+    lastUpdatedAt: { type: Date, default: Date.now()},
   });
 }
 util.inherits(BasicPersonSchema, mongoose.Schema);

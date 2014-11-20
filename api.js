@@ -54,13 +54,14 @@ var filter = function(obj, predicate) {
 // }
 
 function getCachedResponse(nonce, callback, res) {
+  console.log(nonce);
   if (!nonce) {
-    res.json({code: 404, msg: "Modification request doesn't include nonce."});
+    res.status(403).json({msg: "Modification request doesn't include nonce."});
   } else {
     mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
       if (responseEntry === null) {
         console.log("[api.getCachedResponse] Response is not cached.");
-        res.json({code: 202});
+        res.status(202).json({});
         mongodbService.Response.create({nonce: nonce}).then(function() {
           console.log("[api.getCachedResponse] process data");
           return callback();
@@ -75,11 +76,13 @@ function getCachedResponse(nonce, callback, res) {
         });
       } else if (responseEntry.status === "COMPLETED") {
         console.log("[api.getCachedResponse] Response is processed and cached.");
-        res.json({code: 200, response: responseEntry.response});
+        res.status(200).json({response: responseEntry.response});
       } else {
         console.log("[api.getCachedResponse] Response is processed but not cached.");
-        res.json({code: 202});
+        res.status(202).json({});
       }
+    }, function(err) {
+      console.log("[api.getCachedResponse] Error occurs");
     });
   }
 }
@@ -144,7 +147,8 @@ exports.updateAgent = function (req, res) {
   var updateInfo = {
     name: req.param('name'),
     phone: req.param('phone'),
-    email: req.param('email')
+    email: req.param('email'),
+    location: req.param('location')
   };
   var update = function () {
     console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
@@ -157,9 +161,9 @@ exports.createAgent = function (req, res) {
   var agentInfo = {
     name: req.param('name'),
     phone: req.param('phone'),
-    email: req.param('email')
+    email: req.param('email'),
+    location: req.param('location')
   };
-
   var creation = function () {
     console.log("[api.createAgent] Create New Agent:" + agentInfo.name);
     return crmService.createAgent(agentInfo);
@@ -213,7 +217,8 @@ exports.updateCustomer = function (req, res) {
   var updateInfo = {
     name: req.param('name'),
     phone: req.param('phone'),
-    email: req.param('email')
+    email: req.param('email'),
+    location: req.param('location')
   };
   var update = function () {
     console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
@@ -233,6 +238,7 @@ exports.createCustomer = function (req, res) {
     name: req.param('name'),
     phone: req.param('phone'),
     email: req.param('email'),
+    location: req.param('location'),
     agent: req.param('agentId')
   };
 
