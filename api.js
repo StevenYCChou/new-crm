@@ -3,6 +3,7 @@ var Promise = require('promise');
 var Qs = require('qs');
 
 var crmService = require('./business_service/internal/crm_service.js');
+var crmValidation = require('./business_service/validation/validation.js');
 
 var without_internal_field = {
   _id: 0,
@@ -64,8 +65,11 @@ function getCachedResponse(nonce, callback, res) {
           console.log("[api.getCachedResponse] process data");
           return callback();
         }).then(function(response) {
-          console.log("[api.getCachedResponse] Update response cache");
+          console.log("[api.getCachedResponse] Update response cache with successful response");
           return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
+        }, function(error) {
+          console.log("[api.getCachedResponse] Update response cache with failure response");
+          return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: error}}).exec();
         }).then(function() {
           console.log("[api.getCachedResponse] finish process.");
         });
@@ -144,7 +148,7 @@ exports.updateAgent = function (req, res) {
   };
   var update = function () {
     console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
-    return mongodbService.Agent.findByIdAndUpdate(agentId, updateInfo).exec();
+    return crmService.updateAgentById(agentId, updateInfo).exec();
   };
   getCachedResponse(req.get('nonce'), update, res);
 };
@@ -158,7 +162,7 @@ exports.createAgent = function (req, res) {
 
   var creation = function () {
     console.log("[api.createAgent] Create New Agent:" + agentInfo.name);
-    return mongodbService.Agent.create(agentInfo);
+    return crmService.createAgent(agentInfo);
   };
   getCachedResponse(req.get('nonce'), creation, res);
 };
@@ -212,8 +216,14 @@ exports.updateCustomer = function (req, res) {
     email: req.param('email')
   };
   var update = function () {
-   console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
-    return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
+    console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
+    crmValidation.updateCustomerContactValidation(customerId, function(err) {
+      if (err) {
+        return err;
+      } else {
+        return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
+      }
+    });
   };
   getCachedResponse(req.get('nonce'), update, res);
 };
@@ -225,10 +235,18 @@ exports.createCustomer = function (req, res) {
     email: req.param('email'),
     agent: req.param('agentId')
   };
+
   var creation = function () {
     console.log("[api.createCustomer] Create Customer:" + customerInfo.name);
-    return mongodbService.Customer.create(customerInfo);
+    crmValidation.createCustomerValidation(customerInfo.agent, function(err) {
+      if (err) {
+        return err;
+      } else {
+        return mongodbService.Customer.create(customerInfo);
+      }
+    });
   };
+
   getCachedResponse(req.get('nonce'), creation, res);
 };
 

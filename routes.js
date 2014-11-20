@@ -41,8 +41,8 @@ http.createServer(app).listen(3000);
 ////////////////////
 //  MessageQueue  //
 ////////////////////
-var mq = require('./message_queue/main.js');
-mq.startMessageQueueService(8000);
+//var mq = require('./message_queue/main.js');
+//mq.startMessageQueueService(8000);
 
 app.get('/', function(req, res) {
   res.render('homepage');

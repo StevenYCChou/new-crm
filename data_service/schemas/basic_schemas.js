@@ -8,7 +8,10 @@ function BasicPersonSchema() {
   this.add({
     name: String,
     phone: String,
-    email: String
+    email: String,
+    location: String,
+    created: Date,
+    lastUpdated: Date,
   });
 }
 util.inherits(BasicPersonSchema, mongoose.Schema);
