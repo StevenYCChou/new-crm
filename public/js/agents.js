@@ -64,7 +64,7 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
       $scope.agent = data.agent;
     });
   $scope.editAgentSubmit = function(agent_id, agent_name, agent_phone, agent_email) {
-    var data ={name: agent_name, phone: agent_phone, email: agent_email};
+    var data = {name: agent_name, phone: agent_phone, email: agent_email};
     $http({
       url: '/api/v1.00/entities/agents/' + agent_id,
       method: 'PUT',
@@ -79,10 +79,16 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
   };
 }]);
 
-agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $scope.uuid = uuid2.newuuid();
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email) {
-    $http.post('/api/v1.00/entities/customers', {name: customer_name, phone: customer_phone, email: customer_email, agentId: $scope.agentId})
+    var data = {name: customer_name, phone: customer_phone, email: customer_email, agentId: $scope.agentId}
+    $http({
+      url: '/api/v1.00/entities/customers', 
+      method: 'POST', 
+      headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
+      data: data})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + $scope.agentId;
       });
@@ -92,7 +98,8 @@ agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '
   };
 }]);
 
-agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $scope.uuid = uuid2.newuuid();
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.customerId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/agents/'+$scope.agentId)
@@ -111,7 +118,10 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
     $window.location.href="/agents/" + agentId + "/customers/" + customerId + "/edit";
   }
   $scope.deleteCustomer = function(agentId, customerId) {
-    $http.delete('/api/v1.00/entities/customers/' + customerId)
+    $http({
+      url: '/api/v1.00/entities/customers/' + customerId,
+      method: 'DELETE',
+      headers: {'nonce' : 'DELETE' + $scope.uuid})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + agentId;
       });
@@ -130,7 +140,8 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
   };
 }]);
 
-agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $scope.uuid = uuid2.newuuid();
   $scope.agent = [];
   $scope.customer = [];
   $scope.agentId = $location.absUrl().split("/")[4];
@@ -140,7 +151,12 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
     $scope.customer = data.customer;
   });
   $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email) {
-    $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {agent: $scope.agentId , name: customer_name, phone: customer_phone, email: customer_email})          
+    var data = {agent: $scope.agentId , name: customer_name, phone: customer_phone, email: customer_email};
+    $http({
+      url: '/api/v1.00/entities/customers/' + $scope.customerId, 
+      method: 'PUT', 
+      headers: {'nonce' : 'PUT' + JSON.stringify(data) + $scope.uuid},
+      data: data})         
       .success(function(data, status, headers, config) {
          $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
       });
@@ -150,7 +166,8 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
   };
 }]);
 
-agentApp.controller('createContactRecordController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+agentApp.controller('createContactRecordController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $scope.uuid = uuid2.newuuid();
   $scope.agentId = $location.absUrl().split("/")[4].split("?")[1].split("=")[1].split("&")[0];
   $scope.customerId = $location.absUrl().split("/")[4].split("?")[1].split("=")[2];
   $scope.models = [
@@ -162,7 +179,12 @@ agentApp.controller('createContactRecordController', ['$scope', '$http', '$windo
     $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
   };
   $scope.createContactSubmit = function(textSummary, model_select, time, data) {
-    $http.post('/api/v1.00/entities/contact_records', {textSummary: textSummary, model: model_select, time: time, data: data, agentId: $scope.agentId, customerId: $scope.customerId})
+    var data = {textSummary: textSummary, model: model_select, time: time, data: data, agentId: $scope.agentId, customerId: $scope.customerId};
+    $http({
+      url: '/api/v1.00/entities/contact_records', 
+      method: 'POST', 
+      headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
+      data: data})
     .success(function(data, status, headers, config) {
       $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
     });
