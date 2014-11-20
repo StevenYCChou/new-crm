@@ -24,8 +24,8 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
     .success(function(data, status, headers, config) {
       $scope.customer = data.customer;
     });
-  $scope.editCustomerSubmit = function(customerId, name, phone, email) {
-    $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {name: name, phone: phone, email: email})
+  $scope.editCustomerSubmit = function(customerId, name, phone, email, location) {
+    $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {name: name, phone: phone, email: email, location: location})
       .success(function(data, status, headers, config) {
       $window.location.href="/customers/" + customerId;
     });

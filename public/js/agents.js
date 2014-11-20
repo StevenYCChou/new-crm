@@ -63,8 +63,8 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
     .success(function(data, status, headers, config) {
       $scope.agent = data.agent;
     });
-  $scope.editAgentSubmit = function(agent_id, agent_name, agent_phone, agent_email) {
-    var data ={name: agent_name, phone: agent_phone, email: agent_email};
+  $scope.editAgentSubmit = function(agent_id, agent_name, agent_phone, agent_email, agent_location) {
+    var data ={name: agent_name, phone: agent_phone, email: agent_email, location: agent_location};
     $http({
       url: '/api/v1.00/entities/agents/' + agent_id,
       method: 'PUT',
@@ -81,8 +81,8 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
 
 agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agentId = $location.absUrl().split("/")[4];
-  $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email) {
-    $http.post('/api/v1.00/entities/customers', {name: customer_name, phone: customer_phone, email: customer_email, agentId: $scope.agentId})
+  $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email, customer_location) {
+    $http.post('/api/v1.00/entities/customers', {name: customer_name, phone: customer_phone, email: customer_email, location: customer_location, agentId: $scope.agentId})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + $scope.agentId;
       });
@@ -139,8 +139,12 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
     .success(function(data, status, headers, config) { 
     $scope.customer = data.customer;
   });
-  $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email) {
-    $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {agent: $scope.agentId , name: customer_name, phone: customer_phone, email: customer_email})          
+  $scope.editCustomerSubmit = function(agent_id, customer_id, customer_name, customer_phone, customer_email, customer_location) {
+    $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {agent: $scope.agentId,
+                                                                     name: customer_name,
+                                                                     phone: customer_phone,
+                                                                     email: customer_email,
+                                                                     location: customer_location})
       .success(function(data, status, headers, config) {
          $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
       });

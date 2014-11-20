@@ -14,8 +14,8 @@ managerApp.controller('agentIndexController', ['$scope', '$http', '$window', fun
 }]);
 
 managerApp.controller('agentCreateController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-  $scope.createAgentSubmit = function(agent_name, agent_phone, agent_email) {
-   $http.post('/api/v1.00/entities/agents', {name: agent_name, phone: agent_phone, email: agent_email})
+  $scope.createAgentSubmit = function(agent_name, agent_phone, agent_email, agent_location) {
+   $http.post('/api/v1.00/entities/agents', {name: agent_name, phone: agent_phone, email: agent_email, location: agent_location})
      .success(function(data, status, headers, config) {
        $window.location.href="/agents";
     });
