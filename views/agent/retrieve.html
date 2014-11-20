@@ -10,7 +10,8 @@
       <ul>
         <li>Agent Name: {{ agent.name }}</li>
         <li>Agent Phone: {{ agent.phone }}</li>
-        <li>Agent Email: {{ agent.email }}</li> 
+        <li>Agent Email: {{ agent.email }}</li>
+        <li>Agent Location: {{ agent.location }}</li>
       </ul>
       <input type="button" ng-click="editAgent(agent._id)" value="Edit Agent Basic Info" />
       <h3>Customers</h3>
@@ -19,12 +20,14 @@
           <th>Name</th>
           <th>Phone</th>
           <th>Email</th>
+          <th>Location</th>
           <th>Details</th>
         </tr>
         <tr ng-repeat="customer in customers">
           <td>{{ customer.name }}</td>
           <td>{{ customer.phone }}</td>
-          <td>{{ customer.email }}</td> 
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.location }}</td>
           <td><input type="button" ng-click="customerDetail(agent._id, customer._id)" value="Details" /></td>
         </tr>
       </table><br />

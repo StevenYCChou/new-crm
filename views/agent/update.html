@@ -20,7 +20,10 @@
         </label>
       </div>
       <div>
-        <input type="button" ng-click="editAgentSubmit(agent._id, agent_name, agent_phone, agent_email)" value="Submit" />
+        <label>Location: <input type="text" ng-model=agent_location placeholder="{{ agent.location }}" /></label>
+      </div>
+      <div>
+        <input type="button" ng-click="editAgentSubmit(agent._id, agent_name, agent_phone, agent_email, agent_location)" value="Submit" />
         <input type="button" ng-click="editAgentCancel(agent._id)" value="Return" />
       </div>
     </div>

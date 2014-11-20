@@ -19,8 +19,12 @@
 				<label>Email: <input type="email" ng-model="customer_email" placeholder="{{ customer.email }}" />
 				</label>
 			</div>
+      <div>
+        <label>Location: <input type="text" ng-model="customer_location" placeholder="{{ customer.location }}" />
+        </label>
+      </div>
 			<div>
-				<input type="button" ng-click="editCustomerSubmit(customer._id, customer_name, customer_phone, customer_email)" value="Submit" />
+				<input type="button" ng-click="editCustomerSubmit(customer._id, customer_name, customer_phone, customer_email, customer_location)" value="Submit" />
 				<input type="button" ng-click="returnToCustomer(customer._id)" value="Return" />
 			</div>
     </div>

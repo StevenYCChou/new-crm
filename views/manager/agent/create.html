@@ -18,7 +18,10 @@
         <label>Email: <input type="email" ng-model="agent_email" placeholder="Ex: jc@gmail.com" /></label>
       </div>
       <div>
-        <input type="button" ng-click="createAgentSubmit(agent_name, agent_phone, agent_email)" value="Submit" />
+        <label>Location: <input type="text" ng-model="agent_location" placeholder="Ex: NY" /></label>
+      </div>
+      <div>
+        <input type="button" ng-click="createAgentSubmit(agent_name, agent_phone, agent_email, agent_location)" value="Submit" />
         <input type="button" ng-click="createAgentCancel()" value="Return" />
       </div>
     </div>

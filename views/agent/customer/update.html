@@ -18,9 +18,13 @@
   <div>
     <label>Email: <input type="email" ng-model=customer_email placeholder="{{ customer.email }}" />
     </label>
-        </div>
+  </div>
   <div>
-          <input type="button" ng-click="editCustomerSubmit(agent._id, customer._id, customer_name, customer_phone, customer_email)" value="Submit" />
+    <label>Location: <input type="text" ng-model=customer_location placeholder="{{ customer.location }}" />
+    </label>
+  </div>
+  <div>
+          <input type="button" ng-click="editCustomerSubmit(agent._id, customer._id, customer_name, customer_phone, customer_email, customer_location)" value="Submit" />
           <input type="button" ng-click="editCustomerCancel(agent._id, customer._id)" value="Return" />
   </div>
     </div>

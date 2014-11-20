@@ -8,16 +8,19 @@
     <div ng-controller="createCustomerController">
       <h3>Create Customer</h3>
       <div>
-        <label>Name: <input type="text" ng-model="customer_name" placeholder="name" /></label>
+        <label>Name: <input type="text" ng-model="customer_name" placeholder="Ex: Steven" /></label>
       </div>
       <div>
-        <label>Phone: <input type="text" ng-model="customer_phone" placeholder="phone" /></label>
+        <label>Phone: <input type="text" ng-model="customer_phone" placeholder="Ex: 347-506-4333" /></label>
       </div>
       <div>
-        <label>Email: <input type="email" ng-model="customer_email" placeholder="email" /></label>
-      </div>  
+        <label>Email: <input type="email" ng-model="customer_email" placeholder="Ex: steven@gmail.com" /></label>
+      </div>
       <div>
-        <input type="button" ng-click="createCustomerSubmit(customer_name, customer_phone, customer_email)" value="Submit" />
+        <label>Location: <input type="text" ng-model="customer_location" placeholder="Ex: NY" /></label>
+      </div>
+      <div>
+        <input type="button" ng-click="createCustomerSubmit(customer_name, customer_phone, customer_email, customer_location)" value="Submit" />
         <input type="button" ng-click="createCustomerCancel()" value="Return" />
       </div>
     </div>
