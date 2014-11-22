@@ -14,6 +14,11 @@ angular.module('crmContactHistoryApp',[]).
     $http.post('/api/contact_history', {textSummary: textSummary, model: model_select, time: time, data: data, agentId: $scope.agentId, customerId: $scope.customerId})
     .success(function(data, status, headers, config) {
       $window.location.href="/agent/" + $scope.agentId + "/customer/" + $scope.customerId;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
     });
   };
   }]).
@@ -24,7 +29,12 @@ angular.module('crmContactHistoryApp',[]).
       $scope.contact_history = data.contact_history;
       $scope.agentId = data.agentId;
       $scope.customerId = data.customerId;
-  });
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
   $scope.contactHistoryBackCustomer = function(agentId, customerId) {
     $window.location.href="/agent/" + agentId + "/customer/" + customerId;
   };

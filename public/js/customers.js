@@ -38,8 +38,23 @@ customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$
           $http.get('/api/v1.00/entities/contact_records?q=customer=' + $scope.customerId + ',agent=' + $scope.agent._id)
             .success(function(data, status, headers, config) {
               $scope.contact_records = data.contact_records;
-          });
-      });
+            })
+            .error(function(data, status, headers, config) {
+              $scope.errorStatus = status;
+              $scope.errorData = data;
+              $window.alert("Status: " + status + ", " + data);
+            });
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });  
+  })
+  .error(function(data, status, headers, config) {
+    $scope.errorStatus = status;
+    $scope.errorData = data;
+    $window.alert("Status: " + status + ", " + data);
   });
   $scope.customerViewEdit = function(customerId) {
     $window.location.href = "/customers/" + customerId + "/edit";
@@ -52,6 +67,11 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
       $scope.customer = data.customer;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
     });
   $scope.editCustomerSubmit = function(customerId, name, phone, email) {
     var data = {name: name, phone: phone, email: email};
@@ -61,8 +81,13 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
       headers: {'nonce' : 'PUT' + JSON.stringify(data) + $scope.uuid},
       data: data}) 
       .success(function(data, status, headers, config) {
-      $window.location.href="/customers/" + customerId;
-    });
+        $window.location.href="/customers/" + customerId;
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
   };
   $scope.returnToCustomer = function(customerId) {
     $window.location.href = "/customers/" + customerId;
