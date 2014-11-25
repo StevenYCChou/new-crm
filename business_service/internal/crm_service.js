@@ -4,72 +4,72 @@ var Customer = mongodbService.Customer;
 var ContactRecord = mongodbService.ContactRecord;
 var Response = mongodbService.Response;
 
-exports.createAgent = function (newAgent, callback) {
-  Agent.create(newAgent, callback);
+
+exports.retrieveAllAgents = function() {
+  return Agent.find({});
 };
 
-exports.retrieveAllAgents = function(callback) {
-  Agent.find({}, callback);
+exports.retrieveAgentById = function(agentId) {
+  return Agent.findById(agentId);
 };
 
-exports.retrieveAgentById = function(agentId, callback) {
-  Agent.findById(agentId).populate('customers').exec(callback);
+exports.createAgent = function (newAgent) {
+  return Agent.create(newAgent);
 };
 
-exports.updateAgentById = function(agentId, updatedInfo, callback) {
-  Agent.findByIdAndUpdate(agentId, updatedInfo, callback);
+exports.updateAgentById = function(agentId, updatedInfo) {
+  return Agent.findByIdAndUpdate(agentId, updatedInfo);
 };
 
 
 // Customer related method
-exports.retrieveCustomerById = function(customerId, callback) {
-  Customer.findById(customerId).populate('agent').exec(callback);
+exports.retrieveCustomerById = function(customerId) {
+  return Customer.findById(customerId);
 };
 
-exports.retrieveCustomersByAgentId = function(agentId, callback) {
-  Customer.where('agent').equals(agentId).exec(callback);
+exports.retrieveCustomersByAgentId = function(agentId) {
+  return Customer.where('agent').equals(agentId);
 };
 
-exports.createCustomer = function(newCustomer, callback) {
-  Customer.create(newCustomer, callback);
+exports.createCustomer = function(newCustomer) {
+  return Customer.create(newCustomer);
 };
 
-exports.updateCustomerById = function(customerId, updatedInfo, callback) {
-  Customer.findByIdAndUpdate(customerId, updatedInfo, callback);
+exports.updateCustomerById = function(customerId, updatedInfo) {
+  return Customer.findByIdAndUpdate(customerId, updatedInfo);
 };
 
-exports.deleteCustomerById = function(customerId, callback) {
-  Customer.findByIdAndRemove(customerId, callback);
+exports.deleteCustomerById = function(customerId) {
+  return Customer.findByIdAndRemove(customerId);
 };
 
 
 // ContactHistory related method
-exports.retrieveContactHistoryByCustomerId = function(customerId, callback) {
-  ContactRecord.where('customer').equals(customerId).exec(callback);
+exports.retrieveContactHistoryByCustomerId = function(customerId) {
+  return ContactRecord.where('customer').equals(customerId);
 };
 
-exports.retrieveContactHistoryByAgentIdAndCustomerId = function(agentId, customerId, callback) {
-  ContactRecord.where('agent').equals(agentId)
-               .where('customer').equals(customerId)
-               .exec(callback);
+exports.retrieveContactHistoryByAgentIdAndCustomerId = function(agentId, customerId) {
+  return ContactRecord.where('agent').equals(agentId)
+               .where('customer').equals(customerId);
 };
 
-exports.retrieveContactHistoryById = function(contactHistoryId, callback) {
-  ContactRecord.findById(contactHistoryId).exec(callback);
+exports.retrieveContactHistoryById = function(contactHistoryId) {
+  return ContactRecord.findById(contactHistoryId);
 };
 
-exports.createContactHistory = function(newContactHistory, callback) {
-  ContactRecord.create(newContactHistory, callback);
+exports.createContactHistory = function(newContactHistory) {
+  return ContactRecord.create(newContactHistory);
 };
 
-exports.retrieveResponseByNonce = function(nonce, callback) {
-  Response.findOne({nonce: nonce}, callback);
+exports.retrieveResponseByNonce = function(nonce) {
+  return Response.findOne({nonce: nonce});
 };
 
-exports.createResponse = function(newResponse, callback) {
-  Response.create(newResponse, callback);
+exports.createResponse = function(newResponse) {
+  return Response.create(newResponse);
 };
 
-exports.updateResponseByNonce = function(nonce, response, callback) {
-  Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}, callback);
+exports.updateResponseByNonce = function(nonce, response) {
+  return Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}});
 };
