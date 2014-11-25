@@ -74,7 +74,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.editCustomerSubmit = function(customerId, name, phone, email) {
-    var data = {name: name, phone: phone, email: email};
+    var data = {name: name, phone: phone, email: email, action: 'customer'};
     $http({
       url: '/api/v1.00/entities/customers/' + $scope.customerId, 
       method: 'PUT', 
