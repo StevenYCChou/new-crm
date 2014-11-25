@@ -34,15 +34,29 @@ app.set('views', __dirname+'/views');
 app.set('view engine', 'html'); // default view engine
 
 ////////////////////
-//   Web Server   //
+//    RabbitMq    //
 ////////////////////
-http.createServer(app).listen(3000);
+var crmRabbtimqConnnection = require('./business_service/notification_service/rabbitmq_connection.js');
+var crmUpdateNotificationService = require('./business_service/notification_service/consumer_update.js');
+crmRabbtimqConnnection.getRabbitmqConnection(function(conn) {
+  if (conn) {
+    crmUpdateNotificationService.startConsumers();
+  } else {
+    console.log("fail to connect to rabbitmq");
+  }
+});
 
 ////////////////////
 //  MessageQueue  //
 ////////////////////
-var mq = require('./message_queue/main.js');
-mq.startMessageQueueService(8000);
+//var mq = require('./message_queue/main.js');
+//mq.startMessageQueueService(8000);
+
+////////////////////
+//   Web Server   //
+////////////////////
+console.log("Staring listening to the server. port: 3000");
+http.createServer(app).listen(3000);
 
 app.get('/', function(req, res) {
   res.render('homepage');
@@ -92,3 +106,27 @@ app.get('/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordB
 /////////////////////
 app.get('/customers/:customerId', customerFacade.retrieveProfilePage);
 app.get('/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
+
+/*
+//////////////////////////
+// Notification Service //
+//////////////////////////
+app.get('/subscription/:agentId', notification.showSubscriptions); // showallsubscription.
+app.get('/subscription/:agentId/create', notification.showSubscriptionCreationPage);
+app.post('/subscription/:agentId', notification.createSubscription);
+app.get('/subscription/:agentId/:subscriptionId/edit', notification.showSubscriptionUpdatePage);
+app.put('/subscription/:agentId/:subscriptionId', notification.updateSubscription);
+app.delete('/subscription/:subscriptionId', notification.removeSubscriptionById);
+*/
+var subscription = require('./business_service/subscription.js');
+var subscriptionApi = require('./subscriptionApi.js')
+app.get('/api/v1.00/entities/subscriptions', subscriptionApi.getSubscriptions);
+app.post('/api/v1.00/entities/subscriptions', subscriptionApi.createSubscription);
+app.get('/api/v1.00/entities/subscriptions/:id', subscriptionApi.getSubscription);
+app.put('/api/v1.00/entities/subscriptions/:id', subscriptionApi.updateSubscription);
+app.delete('/api/v1.00/entities/subscriptions/:id', subscriptionApi.removeSubscription);
+
+app.get('/subscriptions/agents', subscription.showAllAgents);
+app.get('/subscriptions/agents/:agentId', subscription.showAgentSubscriptions);
+app.get('/subscriptions/agents/:agentId/create', subscription.showSubscriptionCreationPage);
+app.get('/subscriptions/agents/:agentId/subscriptions/:subscriptionId/edit', subscription.showSubscriptionUpdatePage);
