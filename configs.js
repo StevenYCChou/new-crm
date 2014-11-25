@@ -17,7 +17,10 @@ module.exports = new function() {
     mongoDb: {
       server_address: 'mongodb://localhost',
       db_name: 'mydb'
-    }
+    },
+
+    rabbitMq: {
+      server_address: 'amqp://localhost',
+    },
   };
 }
-
