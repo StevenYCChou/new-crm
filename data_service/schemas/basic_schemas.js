@@ -8,7 +8,10 @@ function BasicPersonSchema() {
   this.add({
     name: String,
     phone: String,
-    email: String
+    email: String,
+    location: String,
+    created: Date,
+    lastUpdated: Date,
   });
 }
 util.inherits(BasicPersonSchema, mongoose.Schema);
@@ -23,5 +26,25 @@ function BasicRelationshipSchema() {
 };
 util.inherits(BasicRelationshipSchema, mongoose.Schema);
 
+/* BasicSubscrptionSchema */
+function BasicSubscriptionSchema() {
+  mongoose.Schema.apply(this, arguments);
+
+  this.add({
+    agent : {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Agent'
+    },
+    customer : {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Customer'
+    },
+    notificationMethods: [String],
+    notificationFields: [String],
+  });
+}
+util.inherits(BasicSubscriptionSchema, mongoose.Schema);
+
 exports.BasicPersonSchema = BasicPersonSchema;
 exports.BasicRelationshipSchema = BasicRelationshipSchema;
+exports.BasicSubscriptionSchema = BasicSubscriptionSchema;
