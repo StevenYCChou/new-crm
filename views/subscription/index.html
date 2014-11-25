@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="crmSubscriptionApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system Agent Subscription Center</title>
+  </head>
+  <body>
+    <div ng-controller="agentSubscriptionsIndexController">
+      <h3>Agent List</h3>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Details</th>
+        </tr>
+        <tr ng-repeat="agent in agents">
+          <td>{{ agent.name }}</td>
+          <td>{{ agent.phone }}</td>
+          <td>{{ agent.email }}</td>
+          <td><input type="button" ng-click="agentSubscriptionDetail(agent._id)" value="Details" /></td>
+        </tr>
+      </table><br/>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/subscriptions.js"></script>
+  </body>
+</html>

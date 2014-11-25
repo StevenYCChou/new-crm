@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="crmSubscriptionApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system Agent Subscription Center</title>
+  </head>
+  <body>
+    <div ng-controller="createSubscriptionController">
+      <h3>Create Subscription</h3>
+      <div>
+        <label>Customer: </label>
+        <select ng-model="customer_select" ng-options="customer.name for customer in customers"></select>
+      </div>
+      <div>
+        <label>Notification Methods: </label>
+        <label ng-repeat="notificationMethod in notificationMethods">
+        <input type="checkbox" value="{{notificationMethod.name}}" ng-model="notificationMethod.selected">{{notificationMethod.name}}
+        </label>
+      </div>
+      <div>
+        <label>Notification Fields: </label>
+        <label ng-repeat="notificationField in notificationFields">
+        <input type="checkbox" value="{{notificationField.name}}" ng-model="notificationField.selected">{{notificationField.name}}
+        </label>
+      </div>
+      <div>
+        <input type="button" ng-click="createSubscriptionSubmit()" value="Submit" />
+        <input type="button" ng-click="createSubscriptionCancel()" value="Return" />
+      </div>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/subscriptions.js"></script>
+  </body>
+</html>

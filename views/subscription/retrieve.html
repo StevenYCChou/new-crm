@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="crmSubscriptionApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system Agent Subscription Center</title>
+  </head>
+  <body>
+    <div ng-controller="agentSubscriptionsController">
+      <h3>Agent Basic Info</h3>
+      <ul>
+        <li>TODO</li>
+      </ul>
+      <h3>Subscriptions</h3>
+      <table>
+        <tr>
+          <th>Customer Id</th>
+          <th>Customer Name</th>
+          <th>Notification Method</th>
+          <th>Notification Field</th>
+        </tr>
+        <tr ng-repeat="subscription in subscriptions">
+          <td>{{ subscription.customer._id }}</td>
+          <td>{{ subscription.customer.name }}</td>
+          <td>{{ subscription.notificationMethods }}</td>
+          <td>{{ subscription.notificationFields }}</td>
+          <td> </td>
+          <td><input type="button" ng-click="deleteSubscription(subscription._id)" value="Delete" /></td>
+          <td><input type="button" ng-click="updateSubscription(subscription._id)" value="Update" /></td>
+        </tr>
+      </table><br />
+      <div>
+        <input type="button" ng-click="createNewSubscription()" value="Create New Subscription" />
+      </div><br/>
+      <input type="button" ng-click="backToAgentList()" value="Go back to Agent list" />
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/subscriptions.js"></script>
+  </body>
+</html>
