@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="crmAgentApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system-Agent-Customer Details</title>
+  </head>
+  <body>
+    <div ng-controller="showCustomerDetailController">
+     <h3>Customer Basic Info</h3>
+      <ul>
+        <li>Customer Name: {{ customer.name }}</li>
+        <li>Customer Phone: {{ customer.phone }}</li>
+        <li>Customer Email: {{ customer.email }}</li> 
+      </ul>
+      <input type="button" value="Edit Customer Basic Info" ng-click="editCustomer(agent._id, customer._id)"/>
+      <input type="button" value="Delete the customer" ng-click="deleteCustomer(agent._id, customer._id)"/>
+
+      <h3>Contact History</h3>
+      <table>
+        <tr>
+          <th>Summary</th>
+          <th>Mode</th>
+          <th>Time</th>
+          <th>Details</th>
+        </tr>
+        <tr ng-repeat="contact_record in contact_records">
+          <td>{{ contact_record.textSummary }}</td>
+          <td>{{ contact_record.model }}</td>
+          <td>{{ contact_record.time | date:'yyyy-MM-dd HH:mm:ss' }}</td> 
+          <td><input type="button" value="Details" ng-click="contactRecordDetail(contact_record._id)" /></td>
+        </tr>
+      </table><br />
+      <div>
+        <input type="button" value="Add contact Record" ng-click="createContactRecord(agent._id, customer._id)" />
+      </div><br />
+      <div>
+        <input type="button" value="Go back to the Agent" ng-click="backToAgent(agent._id)" />
+        <input type="button" value="Go back to Agent list" ng-click="backToAgentList()"/>
+      </div>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/agents.js"></script>
+  </body>
+</html>

@@ -1,143 +1,95 @@
-$('#create_customer').click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId +'/create';
-});
+var customerApp = angular.module('crmCustomerApp',[]);
 
-$('.customer_detail').click(function() {
-  var customerId = $(this).attr("value");
-  var agentId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId;
-});
-
-$("#create_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var agentId = $(this).attr("value");
-    $.post('/agent/' + agentId,
-      { name: customer_name,
-        phone: customer_phone,
-        email: customer_email,
-        agentId: agentId },
-      function(res) {
-        location.href = "/agent/"+ agentId;
+customerApp.factory('uuid2', [
+  function() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+                 .toString(16).substring(1);
+    };
+    return {
+      newuuid: function() {
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = "0123456789abcdef";
+      for (var i = 0; i < 36; i++) {
+          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
       }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Name, phone, email is required");
-  }
-});
-
-$("#create_customer_cancel").click(function() {
-  var agentId = $(this).attr("value");
-  location.href='/agent/' + agentId;
-});
-
-$("#edit_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var agentId = $(this).attr("value");
-    var customerId = $(this).attr("name");
-    $.ajax({
-      type: 'PUT',
-      url: '/agent/' + agentId + '/customer/' + customerId,
-      data: {name: customer_name, phone: customer_phone, email: customer_email},
-      success: function(res) {
-        window.location = '/agent/' + agentId + '/customer/' + customerId;
+      s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      s[8] = s[13] = s[18] = s[23] = "-";
+      return s.join("");
+      },
+      newguid: function() {
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+               s4() + '-' + s4() + s4() + s4();
       }
-    }).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Name, phone, email is required");
-  }
-});
-
-$("#edit_customer_cancel").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId;
-});
-
-$("#edit_customer").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  location.href='/agent/' + agentId + '/customer/' + customerId + '/edit';
-});
-
-$(".customer_delete").click(function() {
-  var customerId = $(".customerId").val();
-  if (customerId){
-    $.post(
-      '/customer/:id/delete',
-      {customerId: customerId},
-      function(res) {
-        window.location = "/customers";
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Id is required");
-  }
-});
-
-$("#customer_back_agent").click(function() {
-  var agentId = $(this).attr("value");
-  location.href= '/agent/' + agentId;
-});
-
-$("#customer_back_agents").click(function() {
-  location.href= '/agents';
-});
-
-$("#customer_delete").click(function() {
-  var agentId = $(this).attr("value");
-  var customerId = $(this).attr("name");
-  $.ajax({
-    type: 'delete',
-    data: {agentid: agentId, customerid: customerId},
-    url: '/customer/' + customerId,
-    success: function(res) {
-      window.location="/agent/" + agentId;
     }
-  })
-  .fail(function(res) {
-    alert("Error: " + res.getResponseHeader("error"));
-  });
-});
-
-$('#customer_view_edit').click(function() {
-  var customerId = $(this).attr("value");
-  location.href= '/customer/' + customerId + '/edit';
-});
-
-$("#customer_view_edit_customer_submit").click(function() {
-  var customer_name = $("#customer_name").val();
-  var customer_phone = $("#customer_phone").val();
-  var customer_email = $("#customer_email").val();
-  if (customer_name && customer_phone && customer_email){
-    var customerId = $(this).attr("value");
-    $.post(
-      '/customer/' + customerId,
-      {name: customer_name, phone: customer_phone, email: customer_email},
-      function(res) {
-        window.location = '/customer/' + customerId;
-      }
-    ).fail(function(res) {
-      alert("Error: " + res.getResponseHeader("error"));
-    });
-  } else {
-    alert("Name, phone, email is required");
   }
-});
+]);
 
-$("#customer_view_edit_customer_cancel").click(function() {
-  var customerId = $(this).attr("value");
-  location.href= '/customer/' + customerId;
-});
+customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.customerId = $location.absUrl().split("/")[4];
+  $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
+    .success(function(data, status, headers, config) {
+      $scope.customer = data.customer;
+      $http.get('/api/v1.00/entities/agents/' + $scope.customer.agent)
+        .success(function(data, status, headers, config) {
+          $scope.agent = data.agent;
+          $http.get('/api/v1.00/entities/contact_records?q=customer=' + $scope.customerId + ',agent=' + $scope.agent._id)
+            .success(function(data, status, headers, config) {
+              $scope.contact_records = data.contact_records;
+            })
+            .error(function(data, status, headers, config) {
+              $scope.errorStatus = status;
+              $scope.errorData = data;
+              $window.alert("Status: " + status + ", " + data);
+            });
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });  
+  })
+  .error(function(data, status, headers, config) {
+    $scope.errorStatus = status;
+    $scope.errorData = data;
+    $window.alert("Status: " + status + ", " + data);
+  });
+  $scope.customerViewEdit = function(customerId) {
+    $window.location.href = "/customers/" + customerId + "/edit";
+  };
+}]);
+
+customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $scope.uuid = uuid2.newuuid();
+  $scope.customerId = $location.absUrl().split("/")[4];
+  $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
+    .success(function(data, status, headers, config) {
+      $scope.customer = data.customer;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  $scope.editCustomerSubmit = function(customerId, name, phone, email) {
+    var data = {name: name, phone: phone, email: email};
+    $http({
+      url: '/api/v1.00/entities/customers/' + $scope.customerId, 
+      method: 'PUT', 
+      headers: {'nonce' : 'PUT' + JSON.stringify(data) + $scope.uuid},
+      data: data}) 
+      .success(function(data, status, headers, config) {
+        $window.location.href="/customers/" + customerId;
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+  };
+  $scope.returnToCustomer = function(customerId) {
+    $window.location.href = "/customers/" + customerId;
+  };
+}]);

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="crmManagerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>CRM system-Agents Details</title>
+  </head>
+  <body>
+    <div ng-controller="agentIndexController">
+      <h3>Agent List</h3>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Details</th>
+        </tr>
+        <tr ng-repeat="agent in agents">
+          <td>{{ agent.name }}</td>
+          <td>{{ agent.phone }}</td>
+          <td>{{ agent.email }}</td>
+          <td><input type="button" ng-click="agentDetail(agent._id)" value="Details" /></td>
+        </tr>
+      </table><br />
+      <input type="button" ng-click="createAgent()" value="Create Agent" />
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/managers.js"></script>
+  </body>
+</html>
