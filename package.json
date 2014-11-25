@@ -13,7 +13,8 @@
     "http-proxy": "^1.5.3",
     "mongoose": "^3.8.17",
     "multer": "^0.1.6",
-    "promise": "^6.0.1"
+    "promise": "^6.0.1",
+    "cors":  "2.5.2"
   },
   "devDependencies": {},
   "scripts": {
