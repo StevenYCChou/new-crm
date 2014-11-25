@@ -215,7 +215,23 @@ exports.updateCustomer = function (req, res) {
    console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
     return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
   };
-  getCachedResponse(req.get('nonce'), update, res);
+  mongodbService.Customer.findOne({_id: customerId, __v: 0}, function (err, originalInfo) {
+    if (err) {
+      res.json({error: err});
+    } else {
+      getCachedResponse(req.get('nonce'), update, res);
+      var crmRabbitmqService = require('./business_service/notification_service/rabbitmq_service.js');
+      var crmNotificationMessage = require('./business_service/notification_service/notification_message.js');
+      var action = req.param('action');
+      if (action == 'customer') {
+        var updateMessage = crmNotificationMessage.createUpdateMessage(
+          originalInfo.agent, customerId, originalInfo, updateInfo);
+        console.log(updateMessage);
+        console.log('Publishing message to the update queue');
+        crmRabbitmqService.publishMessage('crm-notification-consumer-update', updateMessage, '');
+      }
+    }
+  });
 };
 
 exports.createCustomer = function (req, res) {
@@ -233,12 +249,24 @@ exports.createCustomer = function (req, res) {
 };
 
 exports.removeCustomer = function (req, res) {
-  var customerId = req.param('customerId');
+  var customerId = req.param('id');
+  console.log(req.param('id'));
+  /*
   var deletion = function () {
     console.log("[api.removeCustomer] Remove Customer:" + customerId);
     mongodbService.Customer.findByIdAndRemove(customerId);
   };
   getCachedResponse(req.get('nonce'), deletion, res);
+  */
+    mongodbService.Customer.findByIdAndRemove(customerId, function (err, data) {
+      if (err) {
+        console.log('error');
+        res.json({error : err});
+      } else {
+        console.log('success');
+        res.json({status: 202});
+      }
+    });
 };
 
 exports.getContactRecords = function (req, res) {
