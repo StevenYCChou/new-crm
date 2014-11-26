@@ -52,15 +52,24 @@ var getQueryConstraints = function (req) {
   if (req.query.q) {
     constraints.query = Qs.parse(req.query.q, { delimiter: ',' });
   }
+  if (req.query.field) {
+    var fields = req.query.field.split(',');
+    var field_query_obj = {};
+    fields.forEach(function(field) {
+      field_query_obj[field] = 1;
+    });
+    constraints.field = field_query_obj;
+  }
   return constraints;
 }
 
 
-var getLink = function (endpoint, offset, limit, query) {
+var getLink = function (endpoint, offset, limit, query, field) {
   var link_constraints = {
     offset: offset,
     limit: limit,
-    q: query
+    q: query,
+    field: field
   }
   var query_string = Qs.stringify(link_constraints);
   if (query_string === "") {
@@ -70,25 +79,25 @@ var getLink = function (endpoint, offset, limit, query) {
   }
 };
 
-var constructLinks = function(endpoint, offset, limit, original_query, collectionSize) {
+var constructLinks = function(endpoint, offset, limit, original_query, field, collectionSize) {
   var query_string;
   if (original_query) {
     query_string = Qs.stringify(original_query, { delimiter: ',' });
   }
   var res = [];
   if (limit != 0) {
-    res[res.length] = {rel: "first", href: getLink(endpoint, 0, limit, query_string)};
-    res[res.length] = {rel: "last", href: getLink(endpoint, collectionSize - limit, limit, query_string)};
+    res[res.length] = {rel: "first", href: getLink(endpoint, 0, limit, query_string, field)};
+    res[res.length] = {rel: "last", href: getLink(endpoint, collectionSize - limit, limit, query_string, field)};
     if (offset > 0 &&
         collectionSize != limit) {
       var prev_offset = (offset >= limit) ? (offset - limit) : 0;
-      res[res.length] = {rel: "prev", href: getLink(endpoint, prev_offset, limit, query_string)};
+      res[res.length] = {rel: "prev", href: getLink(endpoint, prev_offset, limit, query_string, field)};
     }
     if (offset >= 0 &&
         offset + limit < collectionSize &&
         collectionSize != limit) {
       var next_offset = offset + limit;
-      res[res.length] = {rel: "next", href: getLink(endpoint, next_offset, limit, query_string)};
+      res[res.length] = {rel: "next", href: getLink(endpoint, next_offset, limit, query_string, field)};
     }
   }
   return res;
@@ -108,6 +117,10 @@ exports.getAgents = function (req, res) {
   if (constraints.limit) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
+  if (constraints.field) {
+    subcollectionQuery = subcollectionQuery.select(constraints.field);
+  }
+
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
   var countQuery, countPromise;
@@ -126,6 +139,7 @@ exports.getAgents = function (req, res) {
     var data = [];
     subCollection.forEach(function(agent, idx, agents) {
       data[idx] = agent.toJSON();
+      delete data[idx]._id;
       data[idx].link = {
         rel: "self",
         href: "/api/v1.00/entities/agents/"+agent._id
@@ -135,6 +149,7 @@ exports.getAgents = function (req, res) {
                                constraints.offset,
                                data.length,
                                constraints.query,
+                               req.query.field,
                                collectionSize);
     res.json({
       _type: "agent",
@@ -218,6 +233,9 @@ exports.getCustomers = function (req, res) {
   if (constraints.limit) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
+  if (constraints.field) {
+    subcollectionQuery = subcollectionQuery.select(constraints.field);
+  }
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
   var countQuery, countPromise;
@@ -236,6 +254,7 @@ exports.getCustomers = function (req, res) {
     var data = [];
     subCollection.forEach(function(customer, idx, customers) {
       data[idx] = customer.toJSON();
+      delete data[idx]._id;
       delete data[idx].agent;
       data[idx].links = [{
         rel: "self",
@@ -249,6 +268,7 @@ exports.getCustomers = function (req, res) {
                                constraints.offset,
                                data.length,
                                constraints.query,
+                               req.query.field,
                                collectionSize);
     res.json({
       _type: "customer",
@@ -347,6 +367,9 @@ exports.getContactRecords = function (req, res) {
   if (constraints.limit) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
+  if (constraints.field) {
+    subcollectionQuery = subcollectionQuery.select(constraints.field);
+  }
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
   var countQuery, countPromise;
@@ -365,6 +388,7 @@ exports.getContactRecords = function (req, res) {
     var data = [];
     subCollection.forEach(function(contactRecord, idx, contactRecords) {
       data[idx] = contactRecord.toJSON();
+      delete data[idx]._id;
       delete data[idx].agent;
       delete data[idx].customer;
       data[idx].links = [{
@@ -382,6 +406,7 @@ exports.getContactRecords = function (req, res) {
                                constraints.offset,
                                data.length,
                                constraints.query,
+                               req.query.field,
                                collectionSize);
     res.json({
       _type: "contact_recrods",
