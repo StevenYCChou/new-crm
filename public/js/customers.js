@@ -3,13 +3,13 @@ customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$
   $scope.customerId = $location.absUrl().split("/")[4];
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
-      $scope.customer = data.customer;
+      $scope.customer = data.data;
       $http.get('/api/v1.00/entities/agents/' + $scope.customer.agent)
         .success(function(data, status, headers, config) {
-          $scope.agent = data.agent;
+          $scope.agent = data.data;
           $http.get('/api/v1.00/entities/contact_records?q=customer=' + $scope.customerId + ',agent=' + $scope.agent._id)
             .success(function(data, status, headers, config) {
-              $scope.contact_records = data.contact_records;
+              $scope.contact_records = data.data;
           });
       });
   });
@@ -22,7 +22,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
   $scope.customerId = $location.absUrl().split("/")[4];
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
-      $scope.customer = data.customer;
+      $scope.customer = data.data;
     });
   $scope.editCustomerSubmit = function(customerId, name, phone, email, location) {
     $http.put('/api/v1.00/entities/customers/' + $scope.customerId, {name: name, phone: phone, email: email, location: location})

@@ -3,7 +3,7 @@ var managerApp = angular.module('crmManagerApp', []);
 managerApp.controller('agentIndexController', ['$scope', '$http', '$window', function($scope, $http, $window) {
   $http.get('/api/v1.00/entities/agents')
     .success(function(data, status, headers, config) {
-       $scope.agents = data.agents;
+       $scope.agents = data.data;
   });
   $scope.createAgent = function() {
     $window.location.href="/agents/create";

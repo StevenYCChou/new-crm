@@ -88,18 +88,17 @@ function getCachedResponse(nonce, callback, res) {
 }
 
 var getQueryConstraints = function (req) {
-  var limit, offset, query;
-  var res = {};
+  var constraints = {};
   if (req.query.limit) {
-    res.limit = req.query.limit;
+    constraints.limit = parseInt(req.query.limit);
   }
   if (req.query.offset) {
-    res.offset = req.query.offset;
+    constraints.offset = parseInt(req.query.offset);
   }
   if (req.query.q) {
-    res.query = Qs.parse(req.query.q, { delimiter: ',' });
+    constraints.query = Qs.parse(req.query.q, { delimiter: ',' });
   }
-  return res;
+  return constraints;
 }
 
 
@@ -107,9 +106,14 @@ var getLink = function (endpoint, offset, limit, query) {
   var link_constraints = {
     offset: offset,
     limit: limit,
-    query: query
+    q: query
   }
-  return endpoint+'?'+Qs.stringify(link_constraints);
+  var query_string = Qs.stringify(link_constraints);
+  if (query_string === "") {
+    return endpoint;
+  } else {
+    return endpoint+'?'+Qs.stringify(link_constraints);
+  }
 };
 
 var constructLinks = function(endpoint, offset, limit, original_query, collectionSize) {
@@ -138,15 +142,30 @@ var constructLinks = function(endpoint, offset, limit, original_query, collectio
 
 exports.getAgents = function (req, res) {
   var constraints = getQueryConstraints(req);
+  var subcollectionQuery, subcollectionPromise;
+  if (constraints.query) {
+    subcollectionQuery = mongodbService.Agent.find(constraints.query);
+  } else {
+    subcollectionQuery = mongodbService.Agent.find({});
+  }
+  if (constraints.offset) {
+    subcollectionQuery = subcollectionQuery.skip(constraints.offset);
+  }
+  if (constraints.limit) {
+    subcollectionQuery = subcollectionQuery.limit(constraints.limit);
+  }
+  subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
-  var filteredQuery = filter(constraints.query, function(key) {return key in validAgentQueryField;});
-  var subCollectionPromise = Promise.resolve(mongodbService.Agent.find(filteredQuery, {__v: 0})
-                                                           .skip(constraints.offset)
-                                                           .limit(constraints.limit)
-                                                           .exec());
-  var countPromise = Promise.resolve(mongodbService.Agent.count().exec());
+  var countQuery, countPromise;
+  if (constraints.query) {
+    countQuery = mongodbService.Agent.find(constraints.query);
+  } else {
+    countQuery = mongodbService.Agent.find({});
+  }
+  countQuery = countQuery.count();
+  countPromise = Promise.resolve(countQuery.exec());
 
-  Promise.all([subCollectionPromise, countPromise])
+  Promise.all([subcollectionPromise, countPromise])
          .then(function(results) {
     var subCollection = results[0];
     var collectionSize = results[1];
@@ -159,7 +178,7 @@ exports.getAgents = function (req, res) {
       };
     });
     var links = constructLinks('/api/v1.00/entities/agents',
-                               parseInt(constraints.offset),
+                               constraints.offset,
                                data.length,
                                constraints.query,
                                collectionSize);
@@ -178,17 +197,17 @@ exports.getAgent = function(req, res) {
 
   var promise = mongodbService.Agent.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(agent) {
-    agent = agent.toJSON();
-    agent.link = {
+    data = agent.toJSON();
+    data.links = [{
       rel: "self",
       href: "/api/v1.00/entities/agents/"+agent._id
-    };
+    }];
     res.json({
       _type: "agent",
-      agent: agent
+      data: data
     });
   }, function(err) {
-    res.json({error: err});
+    res.status(404).end();
   });
 }
 
@@ -222,25 +241,59 @@ exports.createAgent = function (req, res) {
 };
 
 exports.getCustomers = function (req, res) {
-  var offset = req.query.offset;
-  var limit = req.query.limit;
+  var constraints = getQueryConstraints(req);
+  var subcollectionQuery, subcollectionPromise;
+  if (constraints.query) {
+    subcollectionQuery = mongodbService.Customer.find(constraints.query);
+  } else {
+    subcollectionQuery = mongodbService.Customer.find({});
+  }
+  if (constraints.offset) {
+    subcollectionQuery = subcollectionQuery.skip(constraints.offset);
+  }
+  if (constraints.limit) {
+    subcollectionQuery = subcollectionQuery.limit(constraints.limit);
+  }
+  subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
-  var q = req.query.q;
-  var query = Qs.parse(q, { delimiter: ',' });
-  var filteredQuery = filter(query, function(key) {return key in validCustomerQueryField;});
-  // var name_q = new RegExp(req.param('name'));
+  var countQuery, countPromise;
+  if (constraints.query) {
+    countQuery = mongodbService.Customer.find(constraints.query);
+  } else {
+    countQuery = mongodbService.Customer.find({});
+  }
+  countQuery = countQuery.count();
+  countPromise = Promise.resolve(countQuery.exec());
 
-  var promise = mongodbService.Customer.find(filteredQuery, {__v: 0})
-                                    .skip(offset)
-                                    .limit(limit)
-                                    .exec();
-  promise.then(function(customers) {
+  Promise.all([subcollectionPromise, countPromise])
+         .then(function(results) {
+    var subCollection = results[0];
+    var collectionSize = results[1];
+    var data = [];
+    subCollection.forEach(function(customer, idx, customers) {
+      console.log(customer);
+      data[idx] = customer.toJSON();
+      delete data[idx].agent;
+      data[idx].links = [{
+        rel: "self",
+        href: "/api/v1.00/entities/customers/"+customer._id
+      }, {
+        rel: "agent",
+        href: "/api/v1.00/entities/agents/"+customer.agent
+      }];
+    });
+    var links = constructLinks('/api/v1.00/entities/customers',
+                               constraints.offset,
+                               data.length,
+                               constraints.query,
+                               collectionSize);
     res.json({
       _type: "customer",
-      customers: customers
+      data: data,
+      links: links
     });
   }, function(err) {
-    res.json({error: err});
+    res.status(404).end();
   });
 };
 
@@ -248,14 +301,15 @@ exports.getCustomer = function (req, res) {
   var id = req.params.id;
   var promise = mongodbService.Customer.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(customer) {
-    customer = customer.toJSON();
-    customer.link = {
+    data = customer.toJSON();
+    delete data.agent;
+    data.links = [{
       rel: "self",
       href: "/api/v1.00/entities/customer/"+customer._id
-    };
+    }];
     res.json({
       _type: "customer",
-      customer: customer
+      data: data
     });
   }, function(err) {
     res.json({error: err});
@@ -316,24 +370,62 @@ exports.removeCustomer = function (req, res) {
 };
 
 exports.getContactRecords = function (req, res) {
-  var offset = req.query.offset;
-  var limit = req.query.limit;
+  var constraints = getQueryConstraints(req);
+  var subcollectionQuery, subcollectionPromise;
+  if (constraints.query) {
+    subcollectionQuery = mongodbService.ContactRecord.find(constraints.query);
+  } else {
+    subcollectionQuery = mongodbService.ContactRecord.find({});
+  }
+  if (constraints.offset) {
+    subcollectionQuery = subcollectionQuery.skip(constraints.offset);
+  }
+  if (constraints.limit) {
+    subcollectionQuery = subcollectionQuery.limit(constraints.limit);
+  }
+  subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
-  var q = req.query.q;
-  var query = Qs.parse(q, { delimiter: ',' });
-  var filteredQuery = filter(query, function(key) {return key in validContactRecordQueryField;});
+  var countQuery, countPromise;
+  if (constraints.query) {
+    countQuery = mongodbService.ContactRecord.find(constraints.query);
+  } else {
+    countQuery = mongodbService.ContactRecord.find({});
+  }
+  countQuery = countQuery.count();
+  countPromise = Promise.resolve(countQuery.exec());
 
-  var promise = mongodbService.ContactRecord.find(filteredQuery, {__v: 0})
-                                    .skip(offset)
-                                    .limit(limit)
-                                    .exec();
-  promise.then(function(contact_records) {
+  Promise.all([subcollectionPromise, countPromise])
+         .then(function(results) {
+    var subCollection = results[0];
+    var collectionSize = results[1];
+    var data = [];
+    subCollection.forEach(function(contactRecord, idx, contactRecords) {
+      data[idx] = contactRecord.toJSON();
+      delete data[idx].agent;
+      delete data[idx].customer;
+      data[idx].links = [{
+        rel: "self",
+        href: "/api/v1.00/entities/contact_records/"+contactRecord._id
+      }, {
+        rel: "agent",
+        href: "/api/v1.00/entities/agents/"+contactRecord.agent
+      }, {
+        rel: "customer",
+        href: "/api/v1.00/entities/customers/"+contactRecord.customer
+      }];
+    });
+    var links = constructLinks('/api/v1.00/entities/contact_records',
+                               constraints.offset,
+                               data.length,
+                               constraints.query,
+                               collectionSize);
     res.json({
-      _type: 'contact_record',
-      contact_records: contact_records
+      _type: "contact_recrods",
+      data: data,
+      links: links
     });
   }, function(err) {
-    res.json({error: err});
+    res.status(404).end();
   });
 };
 
