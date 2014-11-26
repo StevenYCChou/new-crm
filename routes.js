@@ -54,8 +54,8 @@ app.put('/api/v1.00/entities/customers/:id', api.updateCustomer);
 app.delete('/api/v1.00/entities/customers/:id', api.removeCustomer);
 
 app.get('/api/v1.00/entities/contact_records', api.getContactRecords);
+app.post('/api/v1.00/entities/contact_records', api.createContactRecord);
 app.get('/api/v1.00/entities/contact_records/:id', api.getContactRecord);
-app.post('/api/v1.00/entities/contact_records/create', api.createContactRecord);
 
 ////////////////////
 // Manager Facade //
@@ -77,8 +77,8 @@ app.get('/agents/:agentId/create', agentFacade.showCustomerCreationPage);
 app.get('/agents/:agentId/customers/:customerId/edit', agentFacade.showCustomerUpdatePage);
 
 // contact record related
-app.get('/contact_history/create', agentFacade.showContactRecordCreationPage);
-app.get('/contact_history/:contactHistoryId', agentFacade.retrieveContactRecordById);
+app.get('/contact_records/create', agentFacade.showContactRecordCreationPage);
+app.get('/contact_records/:contactRecordId', agentFacade.retrieveContactRecordById);
 
 /////////////////////
 // Customer Facade //

@@ -73,6 +73,8 @@ function getCachedResponse(nonce, callback, res) {
           return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: error}}).exec();
         }).then(function() {
           console.log("[api.getCachedResponse] finish process.");
+        }).else(function(err) {
+          console.log(err);
         });
       } else if (responseEntry.status === "COMPLETED") {
         console.log("[api.getCachedResponse] Response is processed and cached.");
@@ -271,7 +273,6 @@ exports.getCustomers = function (req, res) {
     var collectionSize = results[1];
     var data = [];
     subCollection.forEach(function(customer, idx, customers) {
-      console.log(customer);
       data[idx] = customer.toJSON();
       delete data[idx].agent;
       data[idx].links = [{
@@ -361,10 +362,10 @@ exports.createCustomer = function (req, res) {
 };
 
 exports.removeCustomer = function (req, res) {
-  var customerId = req.param('customerId');
+  var customerId = req.param('id');
   var deletion = function () {
     console.log("[api.removeCustomer] Remove Customer:" + customerId);
-    mongodbService.Customer.findByIdAndRemove(customerId);
+    mongodbService.Customer.findByIdAndRemove(customerId).exec();
   };
   getCachedResponse(req.get('nonce'), deletion, res);
 };
@@ -449,17 +450,17 @@ exports.getContactRecord = function (req, res) {
 };
 
 exports.createContactRecord = function (req, res) {
-  var newContactHistory = {
+  var newContactRecord = {
     time : req.param('time'),
     data : req.param('data'),
     textSummary : req.param('textSummary'),
     model : req.param('model'),
     agent: req.param('agentId'),
-    customer: req.param('customerId'),
+    customer: req.param('customerId')
   };
   var creation = function () {
-    console.log("[api.createContactRecord] Create Contact Record:" + newContactHistory.textSummary);
-    return mongodbService.ContactHistory.create(newContactHistory);
+    console.log("[api.createContactRecord] Create Contact Record:" + newContactRecord.textSummary);
+    return mongodbService.ContactRecord.create(newContactRecord);
   };
   getCachedResponse(req.get('nonce'), creation, res);
 };
