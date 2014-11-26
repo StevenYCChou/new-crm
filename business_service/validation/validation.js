@@ -58,8 +58,7 @@ exports.updateCustomerContactValidation = function (customerId, callback) {
         var currTime = new Date();
         var today = new Date(currTime.getFullYear(), currTime.getMonth(), currTime.getDate());
         var mostRecentSunday = new Date(today.setDate(today.getDate() - today.getDay()));
-
-        if (customer.lastUpdated - mostRecentSunday < 0) {
+        if (customer.lastUpdatedAt - mostRecentSunday < 0) {
           callback(null);
         } else {
           callback(new Error('Unable to update customer profile.'));
