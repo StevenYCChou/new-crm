@@ -139,7 +139,6 @@ exports.getAgents = function (req, res) {
     var data = [];
     subCollection.forEach(function(agent, idx, agents) {
       data[idx] = agent.toJSON();
-      delete data[idx]._id;
       data[idx].link = {
         rel: "self",
         href: "/api/v1.00/entities/agents/"+agent._id
@@ -254,7 +253,6 @@ exports.getCustomers = function (req, res) {
     var data = [];
     subCollection.forEach(function(customer, idx, customers) {
       data[idx] = customer.toJSON();
-      delete data[idx]._id;
       delete data[idx].agent;
       data[idx].links = [{
         rel: "self",
@@ -388,7 +386,6 @@ exports.getContactRecords = function (req, res) {
     var data = [];
     subCollection.forEach(function(contactRecord, idx, contactRecords) {
       data[idx] = contactRecord.toJSON();
-      delete data[idx]._id;
       delete data[idx].agent;
       delete data[idx].customer;
       data[idx].links = [{
