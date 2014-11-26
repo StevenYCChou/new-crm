@@ -45,7 +45,7 @@ app.get('/api/v1.00/entities/agents', api.getAgents);
 app.post('/api/v1.00/entities/agents', api.createAgent);
 app.get('/api/v1.00/entities/agents/:id', api.getAgent);
 app.put('/api/v1.00/entities/agents/:id', api.updateAgent);
-// app.delete('/api/v1.00/entities/agents/:id', api.removeAgent);
+app.delete('/api/v1.00/entities/agents/:id', api.removeAgent);
 
 app.get('/api/v1.00/entities/customers', api.getCustomers);
 app.post('/api/v1.00/entities/customers', api.createCustomer);
@@ -56,6 +56,8 @@ app.delete('/api/v1.00/entities/customers/:id', api.removeCustomer);
 app.get('/api/v1.00/entities/contact_records', api.getContactRecords);
 app.post('/api/v1.00/entities/contact_records', api.createContactRecord);
 app.get('/api/v1.00/entities/contact_records/:id', api.getContactRecord);
+app.put('/api/v1.00/entities/contact_records/:id', api.updateContactRecord);
+app.delete('/api/v1.00/entities/contact_records/:id', api.removeContactRecord);
 
 ////////////////////
 // Manager Facade //

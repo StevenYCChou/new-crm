@@ -195,6 +195,15 @@ exports.createAgent = function (req, res) {
   getCachedResponse(req.get('nonce'), creation, res);
 };
 
+exports.removeAgent = function (req, res) {
+  var agentId = req.param('id');
+  var deletion = function () {
+    console.log("[api.removeAgent] Remove Agent:" + agentId);
+    mongodbService.Agent.findByIdAndRemove(agentId).exec();
+  };
+  getCachedResponse(req.get('nonce'), deletion, res);
+};
+
 exports.getCustomers = function (req, res) {
   var constraints = getQueryConstraints(req);
   var subcollectionQuery, subcollectionPromise;
@@ -419,3 +428,28 @@ exports.createContactRecord = function (req, res) {
   getCachedResponse(req.get('nonce'), creation, res);
 };
 
+exports.updateContactRecord = function (req, res) {
+  var contactRecordId = req.param('id');
+  var updatedContactRecord = {
+    time : req.param('time'),
+    data : req.param('data'),
+    textSummary : req.param('textSummary'),
+    model : req.param('model'),
+    agent: req.param('agentId'),
+    customer: req.param('customerId')
+  };
+  var update = function () {
+    console.log("[api.updateContactRecord] Update contact record:" + updateInfo.name);
+    return mongodbService.ContactRecord.findByIdAndUpdate(contactRecordId, updatedContactRecord);
+  };
+  getCachedResponse(req.get('nonce'), update, res);
+};
+
+exports.removeContactRecord = function (req, res) {
+  var contactRecordId = req.param('id');
+  var deletion = function () {
+    console.log("[api.removeContactRecord] Remove contact record:" + contactRecordId);
+    return mongodbService.ContactRecord.findByIdAndRemove(contactRecordId).exec();
+  };
+  getCachedResponse(req.get('nonce'), deletion, res);
+};
