@@ -5,54 +5,6 @@ var Qs = require('qs');
 var crmService = require('./business_service/internal/crm_service.js');
 var crmValidation = require('./business_service/validation/validation.js');
 
-var without_internal_field = {
-  _id: 0,
-  name: 1,
-  email: 1,
-  phone: 1
-};
-
-var validAgentQueryField = {
-  id: undefined,
-  name: undefined,
-  phone: undefined,
-  email: undefined
-};
-
-var validCustomerQueryField = {
-  id: undefined,
-  name: undefined,
-  phone: undefined,
-  email: undefined,
-  agent: undefined
-};
-
-var validContactRecordQueryField = {
-  id: undefined,
-  time: undefined,
-  model: undefined,
-  agent: undefined,
-  customer: undefined
-};
-
-var filter = function(obj, predicate) {
-  var result = {}, key;
-  for (key in obj) {
-      if (obj.hasOwnProperty(key) && predicate(key)) {
-          result[key] = obj[key];
-      }
-  }
-  return result;
-};
-
-// function(base, query) {
-//   var links;
-//   var prev = {
-//     rel: "prev",
-//     href: base,
-//   }
-// }
-
 function getCachedResponse(nonce, callback, res) {
   console.log(nonce);
   if (!nonce) {
