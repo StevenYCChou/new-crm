@@ -219,7 +219,8 @@ exports.updateAgent = function (req, res) {
     name: req.param('name'),
     phone: req.param('phone'),
     email: req.param('email'),
-    location: req.param('location')
+    location: req.param('location'),
+    lastUpdatedAt: Date.now()
   };
   var update = function () {
     console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
@@ -323,7 +324,8 @@ exports.updateCustomer = function (req, res) {
     name: req.param('name'),
     phone: req.param('phone'),
     email: req.param('email'),
-    location: req.param('location')
+    location: req.param('location'),
+    lastUpdatedAt: Date.now()
   };
   var update = function () {
     console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
