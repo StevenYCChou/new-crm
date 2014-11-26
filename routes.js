@@ -10,24 +10,17 @@ var app = express();
 var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var uuid = require('uuid');
 var cors = require('cors');
 
 app.engine('html', require('ejs').renderFile);
-//app.engine('ejs', engine);
 app.use("/js", express.static(__dirname + '/public/js'));
 app.use("/jquery-ui-1.11.1", express.static(__dirname + '/public/jquery-ui-1.11.1'));
 app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-ui-themes-1.11.1'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multer());
-app.use(function(req,res,next) {
-  res.set('uuid', uuid.v1());
-  next();
-});
 
 app.use(express.static(__dirname + '/views'));
-//app.use(app.router);
 app.use(cors());
 
 app.set('views', __dirname+'/views');
