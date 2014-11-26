@@ -87,39 +87,89 @@ function getCachedResponse(nonce, callback, res) {
   }
 }
 
+var getQueryConstraints = function (req) {
+  var limit, offset, query;
+  var res = {};
+  if (req.query.limit) {
+    res.limit = req.query.limit;
+  }
+  if (req.query.offset) {
+    res.offset = req.query.offset;
+  }
+  if (req.query.q) {
+    res.query = Qs.parse(req.query.q, { delimiter: ',' });
+  }
+  return res;
+}
+
+
+var getLink = function (endpoint, offset, limit, query) {
+  var link_constraints = {
+    offset: offset,
+    limit: limit,
+    query: query
+  }
+  return endpoint+'?'+Qs.stringify(link_constraints);
+};
+
+var constructLinks = function(endpoint, offset, limit, original_query, collectionSize) {
+  var query_string;
+  if (original_query) {
+    query_string = Qs.stringify(original_query, { delimiter: ',' });
+  }
+  var res = [];
+  if (limit != 0) {
+    res[res.length] = {rel: "first", href: getLink(endpoint, 0, limit, query_string)};
+    res[res.length] = {rel: "last", href: getLink(endpoint, collectionSize - limit, limit, query_string)};
+    if (offset > 0 &&
+        collectionSize != limit) {
+      var prev_offset = (offset >= limit) ? (offset - limit) : 0;
+      res[res.length] = {rel: "prev", href: getLink(endpoint, prev_offset, limit, query_string)};
+    }
+    if (offset >= 0 &&
+        offset + limit < collectionSize &&
+        collectionSize != limit) {
+      var next_offset = offset + limit;
+      res[res.length] = {rel: "next", href: getLink(endpoint, next_offset, limit, query_string)};
+    }
+  }
+  return res;
+}
+
 exports.getAgents = function (req, res) {
-  var offset = req.query.offset;
-  var limit = req.query.limit;
-  // var offset = (!req.query.offset) ? 5 : req.query.offset;
-  // var limit = (!req.query.limit) ? 5 : req.query.limit;
+  var constraints = getQueryConstraints(req);
 
-  var q = req.query.q;
-  var query = Qs.parse(q, { delimiter: ',' });
+  var filteredQuery = filter(constraints.query, function(key) {return key in validAgentQueryField;});
+  var subCollectionPromise = Promise.resolve(mongodbService.Agent.find(filteredQuery, {__v: 0})
+                                                           .skip(constraints.offset)
+                                                           .limit(constraints.limit)
+                                                           .exec());
+  var countPromise = Promise.resolve(mongodbService.Agent.count().exec());
 
-  var filteredQuery = filter(query, function(key) {return key in validAgentQueryField;});
-  // var name_q = new RegExp(req.param('name'));
-
-  var promise = mongodbService.Agent.find(filteredQuery, {__v: 0})
-                                    .skip(offset)
-                                    .limit(limit)
-                                    .exec();
-  promise.then(function(agents) {
-    agents.forEach(function(agent, idx, agents) {
-      agents[idx] = agents[idx].toJSON();
-      agents[idx].link = {
+  Promise.all([subCollectionPromise, countPromise])
+         .then(function(results) {
+    var subCollection = results[0];
+    var collectionSize = results[1];
+    var data = [];
+    subCollection.forEach(function(agent, idx, agents) {
+      data[idx] = agent.toJSON();
+      data[idx].link = {
         rel: "self",
         href: "/api/v1.00/entities/agents/"+agent._id
       };
     });
+    var links = constructLinks('/api/v1.00/entities/agents',
+                               parseInt(constraints.offset),
+                               data.length,
+                               constraints.query,
+                               collectionSize);
     res.json({
       _type: "agent",
-      agents: agents,
-      // links: [
-      //   {rel: "prev", href: "/api/v1.00/entities/agents?"+Qs.stringify(req.query)}
-      // ]
+      data: data,
+      links: links
     });
   }, function(err) {
-    res.json({error: err});
+    res.status(404).end();
   });
 };
 
