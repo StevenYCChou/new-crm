@@ -1,4 +1,5 @@
 var customerApp = angular.module('crmCustomerApp',[]);
+var ecommCustomerApp = angular.module('ecommCustomerApp', []);
 
 customerApp.factory('uuid2', [
   function() {
@@ -92,4 +93,16 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
   $scope.returnToCustomer = function(customerId) {
     $window.location.href = "/customers/" + customerId;
   };
+}]);
+
+ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+  $http.get('/api/v1.00/ecomm/entities/products')
+    .success(function(data, status, headers, config) {
+      $scope.products = data.products;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
 }]);

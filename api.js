@@ -475,3 +475,8 @@ exports.removeContactRecord = function (req, res) {
   };
   getCachedResponse(req.get('nonce'), deletion, res);
 };
+
+exports.getProducts = function (req, res) {
+
+};
+

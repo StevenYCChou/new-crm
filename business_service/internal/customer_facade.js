@@ -7,3 +7,7 @@ exports.retrieveProfilePage = function(req, res) {
 exports.showProfileUpdatePage = function (req, res) {
   res.render('customer/update');
 };
+
+exports.showProductsPage = function (req, res) {
+  res.render('customer/products');
+};

@@ -87,3 +87,9 @@ app.get('/contact_records/:contactRecordId', agentFacade.retrieveContactRecordBy
 /////////////////////
 app.get('/customers/:customerId', customerFacade.retrieveProfilePage);
 app.get('/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
+
+/////////////////////
+// Ecommerce-Customer Facade //
+/////////////////////
+app.get('/ecomm/products', customerFacade.showProductsPage);
+app.get('/api/v1.00/ecomm/entities/products', api.getProducts);
