@@ -17,6 +17,11 @@ module.exports = new function() {
     mongoDb: {
       server_address: 'mongodb://localhost',
       db_name: 'mydb'
+    },
+
+    simpleDb: {
+      creds: new AWS.SharedIniFileCredentials({profile: 'fs2488'}),
+      region: 'us-west-2',
     }
   };
 }

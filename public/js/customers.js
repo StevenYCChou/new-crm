@@ -95,7 +95,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
   };
 }]);
 
-ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
+ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $http.get('/api/v1.00/ecomm/entities/products')
     .success(function(data, status, headers, config) {
       $scope.products = data.products;

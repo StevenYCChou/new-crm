@@ -1,4 +1,8 @@
 var mongodbService = require('./data_service/mongodb_service.js');
+var AWS = require('aws-sdk');
+var configs = require('./configs.js');
+var simpledb = new AWS.SimpleDB({credentials: configs.simpleDb.creds, region: configs.simpleDb.region});
+
 var Promise = require('promise');
 var Qs = require('qs');
 
@@ -477,6 +481,17 @@ exports.removeContactRecord = function (req, res) {
 };
 
 exports.getProducts = function (req, res) {
-
+  var params = {
+    SelectExpression: 'select * from Product', /* required */
+    ConsistentRead: true || false
+  };
+  simpledb.select(params, function(err, data) {
+    if (err) {
+      res.json({err: err});
+    }
+    else{
+      res.json({products: data["Items"]});
+    }    
+  });
 };
 

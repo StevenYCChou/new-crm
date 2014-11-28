@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="ecommCustomerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Ecommerce-All Products</title>
+  </head>
+  <body>
+    <div ng-controller="retrieveProductController">
+      <div ng-repeat="product in products">
+        <div>Name: {{ product.Name }}</div>
+        <div ng-repeat="attributes in product.Attributes">
+          {{ attributes.Name }}: 
+          {{ attributes.Value }}
+        </div>
+        <br />
+      </div>
+      <br />
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/customers.js"></script>
+  </body>
+</html>
