@@ -495,3 +495,36 @@ exports.getProducts = function (req, res) {
   });
 };
 
+exports.createProduct = function (req, res) {
+  var params = {
+    DomainName: 'Product', 
+    Items: [ 
+      {
+        Attributes: [ 
+          {
+            Name: req.body['Field0'].toString(), 
+            Value: req.body['Value0'].toString(),
+            Replace: true || false
+          },
+          {
+            Name: req.body['Field1'].toString(), 
+            Value: req.body['Value1'].toString(),
+            Replace: true || false
+          },
+          {
+            Name: req.body['Field2'].toString(), 
+            Value: req.body['Value2'].toString(),
+            Replace: true || false
+          },
+        ],
+        Name: req.body['Id'].toString()
+      },
+    ]
+  };
+  simpledb.batchPutAttributes(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+  res.render('manager/products');
+};
+

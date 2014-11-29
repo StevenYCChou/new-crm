@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="ecommCustomerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Ecommerce-Add Product</title>
+  </head>
+  <body>
+    <div ng-controller="addProductController">
+      <h3>Create Product</h3>
+      <div>
+        <label>ID: <input type="text" ng-model="product_id" placeholder="Ex: Product-1" /></label>
+      </div>
+      <label>Template <select ng-model="template_select" ng-change="templateChange(template_select)" ng-options="template.name for template in templates"></select></label><br />
+      <div ng-repeat="field in fields">
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;{{field.field_num}}: <input type="text" ng-model="field.attr" ng-readonly="{{ field.read }}" placeholder="{{ field.name_place }}">&nbsp;&nbsp;&nbsp;&nbsp;</label><label><input type="{{ field.type }}" placeholder="{{ field.field_place }}" ng-model="field.data" ></label>                      
+      </div>
+      <div>
+        <input type="button" ng-click="createProductSubmit(product_id, fields)" value="Submit" />
+        <input type="button" ng-click="createProductCancel()" value="Return" />
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/managers.js"></script>
+  </body>
+</html>

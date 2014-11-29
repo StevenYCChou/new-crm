@@ -2,10 +2,12 @@
 <html ng-app="ecommCustomerApp">
   <head>
     <meta charset="utf-8">
-    <title>Ecommerce-All Products</title>
+    <title>Ecommerce-All Products(Manager View)</title>
   </head>
   <body>
     <div ng-controller="retrieveProductController">
+      <h3>Ecommerce ProductS</h3>
+      <input type="button" ng-click="createProduct()" value="New Product" />
       <div ng-repeat="product in products">
         <div>ID: {{ product.Name }}</div>
         <div ng-repeat="attributes in product.Attributes">
@@ -17,6 +19,6 @@
       <br />
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-    <script src="/js/customers.js"></script>
+    <script src="/js/managers.js"></script>
   </body>
 </html>

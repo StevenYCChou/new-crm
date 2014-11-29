@@ -1,4 +1,5 @@
 var managerApp = angular.module('crmManagerApp', []);
+var ecommManagerApp = angular.module('ecommCustomerApp', []);
 
 managerApp.factory('uuid2', [
   function() {
@@ -49,11 +50,82 @@ managerApp.controller('agentCreateController', ['$scope', '$http', '$window', 'u
       method: 'POST',
       headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
       data: data})
-     .success(function(data, status, headers, config) {
+      .success(function(data, status, headers, config) {
        $window.location.href="/agents";
-    });
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
   };
   $scope.createAgentCancel = function() {
     $window.location.href="/agents";
   };
+}]);
+
+ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $http.get('/api/v1.00/ecomm/entities/products')
+    .success(function(data, status, headers, config) {
+      $scope.products = data.products;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  $scope.createProduct = function() {
+    $window.location.href = "/ecomm/manager/createProduct";
+  }
+}]);
+
+ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.templates = [
+    {name: 'Books'},
+    {name: 'No template'}
+  ];
+  $scope.templateChange = function(template) {
+    $scope.fields=[];
+    if (template.name == 'Books') {
+       $scope.fields = [
+          {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
+          {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
+          {field_num: '3', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
+        ];
+    } else if (template.name == 'No template') {
+        $scope.fields = [
+          {field_num: '1', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
+          {field_num: '2', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
+          {field_num: '3', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
+        ];
+    }
+  };
+
+  $scope.createProductSubmit = function(product_id, fields) {
+    var post_data = {
+      Id: product_id, 
+      Field0: fields[0].attr, 
+      Field1: fields[1].attr, 
+      Field2: fields[2].attr,
+      Value0: fields[0].data, 
+      Value1: fields[1].data, 
+      Value2: fields[2].data };
+    $http({
+      url: '/api/v1.00/ecomm/entities/products', 
+      method: 'POST', 
+      headers: {'nonce' : 'POST' + JSON.stringify(post_data) + $scope.uuid},
+      data: post_data})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/manager/products";
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+  }
+  $scope.createProductCancel = function() {
+    $window.location.href = "/ecomm/manager/products";
+  }
+
 }]);

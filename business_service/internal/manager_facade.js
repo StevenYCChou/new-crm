@@ -7,3 +7,11 @@ exports.showAllAgents = function(req, res) {
 exports.showAgentCreationPage = function (req, res) {
   res.render('manager/agent/create');
 };
+
+exports.showProductsPage = function (req, res) {
+  res.render('manager/products');
+};
+
+exports.createProductsPage = function (req, res) {
+  res.render('manager/createProduct');
+};

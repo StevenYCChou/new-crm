@@ -91,5 +91,13 @@ app.get('/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
 /////////////////////
 // Ecommerce-Customer Facade //
 /////////////////////
-app.get('/ecomm/products', customerFacade.showProductsPage);
+app.get('/ecomm/customer/products', customerFacade.showProductsPage);
 app.get('/api/v1.00/ecomm/entities/products', api.getProducts);
+
+/////////////////////
+// Ecommerce-Manager Facade //
+/////////////////////
+app.get('/ecomm/manager/products', managerFacade.showProductsPage);
+app.get('/ecomm/manager/createProduct', managerFacade.createProductsPage);
+app.get('/api/v1.00/ecomm/entities/products', api.getProducts);
+app.post('/api/v1.00/ecomm/entities/products', api.createProduct);
