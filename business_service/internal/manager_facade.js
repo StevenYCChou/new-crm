@@ -15,3 +15,7 @@ exports.showProductsPage = function (req, res) {
 exports.createProductsPage = function (req, res) {
   res.render('manager/createProduct');
 };
+
+exports.showProductDetail = function (req, res) {
+  res.render('manager/productDetail');
+};

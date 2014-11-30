@@ -156,3 +156,22 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     $window.location.href = "/ecomm/manager/products";
   }
 }]);
+
+ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.productId = $location.absUrl().split("/")[6];
+  $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
+    .success(function(data, status, headers, config) {
+      $scope.shortDescription = data.data.shortDescription;
+      $scope.longDescription = data.data.longDescription;
+      $scope.sellerComments = data.data.sellerComments;
+      $scope.imageLink = data.data.imageLink;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  $scope.getProducts = function(){
+    $window.location.href="/ecomm/manager/products";
+  };
+}]);

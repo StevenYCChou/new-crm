@@ -100,6 +100,7 @@ app.get('/ecomm/customer/product/:productId', customerFacade.showProductDetail);
 /////////////////////
 app.get('/ecomm/manager/products', managerFacade.showProductsPage);
 app.get('/ecomm/manager/createProduct', managerFacade.createProductsPage);
+app.get('/ecomm/manager/product/:productId', managerFacade.showProductDetail);
 
 /////////////////////
 // Ecommerce-API //

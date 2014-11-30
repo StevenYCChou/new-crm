@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="ecommCustomerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Ecommerce-Product Detail(Manager View)</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div ng-controller="productDetailController">
+      <div style="padding: 20px;">
+        <h3>Product Details (Product ID) {{ productId }}</h3>
+        <div class="row-fluid">
+          <div class="span2">
+            <img ng-src= "{{imageLink}}" />
+          </div>
+          <div class="span10">
+            <div>Short Description: {{ shortDescription }}</div>
+            <div>Long Description: {{ longDescription }}</div>
+            <div>Seller Comments: {{ sellerComments }}</div>
+            <br /><br />
+            <input type="button" ng-click="getProducts()" value="All Products" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/managers.js"></script>
+  </body>
+</html>
