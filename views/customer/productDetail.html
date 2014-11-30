@@ -8,7 +8,9 @@
     <div ng-controller="productDetailController">
       <h3>Product Details</h3>
       <div>Product ID: {{ productId }}</div>
-      <div>Description: {{ description }}</div>
+      <div>Short Description: {{ shortDescription }}</div>
+      <div>Long Description: {{ longDescription }}</div>
+      <div>Seller Comments: {{ sellerComments }}</div>
       <input type="button" ng-click="productPurchase(productId)" value="Purchase" />
       <input type="button" ng-click="getProducts()" value="Products" />
     </div>

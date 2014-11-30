@@ -12,7 +12,7 @@
       </div>
       <label>Template <select ng-model="template_select" ng-change="templateChange(template_select)" ng-options="template.name for template in templates"></select></label><br />
       <div ng-repeat="field in fields">
-        <label>&nbsp;&nbsp;&nbsp;&nbsp;{{field.field_num}}: <input type="text" ng-model="field.attr" ng-readonly="{{ field.read }}" placeholder="{{ field.name_place }}">&nbsp;&nbsp;&nbsp;&nbsp;</label><label><input type="{{ field.type }}" placeholder="{{ field.field_place }}" ng-model="field.data" ></label>                      
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;{{field.field_num}}: <input type="text" ng-model="field.attr" ng-readonly="{{ field.read }}" placeholder="{{ field.name_place }}">&nbsp;&nbsp;&nbsp;&nbsp;</label><label><input type="{{ field.type }}" placeholder="{{ field.field_place }}" ng-model="field.data"></label>                      
       </div>
       <div>
         <input type="button" ng-click="createProductSubmit(product_id, fields)" value="Submit" />

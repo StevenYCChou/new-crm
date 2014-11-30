@@ -114,7 +114,9 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   $scope.productId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
     .success(function(data, status, headers, config) {
-      $scope.description = data.data.description;
+      $scope.shortDescription = data.data.shortDescription;
+      $scope.longDescription = data.data.longDescription;
+      $scope.sellerComments = data.data.sellerComments;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;

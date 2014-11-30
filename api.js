@@ -506,7 +506,9 @@ exports.getProductDetail = function (req, res) {
     },
     TableName: 'Product', 
     AttributesToGet: [
-      'description'
+      'shortDescription',
+      'longDescription',
+      'sellerComments'
     ],
   };
 
@@ -557,8 +559,14 @@ exports.createProduct = function (req, res) {
       ProductID: { 
         S: req.body['Id'].toString(),
       },
-      description: { 
-        S: req.body['Description'].toString(),
+      shortDescription: { 
+        S: req.body['shortDescription'].toString(),
+      },
+      longDescription: { 
+        S: req.body['longDescription'].toString(),
+      },
+      sellerComments: { 
+        S: req.body['sellerComments'].toString(),
       },
     },
     TableName: 'Product', 
