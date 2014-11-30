@@ -78,7 +78,28 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
     $window.location.href = "/ecomm/manager/createProduct";
   };
   $scope.productDetail = function(product_id) {
-    $window.location.href = "/ecomm/customer/Product/" + product_id;
+    $window.location.href = "/ecomm/manager/Product/" + product_id;
+  };
+  $scope.productUpdateSummary = function(product_id) {
+    var put_data = {
+      updatetype: 'summary',
+      summary: {
+        products: $scope.products
+      }
+    };
+    $http({
+      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      method: 'PUT',
+      headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
+      data: put_data})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/manager/products";
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
   };
   $scope.productDelete = function(product_id) {
     $http({
@@ -176,10 +197,13 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   };
   $scope.updateProductDetail = function(product_id) {
     var put_data = {
-      productId: product_id,
-      shortDescription: $scope.shortDescription,
-      longDescription: $scope.longDescription,
-      sellerComments: $scope.sellerComments,
+      updatetype: 'detail',
+      detail: {
+        productId: product_id,
+        shortDescription: $scope.shortDescription,
+        longDescription: $scope.longDescription,
+        sellerComments: $scope.sellerComments,
+      }
     };
     $http({
       url: '/api/v1.00/ecomm/entities/product/' + product_id,
@@ -194,5 +218,5 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
         $scope.errorData = data;
         $window.alert("Status: " + status + ", " + data);
       });
-    };
+  };
 }]);

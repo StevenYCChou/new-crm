@@ -612,40 +612,60 @@ exports.removeProduct = function (req, res) {
   res.render('manager/products');
 };
 
-exports.updateProductDetail = function (req, res) {
-  var params = {
-    Key: {
-      ProductID: {
-        S: req.body['productId'].toString(),
+exports.updateProduct = function (req, res) {
+  if (req.body['updatetype'] == 'summary'){
+    var tmp = [];
+    req.body['summary']['products'][0]['Attributes'].forEach(function(attr){
+      tmp.push({
+        Name: attr.Name,
+        Value: attr.Value,
+        Replace: true,
+      });
+    });
+    var new_attr = {Attributes : tmp,
+      DomainName: 'Product',
+      ItemName: req.body['summary']['products'][0]['Name']
+    };
+    simpledb.putAttributes(new_attr, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
+    });
+    res.render('manager/products');
+  } else if (req.body['updatetype'] == 'detail'){
+    var params = {
+      Key: {
+        ProductID: {
+          S: req.body['detail']['productId'].toString(),
+        },
       },
-    },
-    TableName: 'Product',
-    AttributeUpdates:{
-      shortDescription: {
-        Action: 'PUT',
-        Value: {
-          S: req.body['shortDescription'].toString(),
-        }
+      TableName: 'Product',
+      AttributeUpdates:{
+        shortDescription: {
+          Action: 'PUT',
+          Value: {
+            S: req.body['detail']['shortDescription'].toString(),
+          }
+        },
+        longDescription: {
+          Action: 'PUT',
+          Value: {
+            S: req.body['detail']['longDescription'].toString(),
+          }
+        },
+        sellerComments: {
+          Action: 'PUT',
+          Value: {
+            S: req.body['detail']['sellerComments'].toString(),
+          }
+        },
       },
-      longDescription: {
-        Action: 'PUT',
-        Value: {
-          S: req.body['longDescription'].toString(),
-        }
-      },
-      sellerComments: {
-        Action: 'PUT',
-        Value: {
-          S: req.body['sellerComments'].toString(),
-        }
-      },
-    },
 
-  };
-  dynamodb.updateItem(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });
-  res.render('manager/productDetail');
+    };
+    dynamodb.updateItem(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
+    });
+    res.render('manager/productDetail');
+  }
 };
 

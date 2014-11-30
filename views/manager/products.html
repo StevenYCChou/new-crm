@@ -7,14 +7,15 @@
   <body>
     <div ng-controller="retrieveProductController">
       <h3>Ecommerce Products</h3>
-      <input type="button" ng-click="createProduct()" value="New Product" />
+      <input type="button" ng-click="createProduct()" value="New Product" /><br /><br />
       <div ng-repeat="product in products">
-        <div>ID: {{ product.Name }}<input type="button" ng-click="productDetail(product.Name)" value="Detail" /><input type="button" ng-click="productDelete(product.Name)" value="Delete" /></div>
+        <div>ID: {{ product.Name }}</div>
         <div ng-repeat="attributes in product.Attributes">
-          {{ attributes.Name }}: 
-          {{ attributes.Value }}
+          <label>{{ attributes.Name }}: <input ng-model="attributes.Value" value="{{ attributes.Value }}"></label>
         </div> 
-        <br />
+        <input type="button" ng-click="productDetail(product.Name)" value="Detail" />
+        <input type="button" ng-click="productUpdateSummary(product.Name)" value="Update" />
+        <input type="button" ng-click="productDelete(product.Name)" value="Delete" />
       </div>
       <br />
     </div>
