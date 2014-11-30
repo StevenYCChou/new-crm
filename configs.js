@@ -22,6 +22,11 @@ module.exports = new function() {
     simpleDb: {
       creds: new AWS.SharedIniFileCredentials({profile: 'fs2488'}),
       region: 'us-west-2',
+    },
+
+    dynamoDb: {
+      creds: new AWS.SharedIniFileCredentials({profile: 'fs2488'}),
+      region: 'us-west-2',
     }
   };
 }

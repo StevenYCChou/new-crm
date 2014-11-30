@@ -76,7 +76,10 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
     });
   $scope.createProduct = function() {
     $window.location.href = "/ecomm/manager/createProduct";
-  }
+  };
+  $scope.productDetail = function(product_id) {
+    $window.location.href = "/ecomm/manager/Product/" + product_id;
+  };
 }]);
 
 ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
@@ -90,13 +93,15 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
        $scope.fields = [
           {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
           {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
-          {field_num: '3', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
+          {field_num: '3', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'},
+          {field_num: '4', attr: 'Description', read: 'true', type: "text", data: '', name_place: 'Description',field_place: 'Description'}
         ];
     } else if (template.name == 'No template') {
         $scope.fields = [
           {field_num: '1', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
           {field_num: '2', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
-          {field_num: '3', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
+          {field_num: '3', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
+          {field_num: '4', attr: 'Description', read: 'true', type: "text", data: '', name_place: 'Description',field_place: 'Description'},
         ];
     }
   };
@@ -109,7 +114,8 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       Field2: fields[2].attr,
       Value0: fields[0].data, 
       Value1: fields[1].data, 
-      Value2: fields[2].data };
+      Value2: fields[2].data,
+      Description: fields[3].data };
     $http({
       url: '/api/v1.00/ecomm/entities/products', 
       method: 'POST', 
@@ -127,5 +133,4 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
   $scope.createProductCancel = function() {
     $window.location.href = "/ecomm/manager/products";
   }
-
 }]);

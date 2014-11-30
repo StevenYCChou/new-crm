@@ -105,4 +105,23 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
     });
+  $scope.productDetail = function(product_id) {
+    $window.location.href = "/ecomm/customer/Product/" + product_id;
+  };
+}]);
+
+ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $scope.productId = $location.absUrl().split("/")[6];
+  $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
+    .success(function(data, status, headers, config) {
+      $scope.description = data.data.description;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  $scope.getProducts = function(){
+    $window.location.href="/ecomm/customer/products";
+  };
 }]);

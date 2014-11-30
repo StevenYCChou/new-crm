@@ -11,3 +11,7 @@ exports.showProfileUpdatePage = function (req, res) {
 exports.showProductsPage = function (req, res) {
   res.render('customer/products');
 };
+
+exports.showProductDetail = function (req, res) {
+  res.render('customer/productDetail');
+};

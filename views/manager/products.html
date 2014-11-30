@@ -6,14 +6,14 @@
   </head>
   <body>
     <div ng-controller="retrieveProductController">
-      <h3>Ecommerce ProductS</h3>
+      <h3>Ecommerce Products</h3>
       <input type="button" ng-click="createProduct()" value="New Product" />
       <div ng-repeat="product in products">
-        <div>ID: {{ product.Name }}</div>
+        <div>ID: {{ product.Name }}<input type="button" ng-click="productDetail(product.Name)" value="Detail" /></div>
         <div ng-repeat="attributes in product.Attributes">
           {{ attributes.Name }}: 
           {{ attributes.Value }}
-        </div>
+        </div> 
         <br />
       </div>
       <br />

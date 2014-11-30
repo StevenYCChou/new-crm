@@ -2,6 +2,8 @@ var mongodbService = require('./data_service/mongodb_service.js');
 var AWS = require('aws-sdk');
 var configs = require('./configs.js');
 var simpledb = new AWS.SimpleDB({credentials: configs.simpleDb.creds, region: configs.simpleDb.region});
+var dynamodb = new AWS.DynamoDB({credentials: configs.dynamoDb.creds, region: configs.dynamoDb.region});
+var dynamoJSON = require('dynamodb-data-types').AttributeValue;
 
 var Promise = require('promise');
 var Qs = require('qs');
@@ -482,7 +484,7 @@ exports.removeContactRecord = function (req, res) {
 
 exports.getProducts = function (req, res) {
   var params = {
-    SelectExpression: 'select * from Product', /* required */
+    SelectExpression: 'select * from Product', 
     ConsistentRead: true || false
   };
   simpledb.select(params, function(err, data) {
@@ -492,6 +494,31 @@ exports.getProducts = function (req, res) {
     else{
       res.json({products: data["Items"]});
     }    
+  });
+};
+
+exports.getProductDetail = function (req, res) {
+  var params = {
+    Key: { 
+      ProductID: { 
+        S: req.param('productId'),
+      },
+    },
+    TableName: 'Product', 
+    AttributesToGet: [
+      'description'
+    ],
+  };
+
+  dynamodb.getItem(params, function(err, data) {
+    if (err){
+      console.log(err, err.stack); // an error occurred
+      res.json({err: err});
+    }
+    else{ 
+      console.log(JSON.stringify(dynamoJSON.unwrap(data["Item"])));           // successful response
+      res.json({data: dynamoJSON.unwrap(data["Item"])});
+    }
   });
 };
 
@@ -522,6 +549,21 @@ exports.createProduct = function (req, res) {
     ]
   };
   simpledb.batchPutAttributes(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  }); 
+  var params = {
+    Item: { 
+      ProductID: { 
+        S: req.body['Id'].toString(),
+      },
+      description: { 
+        S: req.body['Description'].toString(),
+      },
+    },
+    TableName: 'Product', 
+  };
+  dynamodb.putItem(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   });

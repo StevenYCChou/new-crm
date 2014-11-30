@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html ng-app="ecommCustomerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Ecommerce-Product Detail</title>
+  </head>
+  <body>
+    <div ng-controller="productDetailController">
+      <h3>Product Details</h3>
+      <div>Product ID: {{ productId }}</div>
+      <div>Description: {{ description }}</div>
+      <input type="button" ng-click="productPurchase(productId)" value="Purchase" />
+      <input type="button" ng-click="getProducts()" value="Products" />
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/customers.js"></script>
+  </body>
+</html>
