@@ -80,6 +80,20 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   $scope.productDetail = function(product_id) {
     $window.location.href = "/ecomm/customer/Product/" + product_id;
   };
+  $scope.productDelete = function(product_id) {
+    $http({
+      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      method: 'DELETE',
+      headers: {'nonce' : 'DELETE' + $scope.uuid}})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/manager/products";
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+  };
 }]);
 
 ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
@@ -114,9 +128,9 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
 
   $scope.createProductSubmit = function(product_id, fields) {
     var post_data = {
-      Id: product_id, 
-      Name: fields[0].data, 
-      Price: fields[1].data, 
+      Id: product_id,
+      Name: fields[0].data,
+      Price: fields[1].data,
       shortDescription: fields[2].data,
       longDescription: fields[3].data,
       sellerComments: fields[4].data,
@@ -125,8 +139,8 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       Value1: fields[6].data,
     };
     $http({
-      url: '/api/v1.00/ecomm/entities/products', 
-      method: 'POST', 
+      url: '/api/v1.00/ecomm/entities/products',
+      method: 'POST',
       headers: {'nonce' : 'POST' + JSON.stringify(post_data) + $scope.uuid},
       data: post_data})
       .success(function(data, status, headers, config) {
