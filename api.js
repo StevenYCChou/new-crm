@@ -508,7 +508,8 @@ exports.getProductDetail = function (req, res) {
     AttributesToGet: [
       'shortDescription',
       'longDescription',
-      'sellerComments'
+      'sellerComments',
+      'imageLink'
     ],
   };
 
@@ -567,6 +568,9 @@ exports.createProduct = function (req, res) {
       },
       sellerComments: { 
         S: req.body['sellerComments'].toString(),
+      },
+      imageLink: { 
+        S: req.body['imageLink'].toString(),
       },
     },
     TableName: 'Product', 

@@ -117,6 +117,7 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
       $scope.shortDescription = data.data.shortDescription;
       $scope.longDescription = data.data.longDescription;
       $scope.sellerComments = data.data.sellerComments;
+      $scope.imageLink = data.data.imageLink;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;

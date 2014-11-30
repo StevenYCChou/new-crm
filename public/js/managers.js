@@ -96,7 +96,8 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
           {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
           {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
           {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
-          {field_num: '6', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
+          {field_num: '6', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'},
+          {field_num: '7', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
         ];
     } else if (template.name == 'No template') {
         $scope.fields = [
@@ -105,7 +106,8 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
           {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
           {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
           {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
-          {field_num: '6', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
+          {field_num: '6', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'},
+          {field_num: '7', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
         ];
     }
   };
@@ -118,8 +120,9 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       shortDescription: fields[2].data,
       longDescription: fields[3].data,
       sellerComments: fields[4].data,
-      Field1: fields[5].attr,
-      Value1: fields[5].data,
+      imageLink: fields[5].data,
+      Field1: fields[6].attr,
+      Value1: fields[6].data,
     };
     $http({
       url: '/api/v1.00/ecomm/entities/products', 
