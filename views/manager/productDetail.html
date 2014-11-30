@@ -14,10 +14,11 @@
             <img ng-src= "{{imageLink}}" />
           </div>
           <div class="span10">
-            <div>Short Description: {{ shortDescription }}</div>
-            <div>Long Description: {{ longDescription }}</div>
-            <div>Seller Comments: {{ sellerComments }}</div>
+            <label>Short Description: <input ng-model="shortDescription" value="{{ shortDescription }}"></label>
+            <label>Long Description: <input ng-model="longDescription" value="{{ longDescription }}"></label>
+            <label>Seller Comments: <input ng-model="sellerComments" value="{{ sellerComments }}"></label>
             <br /><br />
+            <input type="button" ng-click="updateProductDetail(productId)" value="Update" />
             <input type="button" ng-click="getProducts()" value="All Products" />
           </div>
         </div>

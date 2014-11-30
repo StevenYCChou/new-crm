@@ -174,4 +174,25 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   $scope.getProducts = function(){
     $window.location.href="/ecomm/manager/products";
   };
+  $scope.updateProductDetail = function(product_id) {
+    var put_data = {
+      productId: product_id,
+      shortDescription: $scope.shortDescription,
+      longDescription: $scope.longDescription,
+      sellerComments: $scope.sellerComments,
+    };
+    $http({
+      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      method: 'PUT',
+      headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
+      data: put_data})
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/manager/product/" + product_id;
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+    };
 }]);

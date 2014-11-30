@@ -109,3 +109,4 @@ app.get('/api/v1.00/ecomm/entities/products', api.getProducts);
 app.get('/api/v1.00/ecomm/entities/product/:productId', api.getProductDetail);
 app.post('/api/v1.00/ecomm/entities/products', api.createProduct);
 app.delete('/api/v1.00/ecomm/entities/product/:productId', api.removeProduct);
+app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProductDetail);

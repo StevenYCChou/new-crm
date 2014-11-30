@@ -612,3 +612,40 @@ exports.removeProduct = function (req, res) {
   res.render('manager/products');
 };
 
+exports.updateProductDetail = function (req, res) {
+  var params = {
+    Key: {
+      ProductID: {
+        S: req.body['productId'].toString(),
+      },
+    },
+    TableName: 'Product',
+    AttributeUpdates:{
+      shortDescription: {
+        Action: 'PUT',
+        Value: {
+          S: req.body['shortDescription'].toString(),
+        }
+      },
+      longDescription: {
+        Action: 'PUT',
+        Value: {
+          S: req.body['longDescription'].toString(),
+        }
+      },
+      sellerComments: {
+        Action: 'PUT',
+        Value: {
+          S: req.body['sellerComments'].toString(),
+        }
+      },
+    },
+
+  };
+  dynamodb.updateItem(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+  res.render('manager/productDetail');
+};
+
