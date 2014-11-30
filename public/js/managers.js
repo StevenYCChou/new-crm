@@ -93,19 +93,19 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
        $scope.fields = [
           {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
           {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
-          {field_num: '3', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'},
-          {field_num: '4', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
-          {field_num: '5', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
-          {field_num: '6', attr: 'SellerComments', read: 'true', type: "text", data: '', name_place: 'SellerComments',field_place: 'SellerComments'}
+          {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
+          {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
+          {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
+          {field_num: '6', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
         ];
     } else if (template.name == 'No template') {
         $scope.fields = [
-          {field_num: '1', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
-          {field_num: '2', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
-          {field_num: '3', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'},
-          {field_num: '4', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
-          {field_num: '5', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
-          {field_num: '6', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'}
+          {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
+          {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
+          {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
+          {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
+          {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
+          {field_num: '6', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
         ];
     }
   };
@@ -113,15 +113,13 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
   $scope.createProductSubmit = function(product_id, fields) {
     var post_data = {
       Id: product_id, 
-      Field0: fields[0].attr, 
-      Field1: fields[1].attr, 
-      Field2: fields[2].attr,
-      Value0: fields[0].data, 
-      Value1: fields[1].data, 
-      Value2: fields[2].data,
-      shortDescription: fields[3].data,
-      longDescription: fields[4].data,
-      sellerComments: fields[5].data,
+      Name: fields[0].data, 
+      Price: fields[1].data, 
+      shortDescription: fields[2].data,
+      longDescription: fields[3].data,
+      sellerComments: fields[4].data,
+      Field1: fields[5].attr,
+      Value1: fields[5].data,
     };
     $http({
       url: '/api/v1.00/ecomm/entities/products', 

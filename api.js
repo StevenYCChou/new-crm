@@ -531,18 +531,18 @@ exports.createProduct = function (req, res) {
       {
         Attributes: [ 
           {
-            Name: req.body['Field0'].toString(), 
-            Value: req.body['Value0'].toString(),
+            Name: 'Name', 
+            Value: req.body['Name'].toString(),
+            Replace: true || false
+          },
+          {
+            Name: 'Price', 
+            Value: req.body['Price'].toString(),
             Replace: true || false
           },
           {
             Name: req.body['Field1'].toString(), 
             Value: req.body['Value1'].toString(),
-            Replace: true || false
-          },
-          {
-            Name: req.body['Field2'].toString(), 
-            Value: req.body['Value2'].toString(),
             Replace: true || false
           },
         ],
