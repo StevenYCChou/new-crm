@@ -7,6 +7,8 @@
   <body>
     <div ng-controller="retrieveProductController">
       <h3>Ecommerce Products</h3>
+      <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
+    </select>
       <div ng-repeat="product in products">
         <div>ID: {{ product.Name }}
           <input type="button" ng-click="productDetail(product.Name)" value="Detail" />

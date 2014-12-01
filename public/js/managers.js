@@ -142,6 +142,11 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     {name: 'Books'},
     {name: 'No template'}
   ];
+  $scope.filterCategorys = [
+    {name: 'Music', data: ''},
+    {name: 'Book', data: ''},
+    {name: 'CD', data: ''}
+  ];
   $scope.templateChange = function(template) {
     $scope.fields=[];
     if (template.name == 'Books') {
@@ -186,12 +191,13 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       longDescription: fields[3].data,
       sellerComments: fields[4].data,
       imageLink: fields[5].data,
+      category: $scope.filterCategorys,
       Field1: fields[6].attr,
       Value1: fields[6].data,
-      imageFileName: $scope.uniqueString() + '-' + $scope.file.name,
-      imageFile: $scope.file,
+//      imageFileName: $scope.uniqueString() + '-' + $scope.file.name,
+//      imageFile: $scope.file,
     };
-    console.log($scope.file);
+    console.log($scope.filterCategorys);
     $http({
       url: '/api/v1.00/ecomm/entities/products',
       method: 'POST',

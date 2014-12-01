@@ -484,8 +484,12 @@ exports.removeContactRecord = function (req, res) {
 };
 
 exports.getProducts = function (req, res) {
+  if (JSON.stringify(req.query) == '{}' || req.query.category == 'All')
+    query = '';
+  else
+    query = " where Category = '" + req.query.category + "'";
   var params = {
-    SelectExpression: 'select * from Product', 
+    SelectExpression: 'select * from Product ' + query,
     ConsistentRead: true || false
   };
   simpledb.select(params, function(err, data) {
@@ -527,32 +531,41 @@ exports.getProductDetail = function (req, res) {
 };
 
 exports.createProduct = function (req, res) {
-  var params = {
+  var tmp = [];
+  var tmp2 = [];
+  tmp.push({
+    Name: 'Name',
+    Value: req.body['Name'].toString(),
+    Replace: true,
+  },
+  {
+    Name: 'Price',
+    Value: req.body['Price'].toString(),
+    Replace: true || false
+  });
+  req.body['category'].forEach(function(cate){
+    if (cate.data == true){
+      tmp.push({
+        Name: 'Category',
+        Value: cate.name,
+        Replace: false,
+      });
+    }
+  });
+  tmp.push({
+    Name: req.body['Field1'].toString(),
+    Value: req.body['Value1'].toString(),
+    Replace: true || false
+  });
+  tmp2.push({
+    Attributes : tmp,
+    Name: req.body['Id'].toString(),
+  });
+  var params_new = {
     DomainName: 'Product', 
-    Items: [ 
-      {
-        Attributes: [ 
-          {
-            Name: 'Name', 
-            Value: req.body['Name'].toString(),
-            Replace: true || false
-          },
-          {
-            Name: 'Price', 
-            Value: req.body['Price'].toString(),
-            Replace: true || false
-          },
-          {
-            Name: req.body['Field1'].toString(), 
-            Value: req.body['Value1'].toString(),
-            Replace: true || false
-          },
-        ],
-        Name: req.body['Id'].toString()
-      },
-    ]
+    Items: tmp2
   };
-  simpledb.batchPutAttributes(params, function(err, data) {
+  simpledb.batchPutAttributes(params_new, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   }); 
@@ -581,8 +594,8 @@ exports.createProduct = function (req, res) {
     else     console.log(data);           // successful response
   });
 
-  console.log(req.body);
-  var params = {
+//  console.log(req.body);
+ /* var params = {
     Bucket: 'crm-images-fs2488',
     Key: req.body['uniqueFileName'],
     ContentType: req.body['imageFile'].type,
@@ -593,7 +606,7 @@ exports.createProduct = function (req, res) {
   s3.putObject(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
-  });
+  });*/
   res.render('manager/products');
 };
 

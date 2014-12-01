@@ -96,7 +96,15 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
 }]);
 
 ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $http.get('/api/v1.00/ecomm/entities/products')
+  $scope.categoryChoice = 'All';
+  $scope.filterCategorys = [
+    {name: 'All'},
+    {name: 'Music'},
+    {name: 'Book'},
+    {name: 'CD'}
+  ];
+
+  $http.get('/api/v1.00/ecomm/entities/products?category=All')
     .success(function(data, status, headers, config) {
       $scope.products = data.products;
     })
@@ -105,6 +113,18 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
     });
+
+  $scope.productFilter = function(product_category) {
+    $http.get('/api/v1.00/ecomm/entities/products?category=' + product_category)
+      .success(function(data, status, headers, config) {
+        $scope.products = data.products;
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+  }
   $scope.productDetail = function(product_id) {
     $window.location.href = "/ecomm/customer/Product/" + product_id;
   };
