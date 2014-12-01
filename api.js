@@ -3,6 +3,7 @@ var AWS = require('aws-sdk');
 var configs = require('./configs.js');
 var simpledb = new AWS.SimpleDB({credentials: configs.simpleDb.creds, region: configs.simpleDb.region});
 var dynamodb = new AWS.DynamoDB({credentials: configs.dynamoDb.creds, region: configs.dynamoDb.region});
+var s3 = new AWS.S3({credentials: configs.s3.creds, region: configs.s3.region});
 var dynamoJSON = require('dynamodb-data-types').AttributeValue;
 
 var Promise = require('promise');
@@ -576,6 +577,20 @@ exports.createProduct = function (req, res) {
     TableName: 'Product', 
   };
   dynamodb.putItem(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+
+  console.log(req.body);
+  var params = {
+    Bucket: 'crm-images-fs2488',
+    Key: req.body['uniqueFileName'],
+    ContentType: req.body['imageFile'].type,
+    Body: req.body['imageFile'],
+    ServerSideEncryption: 'AES256'
+  };
+  console.log(params);
+  s3.putObject(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   });

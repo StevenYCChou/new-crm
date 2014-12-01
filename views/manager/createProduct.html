@@ -15,6 +15,10 @@
         <label>&nbsp;&nbsp;&nbsp;&nbsp;{{field.field_num}}: <input type="text" ng-model="field.attr" ng-readonly="{{ field.read }}" placeholder="{{ field.name_place }}">&nbsp;&nbsp;&nbsp;&nbsp;</label><label><input type="{{ field.type }}" placeholder="{{ field.field_place }}" ng-model="field.data"></label>                      
       </div>
       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;Product Image: <input type="file" name="file" file></input>          
+      </div>
+      <br />
+      <div>
         <input type="button" ng-click="createProductSubmit(product_id, fields)" value="Submit" />
         <input type="button" ng-click="createProductCancel()" value="Return" />
       </div>

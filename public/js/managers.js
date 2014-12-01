@@ -117,6 +117,26 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   };
 }]);
 
+//var directives = angular.module('directives', []);
+
+ecommManagerApp.directive('file', function() {
+  return {
+    restrict: 'AE',
+    scope: {
+      file: '@'
+    },
+    link: function(scope, el, attrs){
+      el.bind('change', function(event){
+        var files = event.target.files;
+        var file = files[0];
+        scope.file = file;
+        scope.$parent.file = file;
+        scope.$apply();
+      });
+    }
+  };
+});
+
 ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.templates = [
     {name: 'Books'},
@@ -147,6 +167,16 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     }
   };
 
+  $scope.uniqueString = function() {
+    var text     = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 8; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
   $scope.createProductSubmit = function(product_id, fields) {
     var post_data = {
       Id: product_id,
@@ -158,7 +188,10 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       imageLink: fields[5].data,
       Field1: fields[6].attr,
       Value1: fields[6].data,
+      imageFileName: $scope.uniqueString() + '-' + $scope.file.name,
+      imageFile: $scope.file,
     };
+    console.log($scope.file);
     $http({
       url: '/api/v1.00/ecomm/entities/products',
       method: 'POST',

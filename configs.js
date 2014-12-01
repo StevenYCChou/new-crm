@@ -27,6 +27,11 @@ module.exports = new function() {
     dynamoDb: {
       creds: new AWS.SharedIniFileCredentials({profile: 'fs2488'}),
       region: 'us-west-2',
+    },
+
+    s3: {
+      creds: new AWS.SharedIniFileCredentials({profile: 'fs2488'}),
+      region: 'us-west-2',
     }
   };
 }
