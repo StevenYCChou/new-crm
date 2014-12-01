@@ -497,7 +497,38 @@ exports.getProducts = function (req, res) {
       res.json({err: err});
     }
     else{
-      res.json({products: data["Items"]});
+      if (data["Items"] != undefined){
+        var product_new = [];
+        var tmp2;
+        var tmp3 = [];
+        var cateValue = '';
+        data["Items"].forEach(function(item){
+          tmp3 = [];
+          cateValue = '';
+          item["Attributes"].forEach(function(attr){
+            if (attr.Name != 'Category'){
+              tmp3.push({
+                Name: attr.Name,
+                Value: attr.Value,
+              });
+            } else {
+              cateValue += attr.Value + ', ';
+            }
+          });
+          tmp3.push({
+            Name: 'Category',
+            Value: cateValue.substring(0, cateValue.length-2),
+          });
+          tmp2 = {
+            Name: item["Name"],
+            Attributes: tmp3
+          };
+          product_new.push(tmp2);
+        });
+        res.json({products: product_new});
+      } else {
+        res.json({products: data["Items"]});
+      }
     }    
   });
 };
