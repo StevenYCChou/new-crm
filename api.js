@@ -12,6 +12,14 @@ var Qs = require('qs');
 var crmService = require('./business_service/internal/crm_service.js');
 var crmValidation = require('./business_service/validation/validation.js');
 
+var getMongooseFields = function (fields) {
+  var fields_obj = {};
+  fields.forEach(function(field) {
+    fields_obj[field] = 1;
+  });
+  return fields_obj;
+};
+
 function getCachedResponse(nonce, callback, res) {
   console.log(nonce);
   if (!nonce) {
@@ -111,9 +119,9 @@ var constructLinks = function(endpoint, offset, limit, original_query, field, co
 }
 
 exports.getAgents = function (req, res) {
-  var constraints = getQueryConstraints(req);
+  var constraints = req.constraints;
   var subcollectionQuery, subcollectionPromise;
-  if (constraints.query) {
+  if (req.constraints.query) {
     subcollectionQuery = mongodbService.Agent.find(constraints.query);
   } else {
     subcollectionQuery = mongodbService.Agent.find({});
@@ -125,7 +133,7 @@ exports.getAgents = function (req, res) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
   if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(constraints.field);
+    subcollectionQuery = subcollectionQuery.select(getMongooseFields(constraints.field));
   }
 
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
@@ -169,8 +177,12 @@ exports.getAgents = function (req, res) {
 
 exports.getAgent = function(req, res) {
   var id = req.params.id;
+  var query = mongodbService.Agent.findOne({_id: id});
+  if (req.constraints.field) {
+    query = query.select(getMongooseFields(req.constraints.field));
+  }
+  var promise = query.exec();
 
-  var promise = mongodbService.Agent.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(agent) {
     data = agent.toJSON();
     data.links = [{
@@ -226,7 +238,7 @@ exports.removeAgent = function (req, res) {
 };
 
 exports.getCustomers = function (req, res) {
-  var constraints = getQueryConstraints(req);
+  var constraints = req.constraints;
   var subcollectionQuery, subcollectionPromise;
   if (constraints.query) {
     subcollectionQuery = mongodbService.Customer.find(constraints.query);
@@ -240,7 +252,7 @@ exports.getCustomers = function (req, res) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
   if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(constraints.field);
+    subcollectionQuery = subcollectionQuery.select(getMongooseFields(constraints.field));
   }
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
@@ -286,18 +298,30 @@ exports.getCustomers = function (req, res) {
 };
 
 exports.getCustomer = function (req, res) {
-  var id = req.params.id;
-  var promise = mongodbService.Customer.findOne({_id: id}, {__v: 0}).exec();
+  var query = mongodbService.Customer.findOne({_id: req.params.id});
+  if (req.constraints.field) {
+    query = query.select(getMongooseFields(req.constraints.field));
+  }
+  var promise = query.exec();
+
   promise.then(function(customer) {
-    data = customer.toJSON();
-    delete data.agent;
-    data.links = [{
+    var data = customer.toJSON();
+    var links = [{
       rel: "self",
       href: "/api/v1.00/entities/customer/"+customer._id
     }];
+    if (data.agent) {
+      links.push({
+        rel: "agent",
+        href: "/api/v1.00/entities/agents/"+customer.agent
+      });
+      delete data.agent;
+    }
+
     res.json({
       _type: "customer",
-      data: data
+      data: data,
+      links: links
     });
   }, function(err) {
     res.json({error: err});
@@ -359,7 +383,7 @@ exports.removeCustomer = function (req, res) {
 };
 
 exports.getContactRecords = function (req, res) {
-  var constraints = getQueryConstraints(req);
+  var constraints = req.constraints;
   var subcollectionQuery, subcollectionPromise;
   if (constraints.query) {
     subcollectionQuery = mongodbService.ContactRecord.find(constraints.query);
@@ -373,7 +397,7 @@ exports.getContactRecords = function (req, res) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
   if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(constraints.field);
+    subcollectionQuery = subcollectionQuery.select(getMongooseFields(constraints.field));
   }
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
@@ -424,17 +448,38 @@ exports.getContactRecords = function (req, res) {
 
 exports.getContactRecord = function (req, res) {
   var id = req.params.id;
+  var query = mongodbService.ContactRecord.findOne({_id: id});
+  if (req.constraints.field) {
+    query = query.select(getMongooseFields(req.constraints.field));
+  }
+  var promise = query.exec();
+
   console.log("[api.getContactRecord] Get Contact Record:" + id);
-  var promise = mongodbService.ContactRecord.findOne({_id: id}, {__v: 0}).exec();
   promise.then(function(contact_record) {
-    contact_record = contact_record.toJSON();
-    contact_record.link = {
+    var data = contact_record.toJSON();
+    var links = [{
       rel: "self",
-      href: "/api/v1.00/entities/customer/"+contact_record._id
-    };
+      href: "/api/v1.00/entities/customer/"+data._id
+    }];
+    if (data.agent) {
+      links.push({
+        rel: "agent",
+        href: "/api/v1.00/entities/agents/"+data.agent
+      });
+      delete data.agent;
+    }
+    if (data.customer) {
+      links.push({
+        rel: "customer",
+        href: "/api/v1.00/entities/customers/"+data.customer
+      });
+      delete data.agent;
+    }
+
     res.json({
       _type: "contact_record",
-      contact_record: contact_record
+      data: data,
+      links: links
     });
   }, function(err) {
     res.json({error: err});

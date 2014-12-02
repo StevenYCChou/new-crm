@@ -11,6 +11,7 @@ var engine = require('ejs-locals');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var cors = require('cors');
+var Qs = require('qs');
 
 app.engine('html', require('ejs').renderFile);
 app.use("/js", express.static(__dirname + '/public/js'));
@@ -83,6 +84,25 @@ app.use(function(req, res, next) {
   }
   next();
 })
+
+app.use(function(req, res, next) {
+  var constraints = {};
+  if (req.query.limit) {
+    constraints.limit = parseInt(req.query.limit);
+  }
+  if (req.query.offset) {
+    constraints.offset = parseInt(req.query.offset);
+  }
+  if (req.query.q) {
+    constraints.query = Qs.parse(req.query.q, { delimiter: ',' });
+  }
+  if (req.query.field) {
+    constraints.field = req.query.field.split(',');
+  }
+  req.constraints = constraints;
+  console.log(req.constraints);
+  next();
+});
 
 ////////////////////
 //   Web Server   //
