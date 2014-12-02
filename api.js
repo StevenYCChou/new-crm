@@ -195,53 +195,112 @@ exports.removeContactRecord = function (req, res) {
 };
 
 exports.getProducts = function (req, res) {
-  if (JSON.stringify(req.query) == '{}' || req.query.category == 'All')
-    query = '';
-  else
-    query = " where Category = '" + req.query.category + "'";
-  var params = {
-    SelectExpression: 'select * from Product ' + query,
-    ConsistentRead: true || false
-  };
-  simpledb.select(params, function(err, data) {
-    if (err) {
-      res.json({err: err});
+  var constraints = req.constraints;
+
+  var select_string = '';
+  var count_string = 'select count(*) from Product ';
+  var where_string = '';
+  var limit_string = '';
+  var offset_string = '';
+
+  if (constraints.field) {
+    select_string = 'select ' + constraints.field.join(',') + ' from Product ';
+  } else {
+    select_string = 'select * from Product ';
+  }
+  if (constraints.query) {
+    for (var key in constraints.query) {
+      if (constraints.query.hasOwnProperty(key)) {
+        where_string += " where " + key + " = '" + constraints.query[key] + "' ";
+      }
     }
-    else{
-      if (data["Items"] != undefined){
-        var product_new = [];
-        var tmp2;
-        var tmp3 = [];
-        var cateValue = '';
-        data["Items"].forEach(function(item){
-          tmp3 = [];
-          cateValue = '';
-          item["Attributes"].forEach(function(attr){
-            if (attr.Name != 'Category'){
-              tmp3.push({
-                Name: attr.Name,
-                Value: attr.Value,
+  }
+  if (constraints.limit) {
+    limit_string = ' limit ' + constraints.limit;
+  }
+
+  if (constraints.offset) {
+    simpledb.select({SelectExpression: count_string + where_string + offset_string}, function(err, data) {
+      if (err) {
+        res.json({err: err});
+      } else {
+        simpledb.select({SelectExpression: select_string + where_string + limit_string,
+                         NextToken: data.NextToken}, function(err, results) {
+          if (err) {
+            res.json({err: err});
+          } else {
+            var data = [];
+            results.Items.forEach(function(product) {
+              var productObj = {};
+              product.Attributes.forEach(function(attribute) {
+                productObj[attribute.Name] = attribute.Value;
               });
+              productObj.id = product.Name;
+              data.push(productObj);
+            });
+            res.json(data);
+          }
+        });
+      }
+    });
+  } else {
+    simpledb.select({SelectExpression: select_string + where_string + limit_string}, function(err, results) {
+      if (err) {
+        res.json({err: err});
+      } else {
+        var data = [];
+        var links = [];
+        results.Items.forEach(function(product) {
+          var productObj = {};
+          product.Attributes.forEach(function(attribute) {
+            if (attribute.Name == 'Category') {
+              if (productObj[attribute.Name] == undefined) {
+                productObj[attribute.Name] = [];
+              }
+              productObj[attribute.Name].push(attribute.Value);
             } else {
-              cateValue += attr.Value + ', ';
+              productObj[attribute.Name] = attribute.Value;
             }
           });
-          tmp3.push({
-            Name: 'Category',
-            Value: cateValue.substring(0, cateValue.length-2),
-          });
-          tmp2 = {
-            Name: item["Name"],
-            Attributes: tmp3
-          };
-          product_new.push(tmp2);
+          productObj.id = product.Name;
+          data.push(productObj);
         });
-        res.json({products: product_new});
-      } else {
-        res.json({products: data["Items"]});
+        res.json({
+          data: data,
+          links: links
+        });
       }
-    }    
-  });
+    });
+  }
+
+  // var simpleDbSelectPromise = Promise.denodeify(simpledb.select);
+
+  // var queryPromise;
+  // if (constraints.offset) {
+  //   var offsetParams = {SelectExpression: count_string + where_string + offset_string};
+  //   queryPromise = simpleDbSelectPromise(offsetParams).then(function(data) {
+  //     var queryParams = {SelectExpression: select_string + where_string + limit_string,
+  //                     NextToken: data.NextToken};
+  //     return simpleDbSelectPromise(queryParams);
+  //   });
+  // } else {
+  //   var queryParams = {SelectExpression: select_string + where_string + limit_string};
+  //   // queryPromise = simpleDbSelectPromise(queryParams);
+  //   simpleDbSelectPromise(queryParams).then(function(data) {
+  //     console.log(data);
+  //     res.json(data);
+  //   }, function(err) {
+  //     console.log("error:"+err, err.stack);
+  //     res.json(err);
+  //   });
+  // }
+  // queryPromise.then(function(data) {
+  //   console.log(data);
+  //   res.json(data);
+  // }, function(err) {
+  //   console.log("error:"+err, err.stack);
+  //   res.json(err);
+  // })
 };
 
 exports.getProductDetail = function (req, res) {
