@@ -32,7 +32,11 @@ module.exports = new function() {
     s3: {
       creds: new AWS.SharedIniFileCredentials(),
       region: 'us-west-2',
-    }
+    },
+
+    redis: {
+      host: 'localhost',
+      port: 6379, // redis default port
+    },
   };
 }
-
