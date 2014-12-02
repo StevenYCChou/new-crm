@@ -27,6 +27,63 @@ app.use(cors());
 app.set('views', __dirname+'/views');
 app.set('view engine', 'html'); // default view engine
 
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var redisService = require('./data_service/redis_service');
+var redisClient = redisService.getRedisClient();
+
+var SESSION_TIMEOUT_MSECONDS = 3600000;
+var SESSION_TIMEOUT_SECONDS = 3600;
+app.use(session({
+  store: new RedisStore({
+    client: redisClient,
+    prefix: 'crm-session:',
+    ttl: SESSION_TIMEOUT_SECONDS,
+  }), 
+  resave: true,
+  saveUninitialized: true,
+  secret: 'crm ecommerce',
+  cookie: {
+    maxAge: SESSION_TIMEOUT_MSECONDS,
+  }
+}));
+
+app.use(function(req, res, next) {
+  var session = req.session;
+  var sessionId = 'session:' + req.sessionID;
+  var userId = typeof req.param('UserId')  === "undefined" ? null : req.param('UserId');
+
+  if (!session.views) {
+    session.views = 1
+
+    var shoppingCartId = sessionId + ':shoppingCart';
+    var viewedProductsId = sessionId + ':viewedProducts';
+    var viewedCategoriesId = sessionId + ':viewedCategories';
+
+    var multi = redisClient.multi();
+    multi.hmset(sessionId,
+                'userId', userId,
+                'shoppingCart', shoppingCartId,
+                'viewedProducts', viewedProductsId,
+                'viewedCategories', viewedCategoriesId);
+    multi.expire(sessionId, SESSION_TIMEOUT_SECONDS);
+
+    multi.hset(shoppingCartId, 'userId', userId);
+    multi.expire(shoppingCartId, SESSION_TIMEOUT_SECONDS);
+
+    multi.hset(viewedProductsId, 'userId', userId);
+    multi.expire(viewedProductsId, SESSION_TIMEOUT_SECONDS);
+
+    multi.hset(viewedCategoriesId, 'userId', userId);
+    multi.expire(viewedCategoriesId, SESSION_TIMEOUT_SECONDS);
+
+    multi.exec(function(err, replies){
+      // TODO.
+    });
+  }
+  next();
+})
+
 ////////////////////
 //   Web Server   //
 ////////////////////
@@ -109,12 +166,12 @@ app.get('/api/v1.00/ecomm/entities/products', api.getProducts);
 app.get('/api/v1.00/ecomm/entities/product/:productId', api.getProductDetail);
 app.post('/api/v1.00/ecomm/entities/products', api.createProduct);
 app.delete('/api/v1.00/ecomm/entities/product/:productId', api.removeProduct);
-app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProductDetail);
 app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProduct);
 
 /////////////////////
 //  Shopping Cart  //
 /////////////////////
+var shoppingCartApi = require('./shoppingCartApi.js');
 app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
 app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
 app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
