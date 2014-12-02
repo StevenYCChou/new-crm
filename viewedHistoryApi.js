@@ -1,3 +1,4 @@
+var configs = require('./configs.js');
 var viewedHistoryService = require('./business_service/viewed_history_service.js');
 var redisService = require('./data_service/redis_service');
 var redisClient = redisService.getRedisClient();
@@ -6,9 +7,14 @@ var redisClient = redisService.getRedisClient();
 app.get('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.getViewedHistory);
 app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
 */
+var REDIS_SESSION_PREFIX = configs.REDIS_SESSION_PREFIX;
+
+function getViewedHistory(req, res) {
+  var session = REDIS_SESSION_PREFIX + req.sessionID;
+}
 
 function getSessionViewedHistory(req, res) {
-  var session = req.param('session');
+  var session = REDIS_SESSION_PREFIX + req.sessionID;
 
   viewedHistoryService.getSessionViewedHistory(session, function(err, viewedHistory) {
     if (err) {
@@ -22,7 +28,7 @@ function getSessionViewedHistory(req, res) {
 }
 
 function getUserViewedHistory(req, res) {
-  var session = req.param('id');
+  var session = REDIS_SESSION_PREFIX + req.sessionID;
 
   viewedHistoryService.getUserViewedHistory(session, function(err, viewedHistory) {
     if (err) {
@@ -36,8 +42,8 @@ function getUserViewedHistory(req, res) {
 }
 
 function updateViewedHistory(req, res) {
-  var session = req.param('session');
-  var viewedProduct = req.param('product');
+  var session = REDIS_SESSION_PREFIX + req.sessionID;
+  var viewedProduct = req.param('productId');
   var viewedCategories = req.param('categories'); // Array
 
   var update = {

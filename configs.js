@@ -38,5 +38,7 @@ module.exports = new function() {
       host: 'localhost',
       port: 6379, // redis default port
     },
+
+    REDIS_SESSION_PREFIX: 'session:',
   };
 }
