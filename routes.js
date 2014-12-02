@@ -100,7 +100,6 @@ app.use(function(req, res, next) {
     constraints.field = req.query.field.split(',');
   }
   req.constraints = constraints;
-  console.log(req.constraints);
   next();
 });
 
