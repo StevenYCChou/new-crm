@@ -2,13 +2,13 @@ var mongodbService = require('../data_service/mongodb_service.js');
 var Promise = require('promise');
 var mongooseHelper = require('./mongoose_helper.js');
 
-exports.getCustomers = function (req, res) {
+exports.getContactRecords = function (req, res) {
   var constraints = req.constraints;
   var subcollectionQuery, subcollectionPromise;
   if (constraints.query) {
-    subcollectionQuery = mongodbService.Customer.find(constraints.query);
+    subcollectionQuery = mongodbService.ContactRecord.find(constraints.query);
   } else {
-    subcollectionQuery = mongodbService.Customer.find({});
+    subcollectionQuery = mongodbService.ContactRecord.find({});
   }
   if (constraints.offset) {
     subcollectionQuery = subcollectionQuery.skip(constraints.offset);
@@ -23,9 +23,9 @@ exports.getCustomers = function (req, res) {
 
   var countQuery, countPromise;
   if (constraints.query) {
-    countQuery = mongodbService.Customer.find(constraints.query);
+    countQuery = mongodbService.ContactRecord.find(constraints.query);
   } else {
-    countQuery = mongodbService.Customer.find({});
+    countQuery = mongodbService.ContactRecord.find({});
   }
   countQuery = countQuery.count();
   countPromise = Promise.resolve(countQuery.exec());
@@ -35,25 +35,29 @@ exports.getCustomers = function (req, res) {
     var subCollection = results[0];
     var collectionSize = results[1];
     var data = [];
-    subCollection.forEach(function(customer, idx, customers) {
-      data[idx] = customer.toJSON();
+    subCollection.forEach(function(contactRecord, idx, contactRecords) {
+      data[idx] = contactRecord.toJSON();
       delete data[idx].agent;
+      delete data[idx].customer;
       data[idx].links = [{
         rel: "self",
-        href: "/api/v1.00/entities/customers/"+customer._id
+        href: "/api/v1.00/entities/contact_records/"+contactRecord._id
       }, {
         rel: "agent",
-        href: "/api/v1.00/entities/agents/"+customer.agent
+        href: "/api/v1.00/entities/agents/"+contactRecord.agent
+      }, {
+        rel: "customer",
+        href: "/api/v1.00/entities/customers/"+contactRecord.customer
       }];
     });
-    var links = mongooseHelper.constructLinks('/api/v1.00/entities/customers',
+    var links = mongooseHelper.constructLinks('/api/v1.00/entities/contact_records',
                                               constraints.offset,
                                               data.length,
                                               constraints.query,
                                               req.query.field,
                                               collectionSize);
     res.json({
-      _type: "customer",
+      _type: "contact_recrods",
       data: data,
       links: links
     });
@@ -62,29 +66,38 @@ exports.getCustomers = function (req, res) {
   });
 };
 
-exports.getCustomer = function (req, res) {
-  var query = mongodbService.Customer.findOne({_id: req.params.id});
+exports.getContactRecord = function (req, res) {
+  var id = req.params.id;
+  var query = mongodbService.ContactRecord.findOne({_id: id});
   if (req.constraints.field) {
     query = query.select(mongooseHelper.getMongooseFields(req.constraints.field));
   }
   var promise = query.exec();
 
-  promise.then(function(customer) {
-    var data = customer.toJSON();
+  console.log("[api.getContactRecord] Get Contact Record:" + id);
+  promise.then(function(contact_record) {
+    var data = contact_record.toJSON();
     var links = [{
       rel: "self",
-      href: "/api/v1.00/entities/customer/"+customer._id
+      href: "/api/v1.00/entities/customer/"+data._id
     }];
     if (data.agent) {
       links.push({
         rel: "agent",
-        href: "/api/v1.00/entities/agents/"+customer.agent
+        href: "/api/v1.00/entities/agents/"+data.agent
+      });
+      delete data.agent;
+    }
+    if (data.customer) {
+      links.push({
+        rel: "customer",
+        href: "/api/v1.00/entities/customers/"+data.customer
       });
       delete data.agent;
     }
 
     res.json({
-      _type: "customer",
+      _type: "contact_record",
       data: data,
       links: links
     });

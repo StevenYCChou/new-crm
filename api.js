@@ -1,4 +1,7 @@
 var agentAPI = require('./api/agents.js');
+var customerAPI = require('./api/customers.js');
+var contactRecordAPI = require('./api/contact_records.js');
+
 var mongodbService = require('./data_service/mongodb_service.js');
 var AWS = require('aws-sdk');
 var configs = require('./configs.js');
@@ -51,6 +54,10 @@ function getCachedResponse(nonce, callback, res) {
 
 exports.getAgents = agentAPI.getAgents;
 exports.getAgent = agentAPI.getAgent;
+exports.getCustomers = customerAPI.getCustomers;
+exports.getCustomer = customerAPI.getCustomer;
+exports.getContactRecords = contactRecordAPI.getContactRecords;
+exports.getContactRecord = contactRecordAPI.getContactRecord;
 
 exports.updateAgent = function (req, res) {
   var agentId = req.param('id');
@@ -89,97 +96,6 @@ exports.removeAgent = function (req, res) {
     mongodbService.Agent.findByIdAndRemove(agentId).exec();
   };
   getCachedResponse(req.get('nonce'), deletion, res);
-};
-
-exports.getCustomers = function (req, res) {
-  var constraints = req.constraints;
-  var subcollectionQuery, subcollectionPromise;
-  if (constraints.query) {
-    subcollectionQuery = mongodbService.Customer.find(constraints.query);
-  } else {
-    subcollectionQuery = mongodbService.Customer.find({});
-  }
-  if (constraints.offset) {
-    subcollectionQuery = subcollectionQuery.skip(constraints.offset);
-  }
-  if (constraints.limit) {
-    subcollectionQuery = subcollectionQuery.limit(constraints.limit);
-  }
-  if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(getMongooseFields(constraints.field));
-  }
-  subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
-
-  var countQuery, countPromise;
-  if (constraints.query) {
-    countQuery = mongodbService.Customer.find(constraints.query);
-  } else {
-    countQuery = mongodbService.Customer.find({});
-  }
-  countQuery = countQuery.count();
-  countPromise = Promise.resolve(countQuery.exec());
-
-  Promise.all([subcollectionPromise, countPromise])
-         .then(function(results) {
-    var subCollection = results[0];
-    var collectionSize = results[1];
-    var data = [];
-    subCollection.forEach(function(customer, idx, customers) {
-      data[idx] = customer.toJSON();
-      delete data[idx].agent;
-      data[idx].links = [{
-        rel: "self",
-        href: "/api/v1.00/entities/customers/"+customer._id
-      }, {
-        rel: "agent",
-        href: "/api/v1.00/entities/agents/"+customer.agent
-      }];
-    });
-    var links = constructLinks('/api/v1.00/entities/customers',
-                               constraints.offset,
-                               data.length,
-                               constraints.query,
-                               req.query.field,
-                               collectionSize);
-    res.json({
-      _type: "customer",
-      data: data,
-      links: links
-    });
-  }, function(err) {
-    res.status(404).end();
-  });
-};
-
-exports.getCustomer = function (req, res) {
-  var query = mongodbService.Customer.findOne({_id: req.params.id});
-  if (req.constraints.field) {
-    query = query.select(getMongooseFields(req.constraints.field));
-  }
-  var promise = query.exec();
-
-  promise.then(function(customer) {
-    var data = customer.toJSON();
-    var links = [{
-      rel: "self",
-      href: "/api/v1.00/entities/customer/"+customer._id
-    }];
-    if (data.agent) {
-      links.push({
-        rel: "agent",
-        href: "/api/v1.00/entities/agents/"+customer.agent
-      });
-      delete data.agent;
-    }
-
-    res.json({
-      _type: "customer",
-      data: data,
-      links: links
-    });
-  }, function(err) {
-    res.json({error: err});
-  });
 };
 
 exports.updateCustomer = function (req, res) {
@@ -234,110 +150,6 @@ exports.removeCustomer = function (req, res) {
     mongodbService.Customer.findByIdAndRemove(customerId).exec();
   };
   getCachedResponse(req.get('nonce'), deletion, res);
-};
-
-exports.getContactRecords = function (req, res) {
-  var constraints = req.constraints;
-  var subcollectionQuery, subcollectionPromise;
-  if (constraints.query) {
-    subcollectionQuery = mongodbService.ContactRecord.find(constraints.query);
-  } else {
-    subcollectionQuery = mongodbService.ContactRecord.find({});
-  }
-  if (constraints.offset) {
-    subcollectionQuery = subcollectionQuery.skip(constraints.offset);
-  }
-  if (constraints.limit) {
-    subcollectionQuery = subcollectionQuery.limit(constraints.limit);
-  }
-  if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(getMongooseFields(constraints.field));
-  }
-  subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
-
-  var countQuery, countPromise;
-  if (constraints.query) {
-    countQuery = mongodbService.ContactRecord.find(constraints.query);
-  } else {
-    countQuery = mongodbService.ContactRecord.find({});
-  }
-  countQuery = countQuery.count();
-  countPromise = Promise.resolve(countQuery.exec());
-
-  Promise.all([subcollectionPromise, countPromise])
-         .then(function(results) {
-    var subCollection = results[0];
-    var collectionSize = results[1];
-    var data = [];
-    subCollection.forEach(function(contactRecord, idx, contactRecords) {
-      data[idx] = contactRecord.toJSON();
-      delete data[idx].agent;
-      delete data[idx].customer;
-      data[idx].links = [{
-        rel: "self",
-        href: "/api/v1.00/entities/contact_records/"+contactRecord._id
-      }, {
-        rel: "agent",
-        href: "/api/v1.00/entities/agents/"+contactRecord.agent
-      }, {
-        rel: "customer",
-        href: "/api/v1.00/entities/customers/"+contactRecord.customer
-      }];
-    });
-    var links = constructLinks('/api/v1.00/entities/contact_records',
-                               constraints.offset,
-                               data.length,
-                               constraints.query,
-                               req.query.field,
-                               collectionSize);
-    res.json({
-      _type: "contact_recrods",
-      data: data,
-      links: links
-    });
-  }, function(err) {
-    res.status(404).end();
-  });
-};
-
-exports.getContactRecord = function (req, res) {
-  var id = req.params.id;
-  var query = mongodbService.ContactRecord.findOne({_id: id});
-  if (req.constraints.field) {
-    query = query.select(getMongooseFields(req.constraints.field));
-  }
-  var promise = query.exec();
-
-  console.log("[api.getContactRecord] Get Contact Record:" + id);
-  promise.then(function(contact_record) {
-    var data = contact_record.toJSON();
-    var links = [{
-      rel: "self",
-      href: "/api/v1.00/entities/customer/"+data._id
-    }];
-    if (data.agent) {
-      links.push({
-        rel: "agent",
-        href: "/api/v1.00/entities/agents/"+data.agent
-      });
-      delete data.agent;
-    }
-    if (data.customer) {
-      links.push({
-        rel: "customer",
-        href: "/api/v1.00/entities/customers/"+data.customer
-      });
-      delete data.agent;
-    }
-
-    res.json({
-      _type: "contact_record",
-      data: data,
-      links: links
-    });
-  }, function(err) {
-    res.json({error: err});
-  });
 };
 
 exports.createContactRecord = function (req, res) {
