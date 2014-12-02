@@ -111,3 +111,20 @@ app.post('/api/v1.00/ecomm/entities/products', api.createProduct);
 app.delete('/api/v1.00/ecomm/entities/product/:productId', api.removeProduct);
 app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProductDetail);
 app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProduct);
+
+/////////////////////
+//  Shopping Cart  //
+/////////////////////
+app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
+app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
+app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
+app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
+app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
+app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearShoppingCart);
+
+/////////////////////
+//  ViewedHistory  //
+/////////////////////
+// app.get('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.getViewedHistory);
+var viewedHistoryApi = require('./viewedHistoryApi.js');
+app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
