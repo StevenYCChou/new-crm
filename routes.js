@@ -174,6 +174,7 @@ app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProduct);
 var shoppingCartApi = require('./shoppingCartApi.js');
 app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
 app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
+
 app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
 app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
 app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
@@ -182,6 +183,6 @@ app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearSh
 /////////////////////
 //  ViewedHistory  //
 /////////////////////
-// app.get('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.getViewedHistory);
 var viewedHistoryApi = require('./viewedHistoryApi.js');
+app.get('/api/v1.00/entities/viewedHistory', viewedHistoryApi.getSessionViewedHistory);
 app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
