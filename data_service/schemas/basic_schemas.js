@@ -55,7 +55,6 @@ function BasicAwsSmsSubscriptionSchema() {
       ref: 'Agent'
     },
     topicArn: String,
-    subscriptionArn: String,
     phone: String,
   });
 }

@@ -46,6 +46,19 @@ function setTopicDisplayName(topicArn, displayName, callback) {
   });
 }
 
+function listSubscriptionsByTopic(topicArn, callback) {
+  var params = {
+    TopicArn: topicArn,
+  };
+  sns.listSubscriptionsByTopic(params, function(err, data) {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, data);
+    }
+  });
+}
+
 function subscribe(topicArn, endpoint, callback) {
   var params = {
     Protocol: 'sms',
@@ -91,6 +104,7 @@ function sendSMS(topicArn, message, callback) {
 
 exports.publish = publish;
 exports.createTopic = createTopic;
+exports.listSubscriptionsByTopic = listSubscriptionsByTopic;
 exports.subscribe = subscribe;
 exports.unsubscribe = unsubscribe;
 exports.setTopicDisplayName = setTopicDisplayName;
