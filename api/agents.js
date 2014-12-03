@@ -81,4 +81,43 @@ exports.getAgent = function(req, res) {
   }, function(err) {
     res.status(404).end();
   });
-}
+};
+
+exports.createAgent = function (req, res) {
+  var agentInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email'),
+    location: req.param('location')
+  };
+  mongodbService.Agent.create(agentInfo).then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.updateAgent = function (req, res) {
+  var agentId = req.param('id');
+  var updateInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email'),
+    location: req.param('location'),
+    lastUpdatedAt: Date.now()
+  };
+  mongodbService.Agent.findByIdAndUpdate(agentId, updateInfo).exec(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.removeAgent = function (req, res) {
+  var agentId = req.param('id');
+  mongodbService.Agent.findByIdAndRemove(agentId).exec().then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};

@@ -92,3 +92,45 @@ exports.getCustomer = function (req, res) {
     res.json({error: err});
   });
 };
+
+exports.createCustomer = function (req, res) {
+  var customerInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email'),
+    location: req.param('location'),
+    agent: req.param('agentId')
+  };
+
+  mongodbService.Customer.create(customerInfo).then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.updateCustomer = function (req, res) {
+  var customerId = req.param('id');
+  var updateInfo = {
+    name: req.param('name'),
+    phone: req.param('phone'),
+    email: req.param('email'),
+    location: req.param('location'),
+    lastUpdatedAt: Date.now()
+  };
+
+  mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.removeCustomer = function (req, res) {
+  var customerId = req.param('id');
+  mongodbService.Customer.findByIdAndRemove(customerId).exec().then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};

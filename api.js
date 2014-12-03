@@ -55,148 +55,24 @@ function getCachedResponse(nonce, callback, res) {
 
 exports.getAgents = agentAPI.getAgents;
 exports.getAgent = agentAPI.getAgent;
+exports.createAgent = agentAPI.createAgent;
+exports.updateAgent = agentAPI.updateAgent;
+exports.removeAgent = agentAPI.removeAgent;
+
 exports.getCustomers = customerAPI.getCustomers;
 exports.getCustomer = customerAPI.getCustomer;
+exports.createCustomer = customerAPI.createCustomer;
+exports.updateCustomer = customerAPI.updateCustomer;
+exports.removeCustomer = customerAPI.removeCustomer;
+
 exports.getContactRecords = contactRecordAPI.getContactRecords;
 exports.getContactRecord = contactRecordAPI.getContactRecord;
+exports.createContactRecord = contactRecordAPI.createContactRecord;
+exports.updateContactRecord = contactRecordAPI.updateContactRecord;
+exports.removeContactRecord = contactRecordAPI.removeContactRecord;
+
 exports.getProducts = productAPI.getProducts;
 exports.getProduct = productAPI.getProduct;
-
-
-exports.updateAgent = function (req, res) {
-  var agentId = req.param('id');
-  var updateInfo = {
-    name: req.param('name'),
-    phone: req.param('phone'),
-    email: req.param('email'),
-    location: req.param('location'),
-    lastUpdatedAt: Date.now()
-  };
-  var update = function () {
-    console.log("[api.updateAgent] Update Agent:" + updateInfo.name);
-    return crmService.updateAgentById(agentId, updateInfo).exec();
-  };
-  getCachedResponse(req.get('nonce'), update, res);
-};
-
-exports.createAgent = function (req, res) {
-  var agentInfo = {
-    name: req.param('name'),
-    phone: req.param('phone'),
-    email: req.param('email'),
-    location: req.param('location')
-  };
-  var creation = function () {
-    console.log("[api.createAgent] Create New Agent:" + agentInfo.name);
-    return crmService.createAgent(agentInfo);
-  };
-  getCachedResponse(req.get('nonce'), creation, res);
-};
-
-exports.removeAgent = function (req, res) {
-  var agentId = req.param('id');
-  var deletion = function () {
-    console.log("[api.removeAgent] Remove Agent:" + agentId);
-    mongodbService.Agent.findByIdAndRemove(agentId).exec();
-  };
-  getCachedResponse(req.get('nonce'), deletion, res);
-};
-
-exports.updateCustomer = function (req, res) {
-  var customerId = req.param('id');
-  var updateInfo = {
-    name: req.param('name'),
-    phone: req.param('phone'),
-    email: req.param('email'),
-    location: req.param('location'),
-    lastUpdatedAt: Date.now()
-  };
-  var update = function () {
-    console.log("[api.updateCustomer] Update Customer:" + updateInfo.name);
-    crmValidation.updateCustomerContactValidation(customerId, function(err) {
-      if (err) {
-        return err;
-      } else {
-        return mongodbService.Customer.findByIdAndUpdate(customerId, updateInfo).exec();
-      }
-    });
-  };
-  getCachedResponse(req.get('nonce'), update, res);
-};
-
-exports.createCustomer = function (req, res) {
-  var customerInfo = {
-    name: req.param('name'),
-    phone: req.param('phone'),
-    email: req.param('email'),
-    location: req.param('location'),
-    agent: req.param('agentId')
-  };
-
-  var creation = function () {
-    console.log("[api.createCustomer] Create Customer:" + customerInfo.name);
-    crmValidation.createCustomerValidation(customerInfo.agent, function(err) {
-      if (err) {
-        return err;
-      } else {
-        return mongodbService.Customer.create(customerInfo);
-      }
-    });
-  };
-
-  getCachedResponse(req.get('nonce'), creation, res);
-};
-
-exports.removeCustomer = function (req, res) {
-  var customerId = req.param('id');
-  var deletion = function () {
-    console.log("[api.removeCustomer] Remove Customer:" + customerId);
-    mongodbService.Customer.findByIdAndRemove(customerId).exec();
-  };
-  getCachedResponse(req.get('nonce'), deletion, res);
-};
-
-exports.createContactRecord = function (req, res) {
-  var newContactRecord = {
-    time : req.param('time'),
-    data : req.param('data'),
-    textSummary : req.param('textSummary'),
-    model : req.param('model'),
-    agent: req.param('agentId'),
-    customer: req.param('customerId')
-  };
-  var creation = function () {
-    console.log("[api.createContactRecord] Create Contact Record:" + newContactRecord.textSummary);
-    return mongodbService.ContactRecord.create(newContactRecord);
-  };
-  getCachedResponse(req.get('nonce'), creation, res);
-};
-
-exports.updateContactRecord = function (req, res) {
-  var contactRecordId = req.param('id');
-  var updatedContactRecord = {
-    time : req.param('time'),
-    data : req.param('data'),
-    textSummary : req.param('textSummary'),
-    model : req.param('model'),
-    agent: req.param('agentId'),
-    customer: req.param('customerId')
-  };
-  var update = function () {
-    console.log("[api.updateContactRecord] Update contact record:" + updateInfo.name);
-    return mongodbService.ContactRecord.findByIdAndUpdate(contactRecordId, updatedContactRecord);
-  };
-  getCachedResponse(req.get('nonce'), update, res);
-};
-
-exports.removeContactRecord = function (req, res) {
-  var contactRecordId = req.param('id');
-  var deletion = function () {
-    console.log("[api.removeContactRecord] Remove contact record:" + contactRecordId);
-    return mongodbService.ContactRecord.findByIdAndRemove(contactRecordId).exec();
-  };
-  getCachedResponse(req.get('nonce'), deletion, res);
-};
 
 exports.getProductDetail = function (req, res) {
   var params = {

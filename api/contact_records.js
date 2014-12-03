@@ -73,8 +73,6 @@ exports.getContactRecord = function (req, res) {
     query = query.select(restfulHelper.getMongooseFields(req.constraints.field));
   }
   var promise = query.exec();
-
-  console.log("[api.getContactRecord] Get Contact Record:" + id);
   promise.then(function(contact_record) {
     var data = contact_record.toJSON();
     var links = [{
@@ -103,5 +101,49 @@ exports.getContactRecord = function (req, res) {
     });
   }, function(err) {
     res.json({error: err});
+  });
+};
+
+exports.createContactRecord = function (req, res) {
+  var newContactRecord = {
+    time : req.param('time'),
+    data : req.param('data'),
+    textSummary : req.param('textSummary'),
+    model : req.param('model'),
+    agent: req.param('agentId'),
+    customer: req.param('customerId')
+  };
+
+  mongodbService.ContactRecord.create(newContactRecord).then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.updateContactRecord = function (req, res) {
+  var contactRecordId = req.param('id');
+  var updatedContactRecord = {
+    time : req.param('time'),
+    data : req.param('data'),
+    textSummary : req.param('textSummary'),
+    model : req.param('model'),
+    agent: req.param('agentId'),
+    customer: req.param('customerId')
+  };
+
+  mongodbService.ContactRecord.findByIdAndUpdate(contactRecordId, updatedContactRecord).exec(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+  });
+};
+
+exports.removeContactRecord = function (req, res) {
+  var contactRecordId = req.param('id');
+  mongodbService.ContactRecord.findByIdAndRemove(contactRecordId).exec().then(function(response) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+  }, function(err) {
+    return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
   });
 };

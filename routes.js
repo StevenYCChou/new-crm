@@ -1,4 +1,5 @@
 var api = require('./api.js');
+var restfulHelper = require('./api/restful_helper.js');
 var businessService = require('./business_service/business_service.js');
 var mongodbService = require('./data_service/mongodb_service.js');
 var managerFacade = businessService.managerFacade;
@@ -32,25 +33,25 @@ app.set('view engine', 'html'); // default view engine
 
 var appendUUID = function(req, res, next) {
   req.headers.uuid = hash(req.headers);
+  req.headers.uuid += hash(req.body);
   next();
 };
 
 var dectectAndRestoreUUID = function(req, res, next) {
-  var cont = false;
-  var reqUUID = req.headers.uuid;
   var method = req.method;
   if (method === 'PUT' || method === 'POST' || method === 'DELETE') {
+    var reqUUID = req.headers.uuid;
     mongodbService.Response.findOne({nonce: reqUUID}).exec().then(function(entry) {
       if (entry === null) {
         mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
+          restfulHelper.responsePollingPage(res, reqUUID);
           next();
         }, function(err) {
           res.status(500).end();
-        })
+        });
       } else {
         console.log('In dectectAndRestoreUUID: detect duplication.');
-        // TODO: need to reject it or return the already processed data.
-        next();
+        restfulHelper.responsePollingPage(res, reqUUID);
       };
     }, function(err) {
       res.status(500).end();

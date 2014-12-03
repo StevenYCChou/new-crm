@@ -39,6 +39,15 @@ exports.constructLinks = function(endpoint, offset, limit, original_query, field
   return res;
 }
 
+exports.responsePollingPage = function(res, uuid) {
+  res.json({
+    links: {
+      rel: 'poll',
+      href: '/api/v1.00/responses/' + uuid
+    }
+  });
+}
+
 exports.getMongooseFields = function (fields) {
   var fields_obj = {};
   fields.forEach(function(field) {
