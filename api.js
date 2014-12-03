@@ -484,10 +484,14 @@ exports.removeContactRecord = function (req, res) {
 };
 
 exports.getProducts = function (req, res) {
-  if (JSON.stringify(req.query) == '{}' || req.query.category == 'All')
+  if (JSON.stringify(req.query) == '{}' || (req.query.category == 'All' && req.query.searchKey == ''))
     query = '';
-  else
+  else if (req.query.category == 'All' && req.query.searchKey != '')
+    query = " where Name like '%" + req.query.searchKey + "%'";
+  else if (req.query.category != 'All' && req.query.searchKey == '')
     query = " where Category = '" + req.query.category + "'";
+  else
+    query = " where Category = '" + req.query.category + "' and Name like '%" + req.query.searchKey + "%'";
   var params = {
     SelectExpression: 'select * from Product ' + query,
     ConsistentRead: true || false
