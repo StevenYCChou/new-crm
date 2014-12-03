@@ -45,6 +45,23 @@ function BasicSubscriptionSchema() {
 }
 util.inherits(BasicSubscriptionSchema, mongoose.Schema);
 
+/*BasicSubscriptionSchema for AWS SNS SMS Service*/
+function BasicAwsSmsSubscriptionSchema() {
+  mongoose.Schema.apply(this, arguments);
+
+  this.add({
+    agent : {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Agent'
+    },
+    topicArn: String,
+    subscriptionArn: String,
+    phone: String,
+  });
+}
+util.inherits(BasicAwsSmsSubscriptionSchema, mongoose.Schema);
+
 exports.BasicPersonSchema = BasicPersonSchema;
 exports.BasicRelationshipSchema = BasicRelationshipSchema;
 exports.BasicSubscriptionSchema = BasicSubscriptionSchema;
+exports.BasicAwsSmsSubscriptionSchema = BasicAwsSmsSubscriptionSchema;
