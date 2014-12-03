@@ -13,7 +13,7 @@
         <div ng-repeat="attributes in product.Attributes">
           <label>{{ attributes.Name }}: <input ng-model="attributes.Value" value="{{ attributes.Value }}"></label>
         </div> 
-        <input type="button" ng-click="productDetail(product.Name)" value="Detail" />
+        <input type="button" ng-click="productDetail(product.id)" value="Detail" />
         <input type="button" ng-click="productUpdateSummary(product.Name)" value="Update" />
         <input type="button" ng-click="productDelete(product.Name)" value="Delete" />
       </div>

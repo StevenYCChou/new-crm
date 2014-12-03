@@ -60,6 +60,8 @@ exports.getCustomer = customerAPI.getCustomer;
 exports.getContactRecords = contactRecordAPI.getContactRecords;
 exports.getContactRecord = contactRecordAPI.getContactRecord;
 exports.getProducts = productAPI.getProducts;
+exports.getProduct = productAPI.getProduct;
+
 
 exports.updateAgent = function (req, res) {
   var agentId = req.param('id');

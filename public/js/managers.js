@@ -65,9 +65,9 @@ managerApp.controller('agentCreateController', ['$scope', '$http', '$window', 'u
 }]);
 
 ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $http.get('/api/v1.00/ecomm/entities/products')
+  $http.get('/api/v1.00/entities/products')
     .success(function(data, status, headers, config) {
-      $scope.products = data.products;
+      $scope.products = data.data;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -77,8 +77,8 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   $scope.createProduct = function() {
     $window.location.href = "/ecomm/manager/createProduct";
   };
-  $scope.productDetail = function(product_id) {
-    $window.location.href = "/ecomm/manager/Product/" + product_id;
+  $scope.productDetail = function(id) {
+    $window.location.href = "/ecomm/manager/Product/" + id;
   };
   $scope.productUpdateSummary = function(product_id) {
     var put_data = {
@@ -219,7 +219,7 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
 
 ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.productId = $location.absUrl().split("/")[6];
-  $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
+  $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
       $scope.shortDescription = data.data.shortDescription;
       $scope.longDescription = data.data.longDescription;
