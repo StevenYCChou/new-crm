@@ -1,6 +1,6 @@
 var mongodbService = require('../data_service/mongodb_service.js');
 var Promise = require('promise');
-var mongooseHelper = require('./mongoose_helper.js');
+var restfulHelper = require('./restful_helper.js');
 
 exports.getAgents = function (req, res) {
   var constraints = req.constraints;
@@ -17,7 +17,7 @@ exports.getAgents = function (req, res) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
   if (constraints.field) {
-    var fields_obj = mongooseHelper.getMongooseFields(constraints.field);
+    var fields_obj = restfulHelper.getMongooseFields(constraints.field);
     subcollectionQuery = subcollectionQuery.select(fields_obj);
   }
 
@@ -44,12 +44,12 @@ exports.getAgents = function (req, res) {
         href: "/api/v1.00/entities/agents/"+agent._id
       };
     });
-    var links = mongooseHelper.constructLinks('/api/v1.00/entities/agents',
-                                              constraints.offset,
-                                              data.length,
-                                              constraints.query,
-                                              req.query.field,
-                                              collectionSize);
+    var links = restfulHelper.constructLinks('/api/v1.00/entities/agents',
+                                             constraints.offset,
+                                             data.length,
+                                             constraints.query,
+                                             req.query.field,
+                                             collectionSize);
     res.json({
       _type: "agent",
       data: data,
@@ -64,7 +64,7 @@ exports.getAgent = function(req, res) {
   var id = req.params.id;
   var query = mongodbService.Agent.findOne({_id: id});
   if (req.constraints.field) {
-    query = query.select(mongooseHelper.getMongooseFields(req.constraints.field));
+    query = query.select(restfulHelper.getMongooseFields(req.constraints.field));
   }
   var promise = query.exec();
 

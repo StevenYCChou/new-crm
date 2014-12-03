@@ -1,6 +1,6 @@
 var mongodbService = require('../data_service/mongodb_service.js');
 var Promise = require('promise');
-var mongooseHelper = require('./mongoose_helper.js');
+var restfulHelper = require('./restful_helper.js');
 
 exports.getContactRecords = function (req, res) {
   var constraints = req.constraints;
@@ -17,7 +17,7 @@ exports.getContactRecords = function (req, res) {
     subcollectionQuery = subcollectionQuery.limit(constraints.limit);
   }
   if (constraints.field) {
-    subcollectionQuery = subcollectionQuery.select(mongooseHelper.getMongooseFields(constraints.field));
+    subcollectionQuery = subcollectionQuery.select(restfulHelper.getMongooseFields(constraints.field));
   }
   subcollectionPromise = Promise.resolve(subcollectionQuery.exec());
 
@@ -50,12 +50,12 @@ exports.getContactRecords = function (req, res) {
         href: "/api/v1.00/entities/customers/"+contactRecord.customer
       }];
     });
-    var links = mongooseHelper.constructLinks('/api/v1.00/entities/contact_records',
-                                              constraints.offset,
-                                              data.length,
-                                              constraints.query,
-                                              req.query.field,
-                                              collectionSize);
+    var links = restfulHelper.constructLinks('/api/v1.00/entities/contact_records',
+                                             constraints.offset,
+                                             data.length,
+                                             constraints.query,
+                                             req.query.field,
+                                             collectionSize);
     res.json({
       _type: "contact_recrods",
       data: data,
@@ -70,7 +70,7 @@ exports.getContactRecord = function (req, res) {
   var id = req.params.id;
   var query = mongodbService.ContactRecord.findOne({_id: id});
   if (req.constraints.field) {
-    query = query.select(mongooseHelper.getMongooseFields(req.constraints.field));
+    query = query.select(restfulHelper.getMongooseFields(req.constraints.field));
   }
   var promise = query.exec();
 
