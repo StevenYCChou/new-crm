@@ -32,28 +32,32 @@ app.set('view engine', 'html'); // default view engine
 
 var appendUUID = function(req, res, next) {
   req.headers.uuid = hash(req.headers);
-  console.log(req.headers.uuid);
   next();
 };
 
 var dectectAndRestoreUUID = function(req, res, next) {
   var cont = false;
   var reqUUID = req.headers.uuid;
-  mongodbService.Response.findOne({nonce: reqUUID}).exec().then(function(entry) {
-    if (entry === null) {
-      mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
+  var method = req.method;
+  if (method === 'PUT' || method === 'POST' || method === 'DELETE') {
+    mongodbService.Response.findOne({nonce: reqUUID}).exec().then(function(entry) {
+      if (entry === null) {
+        mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
+          next();
+        }, function(err) {
+          res.status(500).end();
+        })
+      } else {
+        console.log('In dectectAndRestoreUUID: detect duplication.');
+        // TODO: need to reject it or return the already processed data.
         next();
-      }, function(err) {
-        res.status(500).end();
-      })
-    } else {
-      console.log('In dectectAndRestoreUUID: detect duplication.');
-      // TODO: need to reject it or return the already processed data.
-      next();
-    };
-  }, function(err) {
-    res.status(500).end();
-  });
+      };
+    }, function(err) {
+      res.status(500).end();
+    });
+  } else {
+    next();
+  }
 };
 
 app.use(appendUUID);
