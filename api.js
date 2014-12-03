@@ -1,6 +1,7 @@
 var agentAPI = require('./api/agents.js');
 var customerAPI = require('./api/customers.js');
 var contactRecordAPI = require('./api/contact_records.js');
+var productAPI = require('./api/products.js');
 
 var mongodbService = require('./data_service/mongodb_service.js');
 var AWS = require('aws-sdk');
@@ -58,6 +59,7 @@ exports.getCustomers = customerAPI.getCustomers;
 exports.getCustomer = customerAPI.getCustomer;
 exports.getContactRecords = contactRecordAPI.getContactRecords;
 exports.getContactRecord = contactRecordAPI.getContactRecord;
+exports.getProducts = productAPI.getProducts;
 
 exports.updateAgent = function (req, res) {
   var agentId = req.param('id');
@@ -192,115 +194,6 @@ exports.removeContactRecord = function (req, res) {
     return mongodbService.ContactRecord.findByIdAndRemove(contactRecordId).exec();
   };
   getCachedResponse(req.get('nonce'), deletion, res);
-};
-
-exports.getProducts = function (req, res) {
-  var constraints = req.constraints;
-
-  var select_string = '';
-  var count_string = 'select count(*) from Product ';
-  var where_string = '';
-  var limit_string = '';
-  var offset_string = '';
-
-  if (constraints.field) {
-    select_string = 'select ' + constraints.field.join(',') + ' from Product ';
-  } else {
-    select_string = 'select * from Product ';
-  }
-  if (constraints.query) {
-    for (var key in constraints.query) {
-      if (constraints.query.hasOwnProperty(key)) {
-        where_string += " where " + key + " = '" + constraints.query[key] + "' ";
-      }
-    }
-  }
-  if (constraints.limit) {
-    limit_string = ' limit ' + constraints.limit;
-  }
-
-  if (constraints.offset) {
-    simpledb.select({SelectExpression: count_string + where_string + offset_string}, function(err, data) {
-      if (err) {
-        res.json({err: err});
-      } else {
-        simpledb.select({SelectExpression: select_string + where_string + limit_string,
-                         NextToken: data.NextToken}, function(err, results) {
-          if (err) {
-            res.json({err: err});
-          } else {
-            var data = [];
-            results.Items.forEach(function(product) {
-              var productObj = {};
-              product.Attributes.forEach(function(attribute) {
-                productObj[attribute.Name] = attribute.Value;
-              });
-              productObj.id = product.Name;
-              data.push(productObj);
-            });
-            res.json(data);
-          }
-        });
-      }
-    });
-  } else {
-    simpledb.select({SelectExpression: select_string + where_string + limit_string}, function(err, results) {
-      if (err) {
-        res.json({err: err});
-      } else {
-        var data = [];
-        var links = [];
-        results.Items.forEach(function(product) {
-          var productObj = {};
-          product.Attributes.forEach(function(attribute) {
-            if (attribute.Name == 'Category') {
-              if (productObj[attribute.Name] == undefined) {
-                productObj[attribute.Name] = [];
-              }
-              productObj[attribute.Name].push(attribute.Value);
-            } else {
-              productObj[attribute.Name] = attribute.Value;
-            }
-          });
-          productObj.id = product.Name;
-          data.push(productObj);
-        });
-        res.json({
-          data: data,
-          links: links
-        });
-      }
-    });
-  }
-
-  // var simpleDbSelectPromise = Promise.denodeify(simpledb.select);
-
-  // var queryPromise;
-  // if (constraints.offset) {
-  //   var offsetParams = {SelectExpression: count_string + where_string + offset_string};
-  //   queryPromise = simpleDbSelectPromise(offsetParams).then(function(data) {
-  //     var queryParams = {SelectExpression: select_string + where_string + limit_string,
-  //                     NextToken: data.NextToken};
-  //     return simpleDbSelectPromise(queryParams);
-  //   });
-  // } else {
-  //   var queryParams = {SelectExpression: select_string + where_string + limit_string};
-  //   // queryPromise = simpleDbSelectPromise(queryParams);
-  //   simpleDbSelectPromise(queryParams).then(function(data) {
-  //     console.log(data);
-  //     res.json(data);
-  //   }, function(err) {
-  //     console.log("error:"+err, err.stack);
-  //     res.json(err);
-  //   });
-  // }
-  // queryPromise.then(function(data) {
-  //   console.log(data);
-  //   res.json(data);
-  // }, function(err) {
-  //   console.log("error:"+err, err.stack);
-  //   res.json(err);
-  // })
 };
 
 exports.getProductDetail = function (req, res) {
