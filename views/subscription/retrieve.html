@@ -9,13 +9,11 @@
       <h3>Your Subscriptions</h3>
       <table>
         <tr>
-          <th>Customer Id</th>
           <th>Customer Name</th>
           <th>Notification Method</th>
           <th>Notification Field</th>
         </tr>
         <tr ng-repeat="subscription in subscriptions">
-          <td>{{ subscription.customer._id }}</td>
           <td>{{ subscription.customer.name }}</td>
           <td>{{ subscription.notificationMethods }}</td>
           <td>{{ subscription.notificationFields }}</td>

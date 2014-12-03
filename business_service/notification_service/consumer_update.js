@@ -54,15 +54,15 @@ function filterMessage(msg) {
         var updatedFields = msg.updatedFields;
         for (i = 0; i < subscription.notificationFields.length; i++) {
           if (updatedFields.indexOf(subscription.notificationFields[i]) != -1) {
-            var topic = "";
+            var routingKey = "";
             if (subscription.notificationMethods.length == 1) {
-              if (subscription.notificationMethods[0] == 'email') topic = 'email.';
-              if (subscription.notificationMethods[0] == 'sms') topic = '.sms';
+              if (subscription.notificationMethods[0] == 'email') routingKey = 'email.';
+              if (subscription.notificationMethods[0] == 'sms') routingKey = '.sms';
             }
             if (subscription.notificationMethods.length == 2) {
-              topic = 'email.sms';
+              routingKey = 'email.sms';
             }
-            rabbitmqService.publishMessage('crm-subscribed-update', msg, topic);
+            rabbitmqService.publishMessage('crm-subscribed-update', msg, routingKey);
             break;
           }
         }
