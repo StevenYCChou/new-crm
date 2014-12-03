@@ -104,11 +104,6 @@ app.use(function(req, res, next) {
 });
 
 ////////////////////
-//   Web Server   //
-////////////////////
-http.createServer(app).listen(3000);
-
-////////////////////
 //  MessageQueue  //
 ////////////////////
 // var mq = require('./message_queue/main.js');
@@ -204,3 +199,8 @@ app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearSh
 // app.get('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.getViewedHistory);
 var viewedHistoryApi = require('./viewedHistoryApi.js');
 app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
+
+////////////////////
+//   Web Server   //
+////////////////////
+http.createServer(app).listen(3000);
