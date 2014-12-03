@@ -1,9 +1,11 @@
 var api = require('./api.js');
 var businessService = require('./business_service/business_service.js');
+var mongodbService = require('./data_service/mongodb_service.js');
 var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;
 var customerFacade = businessService.customerFacade;
 
+var hash = require('object-hash');
 var express = require('express');
 var http = require('http');
 var app = express();
@@ -27,6 +29,35 @@ app.use(cors());
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'html'); // default view engine
+
+var appendUUID = function(req, res, next) {
+  req.headers.uuid = hash(req.headers);
+  console.log(req.headers.uuid);
+  next();
+};
+
+var dectectAndRestoreUUID = function(req, res, next) {
+  var cont = false;
+  var reqUUID = req.headers.uuid;
+  mongodbService.Response.findOne({nonce: reqUUID}).exec().then(function(entry) {
+    if (entry === null) {
+      mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
+        next();
+      }, function(err) {
+        res.status(500).end();
+      })
+    } else {
+      console.log('In dectectAndRestoreUUID: detect duplication.');
+      // TODO: need to reject it or return the already processed data.
+      next();
+    };
+  }, function(err) {
+    res.status(500).end();
+  });
+};
+
+app.use(appendUUID);
+app.use(dectectAndRestoreUUID);
 
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
