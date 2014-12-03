@@ -1,7 +1,11 @@
-var nodemailer = require('nodemailer');
+var AWS = require('aws-sdk');
+var configs = require('../../configs.js');
+var crmSES = require('../../crm_aws_module/SES.js');
+var crmSNS = require('../../crm_aws_module/SNS.js');
 var rabbitmqService = require('./rabbitmq_service');
 var mongodbService = require('../../data_service/mongodb_service.js');
 var Subscription = mongodbService.Subscription;
+var AwsSmsSubscription = mongodbService.AwsSmsSubscription;
 var Agent = mongodbService.Agent;
 
 var update_consumer = {
@@ -15,59 +19,25 @@ var update_consumer = {
   },
 };
 
-var render_email_consumer = {
+var email_to_agent_consumer = {
   exchange: 'crm-subscribed-update',
   queue: 'render_email_queue',
   type: 'topic',
   routingKey: 'email.*',
   callback: function(msg, headers, deliveryInfo) {
-    console.log("rendering email.");
-    renderEmail(msg);
+    renderAndSendEmailToAgent(msg);
   },
 }
 
-var email_to_agent_consumer = {
-  exchange: 'crm-rendered-email',
-  queue: '',
-  type: 'topic',
-  routingKey: '',
-  callback: function(msg, headers, deliveryInfo) {
-    var AWS = require('aws-sdk');
-    var configs = require('../../configs.js');
-    var crmSES = require('../../crm_aws_module/SES.js');
-    console.log(msg);
-    crmSES.sendEmail(msg.from, msg.to, msg.cc, msg.subject, msg.message, function(err) {
-      console.log("sending email to the agent.");
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('Mail is sent.');
-      }
-    })
-  },
-};
-
-var render_sms_consumer = {
+var sms_to_agent_consumer = {
   exchange: 'crm-subscribed-update',
   queue: 'render_sms_queue',
   type: 'topic',
   routingKey: '*.sms',
   callback: function(msg, headers, deliveryInfo) {
-    console.log("rendering email.");
-    console.log('Publishing message to the send sms queue.');
-    rabbitmqService.publishMessage('crm-rendered-sms', msg, '');
+    renderAndSendSmsToAgent (msg);
   },
 }
-
-var sms_to_agent_consumer = {
-  exchange: 'crm-rendered-sms',
-  queue: '',
-  type: 'topic',
-  routingKey: '',
-  callback: function(msg, headers, deliveryInfo) {
-    console.log("sending sms to the agent.");
-  },
-};
 
 function filterMessage(msg) {
   var target = {
@@ -96,41 +66,69 @@ function filterMessage(msg) {
             break;
           }
         }
+      });
+    }
+  });
+}
+
+function renderAndSendEmailToAgent(msg) {
+  Agent.findById(msg.agentId, function (err, agent) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Rendering Email.');
+      // from to cc subject body.
+      var subject = "[CRM Notification Center] Your customer " + msg.originalProfile.name + " updated his/her " + msg.updatedFields;
+      var from = 'wx2148@columbia.edu';
+      var to = [agent.email];
+      var cc = [];
+      var message = [
+        'Customer: ' + msg.newProfile.name,
+        'Updated Fields: ' + msg.updatedFields,
+        'Current profile: phone: ' + msg.newProfile.phone + ', email: ' + msg.newProfile.email,
+      ].join('\n');
+
+      console.log('Sending email to the agent.');
+      crmSES.sendEmail(from, to, cc, subject, message, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Mail is sent.');
+        }
       })
     }
   })
 }
 
-function renderEmail (msg) {
+function renderAndSendSmsToAgent(msg) {
+
+ var message = 'Your Customer ' + msg.newProfile.name + ' updated his/her ' + msg.updatedFields + '. Please check on CRM website. [CRM Notification Center]';
+
   Agent.findById(msg.agentId, function (err, agent) {
     if (err) {
-      console.log('err');
+      console.log(err);
     } else {
-      console.log('Rendering Email.');
-      // from to cc subject body.
-      var subject = "[Customer Update] " + msg.originalProfile.name + " " + msg.originalProfile._id;
-      var from = 'wx2148@columbia.edu';
-      var to = [agent.email];
-      var cc = [];
-      var message = msg;
-      msg = {
-        subject: subject,
-        from: from,
-        to: to,
-        cc: cc,
-        message: JSON.stringify(message),
-      }
-      console.log('Publishing message to the send message queue.');
-      rabbitmqService.publishMessage('crm-rendered-email', msg, '');
+      AwsSmsSubscription.findOne({agent: agent._id}, function (err, subscription) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Sending sms to the agent.");
+          crmSNS.sendSMS(subscription.topicArn, message, function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('SMS is sent.');
+            }
+          });
+        }
+      })
     }
-  })
+  });
 }
 
 exports.startConsumers = function() {
   rabbitmqService.startConsumers([
     update_consumer,
-    render_email_consumer,
-    render_sms_consumer,
     email_to_agent_consumer,
     sms_to_agent_consumer,
   ]);
