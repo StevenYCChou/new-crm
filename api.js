@@ -568,38 +568,41 @@ exports.getProductDetail = function (req, res) {
 exports.createProduct = function (req, res) {
   var tmp = [];
   var tmp2 = [];
-  tmp.push({
-    Name: 'Name',
-    Value: req.body['Name'].toString(),
-    Replace: true,
-  },
-  {
-    Name: 'Price',
-    Value: req.body['Price'].toString(),
-    Replace: true || false
-  });
-  req.body['category'].forEach(function(cate){
-    if (cate.data == true){
-      tmp.push({
-        Name: 'Category',
-        Value: cate.name,
-        Replace: false,
+  var dynamoArributes = [
+    'shortDescription',
+    'longDescription',
+    'sellerComments',
+    'imageLink'
+  ];
+
+  for (var key in req.body){
+    if (req.body[key] instanceof Array){
+      req.body[key].forEach(function(v){
+        tmp.push({
+          Name: key,
+          Value: v,
+          Replace: false,
+        });
       });
+    } else {
+      if (dynamoArributes.indexOf(key) == -1) {
+        tmp.push({
+          Name: key,
+          Value: req.body[key].toString(),
+          Replace: true,
+        });
+      }
     }
-  });
-  tmp.push({
-    Name: req.body['Field1'].toString(),
-    Value: req.body['Value1'].toString(),
-    Replace: true || false
-  });
+  }
   tmp2.push({
     Attributes : tmp,
-    Name: req.body['Id'].toString(),
+    Name: req.body['id'].toString(),
   });
   var params_new = {
     DomainName: 'Product', 
     Items: tmp2
   };
+  console.log(params_new);
   simpledb.batchPutAttributes(params_new, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
@@ -607,7 +610,7 @@ exports.createProduct = function (req, res) {
   var params = {
     Item: { 
       ProductID: { 
-        S: req.body['Id'].toString(),
+        S: req.body['id'].toString(),
       },
       shortDescription: { 
         S: req.body['shortDescription'].toString(),
@@ -628,20 +631,6 @@ exports.createProduct = function (req, res) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   });
-
-//  console.log(req.body);
- /* var params = {
-    Bucket: 'crm-images-fs2488',
-    Key: req.body['uniqueFileName'],
-    ContentType: req.body['imageFile'].type,
-    Body: req.body['imageFile'],
-    ServerSideEncryption: 'AES256'
-  };
-  console.log(params);
-  s3.putObject(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });*/
   res.render('manager/products');
 };
 
