@@ -88,7 +88,7 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
       }
     };
     $http({
-      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      url: '/api/v1.00/entities/product/' + product_id,
       method: 'PUT',
       headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
       data: put_data})
@@ -103,7 +103,7 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   };
   $scope.productDelete = function(product_id) {
     $http({
-      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      url: '/api/v1.00/entities/products/' + product_id,
       method: 'DELETE',
       headers: {'nonce' : 'DELETE' + $scope.uuid}})
       .success(function(data, status, headers, config) {
@@ -183,15 +183,21 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
   }
 
   $scope.createProductSubmit = function(product_id, fields) {
+    var category = [];
+    $scope.filterCategorys.forEach(function(cate) {
+      if (cate.data == true)
+        category.push(cate.name);
+    });
+
     var post_data = {
-      Id: product_id,
+      id: product_id,
       Name: fields[0].data,
       Price: fields[1].data,
       shortDescription: fields[2].data,
       longDescription: fields[3].data,
       sellerComments: fields[4].data,
       imageLink: fields[5].data,
-      category: $scope.filterCategorys,
+      category: category,
       Field1: fields[6].attr,
       Value1: fields[6].data,
 //      imageFileName: $scope.uniqueString() + '-' + $scope.file.name,
@@ -199,7 +205,7 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     };
     console.log($scope.filterCategorys);
     $http({
-      url: '/api/v1.00/ecomm/entities/products',
+      url: '/api/v1.00/entities/products',
       method: 'POST',
       headers: {'nonce' : 'POST' + JSON.stringify(post_data) + $scope.uuid},
       data: post_data})
@@ -245,7 +251,7 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
       }
     };
     $http({
-      url: '/api/v1.00/ecomm/entities/product/' + product_id,
+      url: '/api/v1.00/entities/product/' + product_id,
       method: 'PUT',
       headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
       data: put_data})

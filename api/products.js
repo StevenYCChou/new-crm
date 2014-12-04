@@ -2,7 +2,29 @@ var Promise = require('promise');
 var AWS = require('aws-sdk');
 var configs = require('../configs.js');
 var restfulHelper = require('./restful_helper.js');
+var mongodbService = require('../data_service/mongodb_service.js');
 var simpledb = new AWS.SimpleDB({credentials: configs.simpleDb.creds, region: configs.simpleDb.region});
+
+var parseToAttributes = function(product) {
+  var attributes = [];
+
+  for (var key in product) {
+    if (Array.isArray(product[key])) {
+      product[key].forEach(function(v) {
+        attributes.push({
+          Name: key,
+          Value: String(v)
+        });
+      });
+    } else if (key !== 'id') {
+      attributes.push({
+        Name: key,
+        Value: String(product[key])
+      });
+    }
+  }
+  return attributes;
+}
 
 exports.getProducts = function (req, res) {
   var constraints = req.constraints;
@@ -58,7 +80,7 @@ exports.getProducts = function (req, res) {
     subCollection.Items.forEach(function(product) {
       var productObj = {};
       product.Attributes.forEach(function(attribute) {
-        if (attribute.Name == 'Category') {
+        if (attribute.Name === 'category' || attribute.Name === 'Category') {
           if (productObj[attribute.Name] == undefined) {
             productObj[attribute.Name] = [];
           }
@@ -75,7 +97,7 @@ exports.getProducts = function (req, res) {
       data.push(productObj);
     });
 
-    var links = restfulHelper.constructLinks('/api/v1.00/entities/agents',
+    var links = restfulHelper.constructLinks('/api/v1.00/entities/products',
                                              constraints.offset,
                                              data.length,
                                              constraints.query,
@@ -102,11 +124,12 @@ exports.getProduct = function (req, res) {
     if (err) {
       res.json({err: err});
     } else {
+      console.log(result);
       productObj = {};
       links = [];
       result.Attributes.forEach(function(attribute) {
-        if (attribute.Name == 'Category') {
-          if (productObj[attribute.Name] == undefined) {
+        if (attribute.Name === 'category' || attribute.Name === 'Category') {
+          if (!productObj[attribute.Name]) {
             productObj[attribute.Name] = [];
           }
           productObj[attribute.Name].push(attribute.Value);
@@ -122,4 +145,66 @@ exports.getProduct = function (req, res) {
       res.json(productObj);
     }
   });
+};
+
+exports.createProduct = function (req, res) {
+  var attributes = parseToAttributes(req.body);
+  var params = {
+    Attributes: attributes,
+    DomainName: 'Product',
+    ItemName: req.body.id
+  }
+
+  simpledb.putAttributes(params, function(err, response) {
+    if (err) {
+      return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+    } else {
+      return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+    }
+  });
+};
+
+exports.updateProduct = function (req, res) {
+  var attributes = parseToAttributes(req.body);
+  var params = {
+    Attributes: attributes,
+    DomainName: 'Product',
+    ItemName: req.body.id
+  }
+
+  simpledb.putAttributes(params, function(err, response) {
+    console.log(err);
+    console.log(response);
+    if (err) {
+      return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+    } else {
+      return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: response}}).exec();
+    }
+  });
+};
+
+exports.removeProduct = function (req, res) {
+  var id = req.param('id');
+  console.log(id);
+  simpledb.getAttributes({
+    DomainName: 'Product',
+    ItemName: id
+  }, function(err, data) {
+    console.log(data);
+    if (err) {
+      return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+    } else {
+      simpledb.deleteAttributes({
+        DomainName: 'Product',
+        ItemName: id,
+        Attributes: data.Attributes
+      }, function(err, data) {
+        if (err) {
+          return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+        } else {
+          return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: data}}).exec();
+        }
+      })
+    }
+  })
 };

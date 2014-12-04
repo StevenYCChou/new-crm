@@ -33,6 +33,7 @@ app.set('view engine', 'html'); // default view engine
 
 var appendUUID = function(req, res, next) {
   req.headers.uuid = hash(req.headers);
+  req.headers.uuid = hash(req.originalUrl);
   req.headers.uuid += hash(req.body);
   next();
 };
@@ -167,6 +168,12 @@ app.get('/api/v1.00/entities/contact_records/:id', api.getContactRecord);
 app.put('/api/v1.00/entities/contact_records/:id', api.updateContactRecord);
 app.delete('/api/v1.00/entities/contact_records/:id', api.removeContactRecord);
 
+app.get('/api/v1.00/entities/products', api.getProducts);
+app.post('/api/v1.00/entities/products', api.createProduct);
+app.get('/api/v1.00/entities/products/:id', api.getProduct);
+app.delete('/api/v1.00/entities/products/:id', api.removeProduct);
+app.put('/api/v1.00/entities/products/:id', api.updateProduct);
+
 ////////////////////
 // Manager Facade //
 ////////////////////
@@ -208,15 +215,6 @@ app.get('/ecomm/customer/product/:productId', customerFacade.showProductDetail);
 app.get('/ecomm/manager/products', managerFacade.showProductsPage);
 app.get('/ecomm/manager/createProduct', managerFacade.createProductsPage);
 app.get('/ecomm/manager/product/:productId', managerFacade.showProductDetail);
-
-/////////////////////
-// Ecommerce-API //
-/////////////////////
-app.get('/api/v1.00/entities/products', api.getProducts);
-app.get('/api/v1.00/entities/products/:id', api.getProduct);
-app.post('/api/v1.00/ecomm/entities/products', api.createProduct);
-app.delete('/api/v1.00/ecomm/entities/product/:productId', api.removeProduct);
-app.put('/api/v1.00/ecomm/entities/product/:productId', api.updateProduct);
 
 /////////////////////
 //  Shopping Cart  //
