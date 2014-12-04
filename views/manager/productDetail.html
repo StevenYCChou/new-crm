@@ -8,7 +8,7 @@
   <body>
     <div ng-controller="productDetailController">
       <div style="padding: 20px;">
-        <h3>Product Details (Product ID) {{ productId }}</h3>
+        <h3>Product Details (Product ID) {{ id }}</h3>
         <div class="row-fluid">
           <div class="span2">
             <img ng-src= "{{imageLink}}" />
@@ -18,7 +18,7 @@
             <label>Long Description: <input ng-model="longDescription" value="{{ longDescription }}"></label>
             <label>Seller Comments: <input ng-model="sellerComments" value="{{ sellerComments }}"></label>
             <br /><br />
-            <input type="button" ng-click="updateProductDetail(productId)" value="Update" />
+            <input type="button" ng-click="updateProductDetail(id)" value="Update" />
             <input type="button" ng-click="getProducts()" value="All Products" />
           </div>
         </div>

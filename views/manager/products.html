@@ -9,13 +9,13 @@
       <h3>Ecommerce Products</h3>
       <input type="button" ng-click="createProduct()" value="New Product" /><br /><br />
       <div ng-repeat="product in products">
-        <div>ID: {{ product.Name }}</div>
-        <div ng-repeat="attributes in product.Attributes">
-          <label>{{ attributes.Name }}: <input ng-model="attributes.Value" value="{{ attributes.Value }}"></label>
+        <div>ID: {{ product.id }}</div>
+        <div ng-repeat="(attribute, value) in product">
+          <label>{{ attribute }}: <input ng-model="attributes.Value" value="{{ value }}"></label>
         </div> 
         <input type="button" ng-click="productDetail(product.id)" value="Detail" />
-        <input type="button" ng-click="productUpdateSummary(product.Name)" value="Update" />
-        <input type="button" ng-click="productDelete(product.Name)" value="Delete" />
+        <input type="button" ng-click="productUpdateSummary(product.id)" value="Update" />
+        <input type="button" ng-click="productDelete(product.id)" value="Delete" />
       </div>
       <br />
     </div>
