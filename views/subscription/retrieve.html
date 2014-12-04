@@ -9,14 +9,14 @@
       <h3>Your Subscriptions</h3>
       <table>
         <tr>
-          <th>Customer Name</th>
-          <th>Notification Method</th>
-          <th>Notification Field</th>
+          <th width="100" align="left">Customer</th>
+          <th width="200" align="left">Subscribed updates</th>
+          <th width="200" align="left">Notified by</th>
         </tr>
         <tr ng-repeat="subscription in subscriptions">
-          <td>{{ subscription.customer.name }}</td>
-          <td>{{ subscription.notificationMethods }}</td>
-          <td>{{ subscription.notificationFields }}</td>
+          <td width="100">{{ subscription.customer.name }}</td>
+          <td width="200">{{ subscription.notificationFields }}</td>
+          <td width="200">{{ subscription.notificationMethods }}</td>
           <td> </td>
           <td><input type="button" ng-click="deleteSubscription(subscription._id)" value="Delete" /></td>
           <td><input type="button" ng-click="updateSubscription(subscription._id)" value="Update" /></td>
