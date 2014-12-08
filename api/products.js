@@ -124,7 +124,6 @@ exports.getProduct = function (req, res) {
     if (err) {
       res.json({err: err});
     } else {
-      console.log(result);
       productObj = {};
       links = [];
       result.Attributes.forEach(function(attribute) {
@@ -169,12 +168,10 @@ exports.updateProduct = function (req, res) {
   var params = {
     Attributes: attributes,
     DomainName: 'Product',
-    ItemName: req.body.id
+    ItemName: req.param('id')
   }
 
   simpledb.putAttributes(params, function(err, response) {
-    console.log(err);
-    console.log(response);
     if (err) {
       return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
     } else {
