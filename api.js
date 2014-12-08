@@ -17,42 +17,6 @@ var Qs = require('qs');
 var crmService = require('./business_service/internal/crm_service.js');
 var crmValidation = require('./business_service/validation/validation.js');
 
-function getCachedResponse(nonce, callback, res) {
-  console.log(nonce);
-  if (!nonce) {
-    res.status(403).json({msg: "Modification request doesn't include nonce."});
-  } else {
-    mongodbService.Response.findOne({nonce: nonce}).exec().then(function (responseEntry){
-      if (responseEntry === null) {
-        console.log("[api.getCachedResponse] Response is not cached.");
-        res.status(202).json({});
-        mongodbService.Response.create({nonce: nonce}).then(function() {
-          console.log("[api.getCachedResponse] process data");
-          return callback();
-        }).then(function(response) {
-          console.log("[api.getCachedResponse] Update response cache with successful response");
-          return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: response}}).exec();
-        }, function(error) {
-          console.log("[api.getCachedResponse] Update response cache with failure response");
-          return mongodbService.Response.update({nonce: nonce}, {$set : {status: "COMPLETED", response: error}}).exec();
-        }).then(function() {
-          console.log("[api.getCachedResponse] finish process.");
-        }).else(function(err) {
-          console.log(err);
-        });
-      } else if (responseEntry.status === "COMPLETED") {
-        console.log("[api.getCachedResponse] Response is processed and cached.");
-        res.status(200).json({response: responseEntry.response});
-      } else {
-        console.log("[api.getCachedResponse] Response is processed but not cached.");
-        res.status(202).json({});
-      }
-    }, function(err) {
-      console.log("[api.getCachedResponse] Error occurs");
-    });
-  }
-}
-
 exports.getAgents = agentAPI.getAgents;
 exports.getAgent = agentAPI.getAgent;
 exports.createAgent = agentAPI.createAgent;
