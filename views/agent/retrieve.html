@@ -3,19 +3,49 @@
   <head>
     <meta charset="utf-8">
     <title>CRM system-Agent Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/content.css">
   </head>
   <body>
     <div ng-controller="showDetailController">
-      <h3>Agent Basic Info</h3>
-      <ul>
-        <li>Agent Name: {{ agent.name }}</li>
-        <li>Agent Phone: {{ agent.phone }}</li>
-        <li>Agent Email: {{ agent.email }}</li>
-        <li>Agent Location: {{ agent.location }}</li>
-      </ul>
-      <input type="button" ng-click="editAgent(agent._id)" value="Edit Agent Basic Info" />
-      <h3>Customers</h3>
-      <table>
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">CRM System</a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/">Main <span class="sr-only">(current)</span></a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="form">
+              <button type="submit" class="btn btn-success">Ecommerce</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <table class="table table-striped">
+        <caption>Agent Basic Info</caption>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Location</th>
+          <th>Edit</th>
+        </tr>
+        <tr>
+          <td>{{ agent.name }}</td>
+          <td>{{ agent.phone }}</td>
+          <td>{{ agent.email }}</td>
+          <td>{{ agent.location }}</td>
+          <td> <input class="btn btn-success" type="button" ng-click="editAgent(agent._id)" value="Edit" /></td>
+        </tr>
+      </table>
+      <input class="btn btn-primary" type="button" ng-click="backToAgentList()" value="Agents list" />
+      <br />
+      <table class="table table-striped">
+        <caption>Customers</caption>
         <tr>
           <th>Name</th>
           <th>Phone</th>
@@ -28,17 +58,15 @@
           <td>{{ customer.phone }}</td>
           <td>{{ customer.email }}</td>
           <td>{{ customer.location }}</td>
-          <td><input type="button" ng-click="customerDetail(agent._id, customer._id)" value="Details" /></td>
+          <td><input type="button" class="btn btn-primary" ng-click="customerDetail(agent._id, customer._id)" value="Details" /></td>
         </tr>
-      </table><br />
-      <div>
-        <input type="button" ng-click="createCustomer(agent._id)" value="Create New Customer" />
-      </div><br/>
-      <input type="button" ng-click="backToAgentList()" value="Go back to Agent list" />
+      </table>
+      <input type="button" class="btn btn-success" ng-click="createCustomer(agent._id)" value="Create New Customer" />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
     <script src="/js/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="/js/agents.js"></script>
   </body>
 </html>
