@@ -3,29 +3,56 @@
   <head>
     <meta charset="utf-8">
     <title>CRM system-Agent Creation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/content.css">
   </head>
   <body>
     <div ng-controller="agentCreateController">
-      <h3>Create Agent</h3>
-      <div>
-        <label>Name: <input type="text" ng-model="agent_name" placeholder="Ex: John Chen" />
-  </label>
-      </div>
-      <div>
-        <label>Phone: <input type="text" ng-model="agent_phone" placeholder="Ex: 123-456-7890" /></label>
-      </div>
-      <div>
-        <label>Email: <input type="email" ng-model="agent_email" placeholder="Ex: jc@gmail.com" /></label>
-      </div>
-      <div>
-        <label>Location: <input type="text" ng-model="agent_location" placeholder="Ex: NY" /></label>
-      </div>
-      <div>
-        <input type="button" ng-click="createAgentSubmit(agent_name, agent_phone, agent_email, agent_location)" value="Submit" />
-        <input type="button" ng-click="createAgentCancel()" value="Return" />
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">CRM System</a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/">Main <span class="sr-only">(current)</span></a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="form">
+              <button type="submit" class="btn btn-success">Ecommerce</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="row">
+        <div class="col-xs-4"></div>
+        <div class="col-xs-4">
+          <h3>Create Agent</h3>
+          <div class="row">
+            <label>Name: <input type="text" class="form-control"ng-model="agent_name" placeholder="Ex: John Chen" /></label>
+          </div>
+          <div class="row">
+            <label>Phone: <input type="text" class="form-control"ng-model="agent_phone" placeholder="Ex: 123-456-7890" /></label>
+          </div>
+          <div class="row">
+            <label>Email: <input type="email" class="form-control"ng-model="agent_email" placeholder="Ex: jc@gmail.com" /></label>
+          </div>
+          <div class="row">
+            <label>Location: <input type="text" class="form-control"ng-model="agent_location" placeholder="Ex: NY" /></label>
+          </div>
+          <div class="row">
+            <input type="button" class="btn btn-success col-xs-4" ng-click="createAgentSubmit(agent_name, agent_phone, agent_email, agent_location)" value="Submit" />
+            <span class="col-xs-1"></span>
+            <input type="button" class="btn btn-primary col-xs-4" ng-click="createAgentCancel()" value="Return" />
+          </div>
+        </div>
+        <div class="col-xs-4"></div>
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="/js/managers.js"></script>
   </body>
 </html>
