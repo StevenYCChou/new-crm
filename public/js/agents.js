@@ -208,7 +208,7 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
       });
     };
   $scope.editCustomerCancel = function(agent_id, customer_id) {
-    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customer_id;
+    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
   };
 }]);
 
