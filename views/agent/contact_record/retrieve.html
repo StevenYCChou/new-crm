@@ -3,19 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title>CRM system-Contact History Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/content.css">
   </head>
   <body>
     <div ng-controller="showContactRecordController">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">CRM System</a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/">Main <span class="sr-only">(current)</span></a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="form">
+              <button type="submit" class="btn btn-success">Ecommerce</button>
+            </form>
+          </div>
+        </div>
+      </nav>
       <h3>Contact Record</h3>
       <p>Data: {{ contact_record.data }}</p>
-
-      <input type="button" ng-click="BackToCustomerPage(agentId, customerId)" value="Go back to customer Info" />
-      <input type="button" ng-click="backToAgent(agentId)" value="Go back to agent Info" />
-      <input type="button" ng-click="backToAgentList()" value="Go back to the list" />
+      <input type="button" class="btn btn-primary" ng-click="BackToCustomerPage(agentId, customerId)" value="Customer Info" />
+      <input type="button" class="btn btn-primary" ng-click="backToAgent(agentId)" value="Agent Info" />
+      <input type="button" class="btn btn-primary" ng-click="backToAgentList()" value=" Agents list" />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
     <script src="/js/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="/js/agents.js"></script>
   </body>
 </html>

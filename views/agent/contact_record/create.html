@@ -3,35 +3,66 @@
   <head>
     <meta charset="utf-8">
     <title>CRM system-Contact History Creation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/content.css">
     <link rel="stylesheet" href="/jquery-ui-themes-1.11.1/themes/smoothness/jquery-ui.css">
   </head>
   <body>
     <div ng-controller="createContactRecordController">
-      <h3>Create Contact History</h3>
-      <div>
-        <label>Summary: <input type="text" ng-model="TextSummary" placeholder="TextSummary" />
-        </label>
-      <div>
-      </div>
-        <label>Model: </label>
-        <select ng-model="model_select" ng-options="model.name for model in models"></select>
-      </div>
-      <div>
-        <label>Time: <input type="text" ng-model="time" placeholder="time" />
-        </label>
-      </div>
-      <div>
-        <label>Data: <input type="text" ng-model="data" placeholder="data" />
-        </label>
-      </div>
-      <div>
-        <input type="button" ng-click="createContactSubmit(TextSummary, model_select.name, time, data)" value="Submit" />
-        <input type="button" ng-click="createContactCancel()" value="Return" />
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">CRM System</a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/">Main <span class="sr-only">(current)</span></a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="form">
+              <button type="submit" class="btn btn-success">Ecommerce</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="row">
+        <div class="col-xs-4"></div>
+        <div class="col-xs-5">
+          <h3>Create Contact History</h3>
+          <div class="row">
+            <label>Summary: <input type="text" class="form-control" ng-model="TextSummary" placeholder="TextSummary" />
+            </label>
+          </div>
+          <div class="row">
+            <label>Model: </label>
+            <select ng-model="model_select" class="form-control" ng-options="model.name for model in models"></select>
+          </div>
+          <div class="row">
+            <label>Time: <input type="text" id="datepicker" class="form-control" ng-model="time" placeholder="time" />
+            </label>
+          </div>
+          <div class="row">
+            <label>Data: <input type="text" class="form-control" ng-model="data" placeholder="data" />
+            </label>
+          </div>
+          <div class="row">
+            <input type="button" class="btn btn-success col-xs-4" ng-click="createContactSubmit(TextSummary, model_select.name, time, data)" value="Submit" />
+            <span class="col-xs-1"></span>
+            <input type="button" class="btn btn-primary col-xs-4" ng-click="createContactCancel()" value="Return" />
+          </div>
+        </div>
       </div>
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="/jquery-ui-1.11.1/jquery-ui.js"></script>
     <script src="/js/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="/js/agents.js"></script>
+    <script>
+      $(function() {
+        $( "#datepicker" ).datepicker();
+      });
+    </script>
   </body>
 </html>
