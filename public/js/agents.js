@@ -248,16 +248,41 @@ agentApp.controller('showContactRecordController', ['$scope', '$http', '$window'
   $scope.contactId = $location.absUrl().split("/")[4];
   $http.get('/api/v1.00/entities/contact_records/' + $scope.contactId)
     .success(function(data, status, headers, config){
-      console.log(data);
-      $scope.contact_record = data;
-      $scope.agentId = data.agent;
-      $scope.customerId = data.customer;
+      $scope.contact_record = data.data;
+        data.links.forEach(function(link){
+          console.log(link);
+          if (link.rel == 'agent')
+            $scope.agentLink = link.href;
+          else if (link.rel == 'customer')
+            $scope.customerLink = link.href;
+        })
+
+      $http.get($scope.agentLink)
+        .success(function(data, status, headers, config){
+          $scope.agentId = data.data._id;
+        })
+        .error(function(data, status, headers, config) {
+          $scope.errorStatus = status;
+          $scope.errorData = data;
+          $window.alert("Status: " + status + ", " + data);
+        });
+
+        $http.get($scope.customerLink)
+        .success(function(data, status, headers, config){
+          $scope.customerId = data.data._id;
+        })
+        .error(function(data, status, headers, config) {
+          $scope.errorStatus = status;
+          $scope.errorData = data;
+          $window.alert("Status: " + status + ", " + data);
+        });
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
     });
+
   $scope.BackToCustomerPage = function(agentId, customerId) {
     $window.location.href="/agents/" + agentId + "/customers/" + customerId;
   };
