@@ -2,7 +2,7 @@ var customerApp = angular.module('crmCustomerApp',[]);
 var ecommCustomerApp = angular.module('ecommCustomerApp', []);
 
 customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.customerId = $location.absUrl().split("/")[4];
+  $scope.customerId = $location.absUrl().split("/")[5];
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
       $scope.customer = data.data;
@@ -35,12 +35,12 @@ customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.customerViewEdit = function(customerId) {
-    $window.location.href = "/customers/" + customerId + "/edit";
+    $window.location.href = "/crm/customers/" + customerId + "/edit";
   };
 }]);
 
 customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.customerId = $location.absUrl().split("/")[4];
+  $scope.customerId = $location.absUrl().split("/")[5];
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
       $scope.customer = data.data;
@@ -57,7 +57,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
       method: 'PUT',
       data: data})
       .success(function(data, status, headers, config) {
-        $window.location.href="/customers/" + customerId;
+        $window.location.href="/crm/customers/" + customerId;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -66,7 +66,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
       });
   };
   $scope.returnToCustomer = function(customerId) {
-    $window.location.href = "/customers/" + customerId;
+    $window.location.href = "/crm/customers/" + customerId;
   };
 }]);
 
@@ -130,7 +130,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       });
   };
   $scope.productDetail = function(product_id) {
-    $window.location.href = "/ecomm/customer/Product/" + product_id;
+    $window.location.href = "/ecomm/customers/Product/" + product_id;
   };
 }]);
 
@@ -149,6 +149,6 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.getProducts = function(){
-    $window.location.href="/ecomm/customer/products";
+    $window.location.href="/ecomm/customers/products";
   };
 }]);

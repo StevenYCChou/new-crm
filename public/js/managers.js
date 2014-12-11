@@ -7,10 +7,10 @@ managerApp.controller('agentIndexController', ['$scope', '$http', '$window', fun
        $scope.agents = data.data;
   });
   $scope.createAgent = function() {
-    $window.location.href="/agents/create";
+    $window.location.href="/crm/agents/create";
   };
   $scope.agentDetail = function(id) {
-    $window.location.href="/agents/" + id;
+    $window.location.href="/crm/agents/" + id;
   }
 }]);
 
@@ -22,7 +22,7 @@ managerApp.controller('agentCreateController', ['$scope', '$http', '$window', fu
       method: 'POST',
       data: data})
       .success(function(data, status, headers, config) {
-       $window.location.href="/agents";
+       $window.location.href="/crm/agents";
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -31,7 +31,7 @@ managerApp.controller('agentCreateController', ['$scope', '$http', '$window', fu
       });
   };
   $scope.createAgentCancel = function() {
-    $window.location.href="/agents";
+    $window.location.href="/crm/agents";
   };
 }]);
 
@@ -46,10 +46,10 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.createProduct = function() {
-    $window.location.href = "/ecomm/manager/createProduct";
+    $window.location.href = "/ecomm/managers/createProduct";
   };
   $scope.productDetail = function(id) {
-    $window.location.href = "/ecomm/manager/Product/" + id;
+    $window.location.href = "/ecomm/managers/Product/" + id;
   };
   $scope.productUpdateSummary = function(product_id) {
     var put_data = {
@@ -63,7 +63,7 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
       method: 'PUT',
       data: put_data})
       .success(function(data, status, headers, config) {
-        $window.location.href="/ecomm/manager/products";
+        $window.location.href="/ecomm/managers/products";
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -76,7 +76,7 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
       url: '/api/v1.00/entities/products/' + product_id,
       method: 'DELETE'})
       .success(function(data, status, headers, config) {
-        $window.location.href="/ecomm/manager/products";
+        $window.location.href="/ecomm/managers/products";
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -202,7 +202,7 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       method: 'POST',
       data: post_data})
       .success(function(data, status, headers, config) {
-        $window.location.href="/ecomm/manager/products";
+        $window.location.href="/ecomm/managers/products";
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -211,7 +211,7 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       });
   }
   $scope.createProductCancel = function() {
-    $window.location.href = "/ecomm/manager/products";
+    $window.location.href = "/ecomm/managers/products";
   }
 }]);
 
@@ -230,7 +230,7 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.getProducts = function(){
-    $window.location.href="/ecomm/manager/products";
+    $window.location.href="/ecomm/managers/products";
   };
   $scope.updateProductDetail = function(product_id) {
     var put_data = {
@@ -247,7 +247,7 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
       method: 'PUT',
       data: put_data})
       .success(function(data, status, headers, config) {
-        $window.location.href="/ecomm/manager/product/" + product_id;
+        $window.location.href="/ecomm/managers/product/" + product_id;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;

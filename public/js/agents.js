@@ -4,7 +4,7 @@ agentApp.controller('showDetailController', ['$scope', '$http', '$window', '$loc
                                              function($scope, $http, $window, $location) {
   $scope.agent = [];
   $scope.customers = [];
-  $scope.routes = $location.absUrl().split("/")[4];
+  $scope.routes = $location.absUrl().split("/")[5];
   $http.get('/api/v1.00/entities/agents/' + $scope.routes)
     .success(function(data, status, headers, config) {
       $scope.agent = data.data;
@@ -25,23 +25,23 @@ agentApp.controller('showDetailController', ['$scope', '$http', '$window', '$loc
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.editAgent = function(agentId) {
-    $window.location.href="/agents/" + agentId + "/edit";
+    $window.location.href="/crm/agents/" + agentId + "/edit";
   };
   $scope.backToAgentList = function() {
-    $window.location.href="/agents";
+    $window.location.href="/crm/agents";
   };
   $scope.createCustomer = function(agentId) {
-    $window.location.href="/agents/" + agentId + "/create";
+    $window.location.href="/crm/agents/" + agentId + "/create";
   };
   $scope.customerDetail = function(agentId, customerId) {
-    $window.location.href="/agents/" + agentId + "/customers/" + customerId;
+    $window.location.href="/crm/agents/" + agentId + "/customers/" + customerId;
   }
 }]);
 
 agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$location',
                                                function($scope, $http, $window, $location) {
   $scope.agent = [];
-  $scope.routes = $location.absUrl().split("/")[4];
+  $scope.routes = $location.absUrl().split("/")[5];
   $http.get('/api/v1.00/entities/agents/' + $scope.routes)
     .success(function(data, status, headers, config) {
       $scope.agent = data.data;
@@ -67,12 +67,12 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
     });
    };
   $scope.editAgentCancel = function(agent_id) {
-    $window.location.href="/agents/" + agent_id;
+    $window.location.href="/crm/agents/" + agent_id;
   };
 }]);
 
 agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.agentId = $location.absUrl().split("/")[4];
+  $scope.agentId = $location.absUrl().split("/")[5];
   $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email, customer_location) {
     var data = {name: customer_name, phone: customer_phone, email: customer_email, location: customer_location, agentId: $scope.agentId};
     $http({
@@ -80,7 +80,7 @@ agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '
       method: 'POST',
       data: data})
       .success(function(data, status, headers, config) {
-        $window.location.href="/agents/" + $scope.agentId;
+        $window.location.href="/crm/agents/" + $scope.agentId;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -89,13 +89,13 @@ agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '
       });
   };
   $scope.createCustomerCancel = function() {
-    $window.location.href="/agents/" + $scope.agentId;
+    $window.location.href="/crm/agents/" + $scope.agentId;
   };
 }]);
 
 agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.agentId = $location.absUrl().split("/")[4];
-  $scope.customerId = $location.absUrl().split("/")[6];
+  $scope.agentId = $location.absUrl().split("/")[5];
+  $scope.customerId = $location.absUrl().split("/")[7];
   $http.get('/api/v1.00/entities/customers/'+$scope.customerId)
     .success(function(data, status, headers, config) {
       $scope.customer = data.data;
@@ -122,7 +122,7 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
       url: '/api/v1.00/entities/customers/' + customerId,
       method: 'DELETE'})
       .success(function(data, status, headers, config) {
-        $window.location.href="/agents/" + agentId;
+        $window.location.href="/crm/agents/" + agentId;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -131,24 +131,24 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
       });
   };
   $scope.createContactRecord = function(agentId, customerId) {
-    $window.location.href="/contact_records/create?agent=" + agentId + "&customer=" + customerId;
+    $window.location.href="/crm/contact_records/create?agent=" + agentId + "&customer=" + customerId;
   };
   $scope.contactRecordDetail = function(contactRecordId) {
-    $window.location.href="/contact_records/" + contactRecordId;
+    $window.location.href="/crm/contact_records/" + contactRecordId;
   };
   $scope.backToAgent = function(agentId) {
-    $window.location.href="/agents/" + agentId;
+    $window.location.href="/crm/agents/" + agentId;
   };
   $scope.backToAgentList = function() {
-    $window.location.href="/agents";
+    $window.location.href="/crm/agents";
   };
 }]);
 
 agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agent = [];
   $scope.customer = [];
-  $scope.agentId = $location.absUrl().split("/")[4];
-  $scope.customerId = $location.absUrl().split("/")[6];
+  $scope.agentId = $location.absUrl().split("/")[5];
+  $scope.customerId = $location.absUrl().split("/")[7];
   $http.get('/api/v1.00/entities/customers/'+$scope.customerId)
     .success(function(data, status, headers, config) {
     $scope.customer = data.data;
@@ -164,7 +164,7 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
       method: 'PUT',
       data: data})
       .success(function(data, status, headers, config) {
-         $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
+         $window.location.href="/crm/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
        })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -173,13 +173,13 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
       });
     };
   $scope.editCustomerCancel = function(agent_id, customer_id) {
-    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
+    $window.location.href="/crm/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
   };
 }]);
 
 agentApp.controller('createContactRecordController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.agentId = $location.absUrl().split("/")[4].split("?")[1].split("=")[1].split("&")[0];
-  $scope.customerId = $location.absUrl().split("/")[4].split("?")[1].split("=")[2];
+  $scope.agentId = $location.absUrl().split("/")[5].split("?")[1].split("=")[1].split("&")[0];
+  $scope.customerId = $location.absUrl().split("/")[5].split("?")[1].split("=")[2];
   $scope.models = [
     {name: 'phone'},
     {name: 'email'}
@@ -192,7 +192,7 @@ agentApp.controller('createContactRecordController', ['$scope', '$http', '$windo
       method: 'POST',
       data: data})
     .success(function(data, status, headers, config) {
-      $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
+      $window.location.href="/crm/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -201,12 +201,12 @@ agentApp.controller('createContactRecordController', ['$scope', '$http', '$windo
     });
   };
   $scope.createContactCancel = function() {
-    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
+    $window.location.href="/crm/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
   };
 }]);
 
 agentApp.controller('showContactRecordController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.contactId = $location.absUrl().split("/")[4];
+  $scope.contactId = $location.absUrl().split("/")[5];
   $http.get('/api/v1.00/entities/contact_records/' + $scope.contactId)
     .success(function(data, status, headers, config){
       $scope.contact_record = data.data;
@@ -244,12 +244,12 @@ agentApp.controller('showContactRecordController', ['$scope', '$http', '$window'
     });
 
   $scope.BackToCustomerPage = function(agentId, customerId) {
-    $window.location.href="/agents/" + agentId + "/customers/" + customerId;
+    $window.location.href="/crm/agents/" + agentId + "/customers/" + customerId;
   };
   $scope.backToAgent = function(agentId) {
-    $window.location.href = "/agents/" + agentId;
+    $window.location.href = "/crm/agents/" + agentId;
   };
   $scope.backToAgentList = function() {
-    $window.location.href = "/agents";
+    $window.location.href = "/crm/agents";
   };
 }]);

@@ -175,8 +175,8 @@ app.use(function(req, res, next) {
 // var mq = require('./message_queue/main.js');
 // mq.startMessageQueueService(8000);
 
-app.get('/', entryPages.crmHomepage);
-app.get('/about', entryPages.crmAboutpage);
+app.get('/crm/', entryPages.crmHomepage);
+app.get('/crm/about', entryPages.crmAboutpage);
 app.get('/ecomm/', entryPages.ecommHomepage);
 app.get('/ecomm/about', entryPages.ecommAboutpage)
 
@@ -188,44 +188,44 @@ app.use('/api/v1.00/entities/products', require('./routers/api/products.js'));
 ////////////////////
 // Manager Facade //
 ////////////////////
-app.get('/agents', managerFacade.showAllAgents);
-app.get('/agents/create', managerFacade.showAgentCreationPage);
+app.get('/crm/agents', managerFacade.showAllAgents);
+app.get('/crm/agents/create', managerFacade.showAgentCreationPage);
 
 //////////////////
 // Agent Facade //
 //////////////////
 
 // profile related
-app.get('/agents/:agentId', agentFacade.showProfile);
-app.get('/agents/:agentId/edit', agentFacade.showProfileUpdatePage);
+app.get('/crm/agents/:agentId', agentFacade.showProfile);
+app.get('/crm/agents/:agentId/edit', agentFacade.showProfileUpdatePage);
 
 // customer related
-app.get('/agents/:agentId/customers/:customerId', agentFacade.showCustomerDetailPage);
-app.get('/agents/:agentId/create', agentFacade.showCustomerCreationPage);
-app.get('/agents/:agentId/customers/:customerId/edit', agentFacade.showCustomerUpdatePage);
+app.get('/crm/agents/:agentId/customers/:customerId', agentFacade.showCustomerDetailPage);
+app.get('/crm/agents/:agentId/create', agentFacade.showCustomerCreationPage);
+app.get('/crm/agents/:agentId/customers/:customerId/edit', agentFacade.showCustomerUpdatePage);
 
 // contact record related
-app.get('/contact_records/create', agentFacade.showContactRecordCreationPage);
-app.get('/contact_records/:contactRecordId', agentFacade.retrieveContactRecordById);
+app.get('/crm/contact_records/create', agentFacade.showContactRecordCreationPage);
+app.get('/crm/contact_records/:contactRecordId', agentFacade.retrieveContactRecordById);
 
 /////////////////////
 // Customer Facade //
 /////////////////////
-app.get('/customers/:customerId', customerFacade.retrieveProfilePage);
-app.get('/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
+app.get('/crm/customers/:customerId', customerFacade.retrieveProfilePage);
+app.get('/crm/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
 
 /////////////////////
 // Ecommerce-Customer Facade //
 /////////////////////
-app.get('/ecomm/customer/products', customerFacade.showProductsPage);
-app.get('/ecomm/customer/product/:productId', customerFacade.showProductDetail);
+app.get('/ecomm/customers/products', customerFacade.showProductsPage);
+app.get('/ecomm/customers/product/:productId', customerFacade.showProductDetail);
 
 /////////////////////
 // Ecommerce-Manager Facade //
 /////////////////////
-app.get('/ecomm/manager/products', managerFacade.showProductsPage);
-app.get('/ecomm/manager/createProduct', managerFacade.createProductsPage);
-app.get('/ecomm/manager/product/:productId', managerFacade.showProductDetail);
+app.get('/ecomm/managers/products', managerFacade.showProductsPage);
+app.get('/ecomm/managers/createProduct', managerFacade.createProductsPage);
+app.get('/ecomm/managers/product/:productId', managerFacade.showProductDetail);
 
 /////////////////////
 //  Shopping Cart  //
