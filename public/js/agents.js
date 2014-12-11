@@ -1,32 +1,5 @@
 var agentApp = angular.module('crmAgentApp', []);
 
-agentApp.factory('uuid2', [
-  function() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-                 .toString(16).substring(1);
-    };
-    return {
-      newuuid: function() {
-      // http://www.ietf.org/rfc/rfc4122.txt
-      var s = [];
-      var hexDigits = "0123456789abcdef";
-      for (var i = 0; i < 36; i++) {
-          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-      }
-      s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-      s[8] = s[13] = s[18] = s[23] = "-";
-      return s.join("");
-      },
-      newguid: function() {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-               s4() + '-' + s4() + s4() + s4();
-      }
-    }
-  }
-]);
-
 agentApp.controller('showDetailController', ['$scope', '$http', '$window', '$location',
                                              function($scope, $http, $window, $location) {
   $scope.agent = [];
@@ -65,9 +38,8 @@ agentApp.controller('showDetailController', ['$scope', '$http', '$window', '$loc
   }
 }]);
 
-agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$location', 'uuid2',
-                                               function($scope, $http, $window, $location, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$location',
+                                               function($scope, $http, $window, $location) {
   $scope.agent = [];
   $scope.routes = $location.absUrl().split("/")[4];
   $http.get('/api/v1.00/entities/agents/' + $scope.routes)
@@ -84,7 +56,6 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
     $http({
       url: '/api/v1.00/entities/agents/' + agent_id,
       method: 'PUT',
-      headers: {'nonce' : 'PUT' + JSON.stringify(data) + $scope.uuid},
       data: data})
     .success(function(data, status, headers, config) {
       $window.location.href="/agents/" + agent_id;
@@ -100,15 +71,13 @@ agentApp.controller('updateDetailController', ['$scope', '$http', '$window', '$l
   };
 }]);
 
-agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.createCustomerSubmit = function(customer_name, customer_phone, customer_email, customer_location) {
     var data = {name: customer_name, phone: customer_phone, email: customer_email, location: customer_location, agentId: $scope.agentId};
     $http({
       url: '/api/v1.00/entities/customers',
       method: 'POST',
-      headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
       data: data})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + $scope.agentId;
@@ -124,8 +93,7 @@ agentApp.controller('createCustomerController', ['$scope', '$http', '$window', '
   };
 }]);
 
-agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agentId = $location.absUrl().split("/")[4];
   $scope.customerId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/customers/'+$scope.customerId)
@@ -153,7 +121,6 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
     $http({
       url: '/api/v1.00/entities/customers/' + customerId,
       method: 'DELETE',
-      headers: {'nonce' : 'DELETE' + $scope.uuid}})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + agentId;
       })
@@ -177,8 +144,7 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
   };
 }]);
 
-agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agent = [];
   $scope.customer = [];
   $scope.agentId = $location.absUrl().split("/")[4];
@@ -196,7 +162,6 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
     $http({
       url: '/api/v1.00/entities/customers/' + $scope.customerId,
       method: 'PUT',
-      headers: {'nonce' : 'PUT' + JSON.stringify(data) + $scope.uuid},
       data: data})
       .success(function(data, status, headers, config) {
          $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
@@ -212,8 +177,7 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
   };
 }]);
 
-agentApp.controller('createContactRecordController', ['$scope', '$http', '$window', '$location', 'uuid2', function($scope, $http, $window, $location, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+agentApp.controller('createContactRecordController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.agentId = $location.absUrl().split("/")[4].split("?")[1].split("=")[1].split("&")[0];
   $scope.customerId = $location.absUrl().split("/")[4].split("?")[1].split("=")[2];
   $scope.models = [
@@ -226,7 +190,6 @@ agentApp.controller('createContactRecordController', ['$scope', '$http', '$windo
     $http({
       url: '/api/v1.00/entities/contact_records',
       method: 'POST',
-      headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
       data: data})
     .success(function(data, status, headers, config) {
       $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
