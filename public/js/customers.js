@@ -80,9 +80,19 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
   ];
 
   $scope.searchKey = '';
-  $http.get('/api/v1.00/ecomm/entities/products?category=All&searchKey=')
+  $http.get('/api/v1.00/entities/products?category=All')
     .success(function(data, status, headers, config) {
-      $scope.products = data.products;
+      $scope.products = [];
+      data.data.forEach(function(product){
+        var productsAttributes = {};
+        for (key in product) {
+          if (key!= 'id' && key!= 'links' && key!= 'Name'){
+            productsAttributes[key] = product[key];
+          }
+        }
+        $scope.products.push({Name: product['Name'], productsAttributes: productsAttributes});
+      });
+
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -90,7 +100,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.productFilter = function(product_category, searchKey) {
-    $http.get('/api/v1.00/ecomm/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
+    $http.get('/api/v1.00/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
       .success(function(data, status, headers, config) {
         $scope.products = data.products;
       })
@@ -101,7 +111,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       });
   }
   $scope.productSearch = function(product_category, searchKey) {
-    $http.get('/api/v1.00/ecomm/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
+    $http.get('/api/v1.00/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
       .success(function(data, status, headers, config) {
         $scope.products = data.products;
       })
@@ -118,7 +128,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
 
 ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.productId = $location.absUrl().split("/")[6];
-  $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
+  $http.get('/api/v1.00/entities/product/' + $scope.productId)
     .success(function(data, status, headers, config) {
       $scope.shortDescription = data.data.shortDescription;
       $scope.longDescription = data.data.longDescription;
