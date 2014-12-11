@@ -200,7 +200,6 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     $http({
       url: '/api/v1.00/entities/products',
       method: 'POST',
-      headers: {'nonce' : 'POST' + JSON.stringify(post_data) + $scope.uuid},
       data: post_data})
       .success(function(data, status, headers, config) {
         $window.location.href="/ecomm/manager/products";
@@ -246,7 +245,6 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
     $http({
       url: '/api/v1.00/entities/product/' + product_id,
       method: 'PUT',
-      headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
       data: put_data})
       .success(function(data, status, headers, config) {
         $window.location.href="/ecomm/manager/product/" + product_id;
