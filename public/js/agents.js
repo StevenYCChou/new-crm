@@ -120,7 +120,7 @@ agentApp.controller('showCustomerDetailController', ['$scope', '$http', '$window
   $scope.deleteCustomer = function(agentId, customerId) {
     $http({
       url: '/api/v1.00/entities/customers/' + customerId,
-      method: 'DELETE',
+      method: 'DELETE'})
       .success(function(data, status, headers, config) {
         $window.location.href="/agents/" + agentId;
       })

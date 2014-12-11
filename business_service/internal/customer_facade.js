@@ -1,6 +1,7 @@
 var configs = require('../../configs.js');
 var crmService = require('./crm_service.js');
 var viewedHistoryService = require('../viewed_history_service.js');
+var crmSimpleDb = require('../../crm_aws_module/simpleDb.js');
 
 var REDIS_SESSION_PREFIX = configs.REDIS_SESSION_PREFIX;
 
@@ -17,20 +18,29 @@ exports.showProductsPage = function (req, res) {
 };
 
 exports.showProductDetail = function (req, res) {
-  // update viewed history.
   var session = REDIS_SESSION_PREFIX + req.sessionID;
-  var update = {
-    // TODO;
-    product: req.param('productId'),
-  }
-  console.log(update);
-  console.log(req.url);
-  viewedHistoryService.updateViewedHistory(session, update, function(err, callback) {
+  var product = req.param('productId');
+
+  crmSimpleDb.getProductAttributes(product, ['Category'], function(err, data) {
     if (err) {
       res.status(500);
-      res.send({err: err.message});
+      res.send({err: err.stack});
     } else {
-      res.render('customer/productDetail');
+      var categories = new Array();
+      categories = data.Attributes[0].Value.split(',');
+      var update = {
+        product: req.param('productId'),
+        categories: categories,
+      }
+
+      viewedHistoryService.updateViewedHistory(session, update, function(err, callback) {
+        if (err) {
+          res.status(500);
+          res.send({err: err.message});
+        } else {
+          res.render('customer/productDetail');
+        }
+      });
     }
-  });
+  })
 };
