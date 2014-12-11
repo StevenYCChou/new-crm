@@ -73,14 +73,14 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
 ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.categoryChoice = 'All';
   $scope.filterCategorys = [
-    {name: 'All'},
-    {name: 'Music'},
-    {name: 'Book'},
-    {name: 'CD'}
+    {name: 'all'},
+    {name: 'music'},
+    {name: 'book'},
+    {name: 'cd'}
   ];
 
   $scope.searchKey = '';
-  $http.get('/api/v1.00/entities/products?category=All')
+  $http.get('/api/v1.00/entities/products?category=all')
     .success(function(data, status, headers, config) {
       $scope.products = [];
       data.data.forEach(function(product){

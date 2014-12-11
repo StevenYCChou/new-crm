@@ -158,43 +158,43 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
       post_data = {
         id: product_id,
         category: category,
-        Name: fields[0].data,
-        ISBN: fields[1].data,
-        Author: fields[2].data,
-        Price: fields[3].data,
-        Quantity: fields[4].data,
-        shortDescription: fields[5].data,
-        longDescription: fields[6].data,
-        sellerComments: fields[7].data,
-        imageLink: fields[8].data,
+        name: fields[0].data,
+        isbn: fields[1].data,
+        author: fields[2].data,
+        price: fields[3].data,
+        quantity: fields[4].data,
+        shortdescription: fields[5].data,
+        longdescription: fields[6].data,
+        sellercomments: fields[7].data,
+        imagelink: fields[8].data,
       };
     } else if (template.name == 'Shoes'){
       post_data = {
         id: product_id,
         category: category,
-        Name: fields[0].data,
-        Color: fields[1].data,
-        Size: fields[2].data,
-        Price: fields[3].data,
-        Quantity: fields[4].data,
-        shortDescription: fields[5].data,
-        longDescription: fields[6].data,
-        sellerComments: fields[7].data,
-        imageLink: fields[8].data,
+        name: fields[0].data,
+        color: fields[1].data,
+        size: fields[2].data,
+        price: fields[3].data,
+        quantity: fields[4].data,
+        shortdescription: fields[5].data,
+        longdescription: fields[6].data,
+        sellercomments: fields[7].data,
+        imagelink: fields[8].data,
       };
     } else if (template.name == 'No template'){
       post_data = {
         id: product_id,
         category: category,
-        Name: fields[0].data,
-        Price: fields[1].data,
-        Quantity: fields[2].data,
-        shortDescription: fields[3].data,
-        longDescription: fields[4].data,
-        sellerComments: fields[5].data,
-        imageLink: fields[6].data,
-        Field1: fields[7].attr,
-        Value1: fields[7].data,
+        name: fields[0].data,
+        price: fields[1].data,
+        quantity: fields[2].data,
+        shortdescription: fields[3].data,
+        longdescription: fields[4].data,
+        sellercomments: fields[5].data,
+        imagelink: fields[6].data,
+        field1: fields[7].attr,
+        value1: fields[7].data,
       };
     }
     $http({
@@ -219,10 +219,10 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   $scope.productId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
-      $scope.shortDescription = data.data.shortDescription;
-      $scope.longDescription = data.data.longDescription;
-      $scope.sellerComments = data.data.sellerComments;
-      $scope.imageLink = data.data.imageLink;
+      $scope.shortdescription = data.data.shortdescription;
+      $scope.longdescription = data.data.longdescription;
+      $scope.sellercomments = data.data.sellercomments;
+      $scope.imagecink = data.data.imagelink;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -237,9 +237,9 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
       updatetype: 'detail',
       detail: {
         productId: product_id,
-        shortDescription: $scope.shortDescription,
-        longDescription: $scope.longDescription,
-        sellerComments: $scope.sellerComments,
+        shortdescription: $scope.shortdescription,
+        longdescription: $scope.longdescription,
+        sellervomments: $scope.sellercomments,
       }
     };
     $http({
