@@ -50,7 +50,6 @@ exports.getProducts = function (req, res) {
   if (constraints.limit) {
     limit_string = ' limit ' + constraints.limit;
   }
-
   var simpleDbSelectPromise = Promise.denodeify(simpledb.select.bind(simpledb));
   var queryPromise;
   if (constraints.offset) {
@@ -73,11 +72,11 @@ exports.getProducts = function (req, res) {
 
   Promise.all([queryPromise, countPromise])
          .then(function(results) {
-    var subCollection = results[0];
-    var collectionSize = parseInt(results[1].Items[0].Attributes[0].Value); // hack on count attribute
+    var subCollection = results[0].Items || [];
+    var collectionSize = parseInt(results[1].Items[0].Attributes[0].Value) || 0; // hack on count attribute
     var data = [];
     var links = [];
-    subCollection.Items.forEach(function(product) {
+    subCollection.forEach(function(product) {
       var productObj = {};
       product.Attributes.forEach(function(attribute) {
         if (attribute.Name === 'category' || attribute.Name === 'Category') {
