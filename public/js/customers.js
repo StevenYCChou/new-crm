@@ -33,7 +33,11 @@ customerApp.controller('showDetailController', ['$scope', '$http', '$window', '$
   $http.get('/api/v1.00/entities/customers/' + $scope.customerId)
     .success(function(data, status, headers, config) {
       $scope.customer = data.data;
-      $http.get('/api/v1.00/entities/agents/' + $scope.customer.agent)
+      data.links.forEach(function(link){
+        if (link.rel == 'agent')
+          $scope.agentLink = link.href;
+      });
+      $http.get($scope.agentLink)
         .success(function(data, status, headers, config) {
           $scope.agent = data.data;
           $http.get('/api/v1.00/entities/contact_records?q=customer=' + $scope.customerId + ',agent=' + $scope.agent._id)
