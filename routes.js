@@ -2,6 +2,7 @@ var api = require('./api.js');
 var restfulHelper = require('./api/restful_helper.js');
 var businessService = require('./business_service/business_service.js');
 var mongodbService = require('./data_service/mongodb_service.js');
+var entryPages = require('./entryPages.js');
 var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;
 var customerFacade = businessService.customerFacade;
@@ -174,13 +175,10 @@ app.use(function(req, res, next) {
 // var mq = require('./message_queue/main.js');
 // mq.startMessageQueueService(8000);
 
-app.get('/', function(req, res) {
-  res.render('homepage');
-});
-
-app.get('/about', function(req, res) {
-  res.render('about');
-});
+app.get('/', entryPages.crmHomepage);
+app.get('/about', entryPages.crmAboutpage);
+app.get('/ecomm/', entryPages.ecommHomepage);
+app.get('/ecomm/about', entryPages.ecommAboutpage)
 
 app.use('/api/v1.00/entities/agents', require('./routers/api/agents.js'));
 app.use('/api/v1.00/entities/customers', require('./routers/api/customers.js'));
