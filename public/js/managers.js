@@ -1,32 +1,32 @@
 var managerApp = angular.module('crmManagerApp', []);
 var ecommManagerApp = angular.module('ecommCustomerApp', []);
 
-managerApp.factory('uuid2', [
-  function() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-                 .toString(16).substring(1);
-    };
-    return {
-      newuuid: function() {
-      // http://www.ietf.org/rfc/rfc4122.txt
-      var s = [];
-      var hexDigits = "0123456789abcdef";
-      for (var i = 0; i < 36; i++) {
-          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-      }
-      s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-      s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-      s[8] = s[13] = s[18] = s[23] = "-";
-      return s.join("");
-      },
-      newguid: function() {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-               s4() + '-' + s4() + s4() + s4();
-      }
-    }
-  }
-]);
+// managerApp.factory('uuid2', [
+//   function() {
+//     function s4() {
+//       return Math.floor((1 + Math.random()) * 0x10000)
+//                  .toString(16).substring(1);
+//     };
+//     return {
+//       newuuid: function() {
+//       // http://www.ietf.org/rfc/rfc4122.txt
+//       var s = [];
+//       var hexDigits = "0123456789abcdef";
+//       for (var i = 0; i < 36; i++) {
+//           s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+//       }
+//       s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+//       s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+//       s[8] = s[13] = s[18] = s[23] = "-";
+//       return s.join("");
+//       },
+//       newguid: function() {
+//         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+//                s4() + '-' + s4() + s4() + s4();
+//       }
+//     }
+//   }
+// ]);
 
 managerApp.controller('agentIndexController', ['$scope', '$http', '$window', function($scope, $http, $window) {
   $http.get('/api/v1.00/entities/agents')
@@ -117,57 +117,53 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   };
 }]);
 
-//var directives = angular.module('directives', []);
-
-ecommManagerApp.directive('file', function() {
-  return {
-    restrict: 'AE',
-    scope: {
-      file: '@'
-    },
-    link: function(scope, el, attrs){
-      el.bind('change', function(event){
-        var files = event.target.files;
-        var file = files[0];
-        scope.file = file;
-        scope.$parent.file = file;
-        scope.$apply();
-      });
-    }
-  };
-});
-
 ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.templates = [
     {name: 'Books'},
+    {name: 'Shoes'},
     {name: 'No template'}
   ];
   $scope.filterCategorys = [
-    {name: 'Music', data: ''},
-    {name: 'Book', data: ''},
-    {name: 'CD', data: ''}
+    {name: 'music', data: ''},
+    {name: 'book', data: ''},
+    {name: 'cd', data: ''}
   ];
   $scope.templateChange = function(template) {
     $scope.fields=[];
     if (template.name == 'Books') {
        $scope.fields = [
           {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
-          {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
-          {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
-          {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
-          {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
-          {field_num: '6', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'},
-          {field_num: '7', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'}
+          {field_num: '2', attr: 'ISBN', read: 'true', type: "text", data: '', name_place: 'ISBN',field_place: 'ISBN'},
+          {field_num: '3', attr: 'Author', read: 'true', type: "text", data: '', name_place: 'Author',field_place: 'Author'},
+          {field_num: '4', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
+          {field_num: '5', attr: 'Quantity', read: 'true', type: "number", data: '', name_place: 'Quantity',field_place: 'Quantity'},
+          {field_num: '6', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
+          {field_num: '7', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
+          {field_num: '8', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
+          {field_num: '9', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'}     
+        ];
+    } else if (template.name == 'Shoes') {
+        $scope.fields = [
+          {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
+          {field_num: '2', attr: 'Color', read: 'true', type: "text", data: '', name_place: 'Color',field_place: 'Color'},
+          {field_num: '3', attr: 'Size', read: 'true', type: "text", data: '', name_place: 'Size',field_place: 'Size'},
+          {field_num: '4', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
+          {field_num: '5', attr: 'Quantity', read: 'true', type: "number", data: '', name_place: 'Quantity',field_place: 'Quantity'},
+          {field_num: '6', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
+          {field_num: '7', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
+          {field_num: '8', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
+          {field_num: '9', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'}
         ];
     } else if (template.name == 'No template') {
         $scope.fields = [
           {field_num: '1', attr: 'Name', read: 'true', type: "text", data: '', name_place: 'Name',field_place: 'Name'},
           {field_num: '2', attr: 'Price', read: 'true', type: "number", data: '', name_place: 'Price',field_place: 'Price'},
-          {field_num: '3', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
-          {field_num: '4', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
-          {field_num: '5', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
-          {field_num: '6', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'},
-          {field_num: '7', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
+          {field_num: '3', attr: 'Quantity', read: 'true', type: "number", data: '', name_place: 'Quantity',field_place: 'Quantity'},
+          {field_num: '4', attr: 'shortDescription', read: 'true', type: "text", data: '', name_place: 'shortDescription',field_place: 'shortDescription'},
+          {field_num: '5', attr: 'longDescription', read: 'true', type: "text", data: '', name_place: 'longDescription',field_place: 'longDescription'},
+          {field_num: '6', attr: 'sellerComments', read: 'true', type: "text", data: '', name_place: 'sellerComments',field_place: 'sellerComments'},
+          {field_num: '7', attr: 'imageLink', read: 'true', type: "text", data: '', name_place: 'imageLink',field_place: '/bucket/key'},
+          {field_num: '8', attr: '', read: "false", type: "text", data: '', name_place: 'Field Name', field_place: 'Field value'}
         ];
     }
   };
@@ -182,28 +178,56 @@ ecommManagerApp.controller('addProductController', ['$scope', '$http', '$window'
     return text;
   }
 
-  $scope.createProductSubmit = function(product_id, fields) {
+  $scope.createProductSubmit = function(product_id, fields, template) {
+    var post_data;
     var category = [];
-    $scope.filterCategorys.forEach(function(cate) {
+    $scope.filterCategorys.forEach(function(cate){
       if (cate.data == true)
-        category.push(cate.name);
+      category.push(cate.name);
     });
-
-    var post_data = {
-      id: product_id,
-      Name: fields[0].data,
-      Price: fields[1].data,
-      shortDescription: fields[2].data,
-      longDescription: fields[3].data,
-      sellerComments: fields[4].data,
-      imageLink: fields[5].data,
-      category: category,
-      Field1: fields[6].attr,
-      Value1: fields[6].data,
-//      imageFileName: $scope.uniqueString() + '-' + $scope.file.name,
-//      imageFile: $scope.file,
-    };
-    console.log($scope.filterCategorys);
+    if (template.name == 'Books'){
+      post_data = {
+        id: product_id,
+        category: category,
+        Name: fields[0].data,
+        ISBN: fields[1].data,
+        Author: fields[2].data,
+        Price: fields[3].data,
+        Quantity: fields[4].data,
+        shortDescription: fields[5].data,
+        longDescription: fields[6].data,
+        sellerComments: fields[7].data,
+        imageLink: fields[8].data,
+      };
+    } else if (template.name == 'Shoes'){
+      post_data = {
+        id: product_id,
+        category: category,
+        Name: fields[0].data,
+        Color: fields[1].data,
+        Size: fields[2].data,
+        Price: fields[3].data,
+        Quantity: fields[4].data,
+        shortDescription: fields[5].data,
+        longDescription: fields[6].data,
+        sellerComments: fields[7].data,
+        imageLink: fields[8].data,
+      };
+    } else if (template.name == 'No template'){
+      post_data = {
+        id: product_id,
+        category: category,
+        Name: fields[0].data,
+        Price: fields[1].data,
+        Quantity: fields[2].data,
+        shortDescription: fields[3].data,
+        longDescription: fields[4].data,
+        sellerComments: fields[5].data,
+        imageLink: fields[6].data,
+        Field1: fields[7].attr,
+        Value1: fields[7].data,
+      };
+    }
     $http({
       url: '/api/v1.00/entities/products',
       method: 'POST',

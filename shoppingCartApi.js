@@ -1,3 +1,4 @@
+var configs = require('./configs.js');
 var shoppingCartService = require('./business_service/shopping_cart.js');
 var redisService = require('./data_service/redis_service');
 var redisClient = redisService.getRedisClient();
@@ -5,7 +6,7 @@ var redisClient = redisService.getRedisClient();
 app.get('/api/v1.00/entities/shoppingcarts/users/:userid', shoppingCartApi.getUserShoppingCart);
 */
 
-var REDIS_SESSION_PREFIX = 'session:'
+var REDIS_SESSION_PREFIX = configs.REDIS_SESSION_PREFIX;
 
 function getShoppingCart(req, res) {
   var session;

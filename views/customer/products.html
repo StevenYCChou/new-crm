@@ -7,8 +7,14 @@
   <body>
     <div ng-controller="retrieveProductController">
       <h3>Ecommerce Products</h3>
-      <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
-    </select>
+      <div>Category Filter
+        <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
+      </div>
+      <br />
+      <div>Product Name Search
+        <input type="text" ng-model="searchKey" /><input type="button" ng-click="productSearch(categoryChoice, searchKey)" value="Search" />
+      </div>
+      <br />
       <div ng-repeat="product in products">
         <div>ID: {{ product.Name }}
           <input type="button" ng-click="productDetail(product.Name)" value="Detail" />

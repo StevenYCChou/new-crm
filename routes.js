@@ -18,6 +18,7 @@ var Qs = require('qs');
 
 app.engine('html', require('ejs').renderFile);
 app.use("/js", express.static(__dirname + '/public/js'));
+app.use("/css", express.static(__dirname + '/public/css'));
 app.use("/jquery-ui-1.11.1", express.static(__dirname + '/public/jquery-ui-1.11.1'));
 app.use("/jquery-ui-themes-1.11.1", express.static(__dirname + '/public/jquery-ui-themes-1.11.1'));
 app.use("/bootstrap", express.static(__dirname + '/public/bootstrap'));
@@ -150,6 +151,10 @@ app.get('/', function(req, res) {
   res.render('homepage');
 });
 
+app.get('/about', function(req, res) {
+  res.render('about');
+});
+
 app.use('/api/v1.00/entities/agents', require('./routers/api/agents.js'));
 app.use('/api/v1.00/entities/customers', require('./routers/api/agents.js'));
 app.use('/api/v1.00/entities/contact_records', require('./routers/api/contact_records.js'));
@@ -203,6 +208,7 @@ app.get('/ecomm/manager/product/:productId', managerFacade.showProductDetail);
 var shoppingCartApi = require('./shoppingCartApi.js');
 app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
 app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
+
 app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
 app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
 app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
@@ -211,8 +217,8 @@ app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearSh
 /////////////////////
 //  ViewedHistory  //
 /////////////////////
-// app.get('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.getViewedHistory);
 var viewedHistoryApi = require('./viewedHistoryApi.js');
+app.get('/api/v1.00/entities/viewedHistory', viewedHistoryApi.getSessionViewedHistory);
 app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
 
 ////////////////////

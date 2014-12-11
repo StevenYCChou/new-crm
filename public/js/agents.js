@@ -208,7 +208,7 @@ agentApp.controller('editCustomerDetailController', ['$scope', '$http', '$window
       });
     };
   $scope.editCustomerCancel = function(agent_id, customer_id) {
-    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customer_id;
+    $window.location.href="/agents/" + $scope.agentId + "/customers/" + $scope.customerId;
   };
 }]);
 
@@ -248,9 +248,10 @@ agentApp.controller('showContactRecordController', ['$scope', '$http', '$window'
   $scope.contactId = $location.absUrl().split("/")[4];
   $http.get('/api/v1.00/entities/contact_records/' + $scope.contactId)
     .success(function(data, status, headers, config){
-      $scope.contact_record = data.data;
-      $scope.agentId = data.data.agent;
-      $scope.customerId = data.data.customer;
+      console.log(data);
+      $scope.contact_record = data;
+      $scope.agentId = data.agent;
+      $scope.customerId = data.customer;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
