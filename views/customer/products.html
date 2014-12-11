@@ -16,8 +16,8 @@
       </div>
       <br />
       <div ng-repeat="product in products">
-        <div>ID: {{ product.Name }}
-          <input type="button" ng-click="productDetail(product.Name)" value="Detail" />
+        <div>Name: {{ product.Name }}
+          <input type="button" ng-click="productDetail(product.id)" value="Detail" />
         </div>
         <div ng-repeat="attributes in product.Attributes">
           {{ attributes.Name }}: 
