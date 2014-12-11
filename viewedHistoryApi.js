@@ -11,6 +11,16 @@ var REDIS_SESSION_PREFIX = configs.REDIS_SESSION_PREFIX;
 
 function getViewedHistory(req, res) {
   var session = REDIS_SESSION_PREFIX + req.sessionID;
+
+  viewedHistoryService.getViewedHistory(session, req.session.userId, function(err, viewedHistory) {
+    if (err) {
+      res.status(500);
+      res.json({err: err.message});
+    } else {
+      res.status(200);
+      res.json(viewedHistory);
+    }
+  });
 }
 
 function getSessionViewedHistory(req, res) {
@@ -62,6 +72,7 @@ function updateViewedHistory(req, res) {
   })
 }
 
+exports.getViewedHistory = getViewedHistory;
 exports.getSessionViewedHistory = getSessionViewedHistory;
 exports.getUserViewedHistory = getUserViewedHistory;
 exports.updateViewedHistory = updateViewedHistory;

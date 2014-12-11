@@ -90,10 +90,12 @@ app.use(session({
 app.use(function(req, res, next) {
   var session = req.session;
   var sessionId = 'session:' + req.sessionID;
-  var userId = typeof req.param('UserId')  === "undefined" ? null : req.param('UserId');
 
   if (!session.views) {
-    session.views = 1
+    session.views = 1;
+
+    var userId = typeof req.query.userId === "undefined" ? null : req.query.userId;
+    session.userId = userId;
 
     var shoppingCartId = sessionId + ':shoppingCart';
     var viewedProductsId = sessionId + ':viewedProducts';
@@ -140,6 +142,31 @@ app.use(function(req, res, next) {
   req.constraints = constraints;
   next();
 });
+
+app.use(function(req, res, next) {
+  var session = req.session;
+  var userId = req.query.userId;
+
+  if (!session.userId && typeof userId != "undefined") {
+    session.userId = userId;
+
+    var sessionId = 'session:' + req.sessionID;
+    var shoppingCartId = sessionId + ':shoppingCart';
+    var viewedProductsId = sessionId + ':viewedProducts';
+    var viewedCategoriesId = sessionId + ':viewedCategories';
+
+    var multi = redisClient.multi();
+    multi.hset(sessionId, 'userId', userId);
+    multi.hset(shoppingCartId, 'userId', userId);
+    multi.hset(viewedProductsId, 'userId', userId);
+    multi.hset(viewedCategoriesId, 'userId', userId);
+
+    multi.exec(function(err, replies){
+      // TODO.
+    });
+  }
+  next();
+})
 
 ////////////////////
 //  MessageQueue  //
@@ -218,7 +245,7 @@ app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearSh
 //  ViewedHistory  //
 /////////////////////
 var viewedHistoryApi = require('./viewedHistoryApi.js');
-app.get('/api/v1.00/entities/viewedHistory', viewedHistoryApi.getSessionViewedHistory);
+app.get('/api/v1.00/entities/viewedHistory', viewedHistoryApi.getViewedHistory);
 app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
 
 ////////////////////

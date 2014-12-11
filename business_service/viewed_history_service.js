@@ -2,6 +2,32 @@ var redisService = require('../data_service/redis_service.js');
 var sessionService = require('./session.js');
 var redisClient = redisService.getRedisClient();
 
+function getViewedHistory(session, userId, callback) {
+  getSessionViewedHistory(session, function(sessionErr, sessionViewedHistory) {
+    if (sessionErr){
+      callback(sessionErr);
+    } else {
+      if (userId) {
+        getUserViewedHistory(userId, function(userErr, userViewedHistory) {
+          if (userErr) {
+            callback(userErr);
+          } else {
+            callback(null, {
+              sessionViewedHistory: sessionViewedHistory,
+              userViewedHistory: userViewedHistory,
+            });
+          }
+        })
+      } else {
+        callback(null, {
+          sessionViewedHistory: sessionViewedHistory,
+          userViewedHistory: 'Guest mode.',
+        });
+      }
+    }
+  });
+}
+
 function getSessionViewedHistory(session, callback) {
   sessionService.getSessionContent(session, function (err, content) {
     if (err) {
@@ -69,7 +95,7 @@ function updateViewedHistory(session, update, callback) {
 
 function updateUserViewedHistory(multi, userId, update) {
   if (typeof update.product != "undefined")
-    multi.hincrby(userId+':viewedProduct', update.product, 1);
+    multi.hincrby(userId+':viewedProducts', update.product, 1);
     
   if (typeof update.categories != "undefined")
     update.categories.forEach(function(category) {
@@ -106,6 +132,7 @@ getSessionViewedHistory(session, function(err, rep) {
 })
 */
 
+exports.getViewedHistory = getViewedHistory; 
 exports.getSessionViewedHistory = getSessionViewedHistory;
 exports.getUserViewedHistory = getUserViewedHistory;
 exports.updateViewedHistory = updateViewedHistory;
