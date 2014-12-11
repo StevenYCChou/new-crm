@@ -1,33 +1,6 @@
 var managerApp = angular.module('crmManagerApp', []);
 var ecommManagerApp = angular.module('ecommCustomerApp', []);
 
-// managerApp.factory('uuid2', [
-//   function() {
-//     function s4() {
-//       return Math.floor((1 + Math.random()) * 0x10000)
-//                  .toString(16).substring(1);
-//     };
-//     return {
-//       newuuid: function() {
-//       // http://www.ietf.org/rfc/rfc4122.txt
-//       var s = [];
-//       var hexDigits = "0123456789abcdef";
-//       for (var i = 0; i < 36; i++) {
-//           s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-//       }
-//       s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-//       s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-//       s[8] = s[13] = s[18] = s[23] = "-";
-//       return s.join("");
-//       },
-//       newguid: function() {
-//         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-//                s4() + '-' + s4() + s4() + s4();
-//       }
-//     }
-//   }
-// ]);
-
 managerApp.controller('agentIndexController', ['$scope', '$http', '$window', function($scope, $http, $window) {
   $http.get('/api/v1.00/entities/agents')
     .success(function(data, status, headers, config) {
@@ -41,14 +14,12 @@ managerApp.controller('agentIndexController', ['$scope', '$http', '$window', fun
   }
 }]);
 
-managerApp.controller('agentCreateController', ['$scope', '$http', '$window', 'uuid2', function($scope, $http, $window, uuid2) {
-  $scope.uuid = uuid2.newuuid();
+managerApp.controller('agentCreateController', ['$scope', '$http', '$window', function($scope, $http, $window) {
   $scope.createAgentSubmit = function(agent_name, agent_phone, agent_email, agent_location) {
     var data = {name: agent_name, phone: agent_phone, email: agent_email, location: agent_location};
     $http({
       url: '/api/v1.00/entities/agents',
       method: 'POST',
-      headers: {'nonce' : 'POST' + JSON.stringify(data) + $scope.uuid},
       data: data})
       .success(function(data, status, headers, config) {
        $window.location.href="/agents";
@@ -90,7 +61,6 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
     $http({
       url: '/api/v1.00/entities/product/' + product_id,
       method: 'PUT',
-      headers: {'nonce' : 'PUT' + JSON.stringify(put_data) + $scope.uuid},
       data: put_data})
       .success(function(data, status, headers, config) {
         $window.location.href="/ecomm/manager/products";
@@ -104,8 +74,7 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
   $scope.productDelete = function(product_id) {
     $http({
       url: '/api/v1.00/entities/products/' + product_id,
-      method: 'DELETE',
-      headers: {'nonce' : 'DELETE' + $scope.uuid}})
+      method: 'DELETE'})
       .success(function(data, status, headers, config) {
         $window.location.href="/ecomm/manager/products";
       })
