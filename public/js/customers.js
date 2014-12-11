@@ -80,9 +80,9 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
   ];
 
   $scope.searchKey = '';
-  $http.get('/api/v1.00/ecomm/entities/products?category=All&searchKey=')
+  $http.get('/api/v1.00/entities/products')
     .success(function(data, status, headers, config) {
-      $scope.products = data.products;
+      $scope.products = data.data;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -90,9 +90,13 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $window.alert("Status: " + status + ", " + data);
     });
   $scope.productFilter = function(product_category, searchKey) {
-    $http.get('/api/v1.00/ecomm/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
+    var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
+    if (scope.categoryChoice.name !== 'All') {
+      href += 'category='+$scope.categoryChoice.name;
+    }
+    $http.get(href)
       .success(function(data, status, headers, config) {
-        $scope.products = data.products;
+        $scope.products = data.data;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -101,9 +105,13 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       });
   }
   $scope.productSearch = function(product_category, searchKey) {
-    $http.get('/api/v1.00/ecomm/entities/products?category=' + $scope.categoryChoice.name + '&searchKey=' + $scope.searchKey)
+    var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
+    if (scope.categoryChoice.name !== 'All') {
+      href += 'category='+$scope.categoryChoice.name;
+    }
+    $http.get(href)
       .success(function(data, status, headers, config) {
-        $scope.products = data.products;
+        $scope.products = data.data;
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
@@ -118,7 +126,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
 
 ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $scope.productId = $location.absUrl().split("/")[6];
-  $http.get('/api/v1.00/ecomm/entities/product/' + $scope.productId)
+  $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
       $scope.shortDescription = data.data.shortDescription;
       $scope.longDescription = data.data.longDescription;
