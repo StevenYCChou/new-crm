@@ -216,8 +216,6 @@ agentApp.controller('createContactRecordController', ['$scope', '$http', '$windo
   $scope.uuid = uuid2.newuuid();
   $scope.agentId = $location.absUrl().split("/")[4].split("?")[1].split("=")[1].split("&")[0];
   $scope.customerId = $location.absUrl().split("/")[4].split("?")[1].split("=")[2];
-  console.log($scope.agentId);
-  console.log($scope.customerId);
   $scope.models = [
     {name: 'phone'},
     {name: 'email'}
@@ -250,12 +248,11 @@ agentApp.controller('showContactRecordController', ['$scope', '$http', '$window'
     .success(function(data, status, headers, config){
       $scope.contact_record = data.data;
         data.links.forEach(function(link){
-          console.log(link);
           if (link.rel == 'agent')
             $scope.agentLink = link.href;
           else if (link.rel == 'customer')
             $scope.customerLink = link.href;
-        })
+        });
 
       $http.get($scope.agentLink)
         .success(function(data, status, headers, config){
