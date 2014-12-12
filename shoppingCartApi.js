@@ -49,88 +49,88 @@ exports.mergeSessionAndUserShoppingCart = function(sessionId, userId) {
   });
 }
 
-exports.getSessionShoppingCart = function(req, res) {
-  hgetallPromise(prefix + req.sessionID + suffix).then(function(cart) {
-    res.json({
-      data: cart,
-      links: [{
-        rel: 'self',
-        href: '/api/v1.00/entities/session_shopping_carts'
-      }]
-    }, function(err) {
-      res.json(err);
-    });
-  });
-};
+// exports.getSessionShoppingCart = function(req, res) {
+//   hgetallPromise(prefix + req.sessionID + suffix).then(function(cart) {
+//     res.json({
+//       data: cart,
+//       links: [{
+//         rel: 'self',
+//         href: '/api/v1.00/entities/session_shopping_carts'
+//       }]
+//     }, function(err) {
+//       res.json(err);
+//     });
+//   });
+// };
 
-exports.getUserShoppingCart = function(req, res) {
-  hgetallPromise(prefix + req.param.id + suffix).then(function(cart) {
-    res.json({
-      data: cart,
-      links: [{
-        rel: 'self',
-        href: '/api/v1.00/entities/user_shopping_carts/'+req.param.id
-      }]
-    }, function(err) {
-      res.json(err);
-    });
-  });
-};
+// exports.getUserShoppingCart = function(req, res) {
+//   hgetallPromise(prefix + req.param.id + suffix).then(function(cart) {
+//     res.json({
+//       data: cart,
+//       links: [{
+//         rel: 'self',
+//         href: '/api/v1.00/entities/user_shopping_carts/'+req.param.id
+//       }]
+//     }, function(err) {
+//       res.json(err);
+//     });
+//   });
+// };
 
-exports.updateSessionShoppingCart = function(req, res) {
-  var update = req.body;
-  var multi = redisClient.multi();
-  for (productId in update) {
-    var quantity = update[productId];
-    if (quantity == 0) {
-      multi.hdel(prefix + req.sessionID + suffix, productId);
-    } else {
-      multi.hset(prefix + req.sessionID + suffix, productId, quantity);
-    }
-  }
+// exports.updateSessionShoppingCart = function(req, res) {
+//   var update = req.body;
+//   var multi = redisClient.multi();
+//   for (productId in update) {
+//     var quantity = update[productId];
+//     if (quantity == 0) {
+//       multi.hdel(prefix + req.sessionID + suffix, productId);
+//     } else {
+//       multi.hset(prefix + req.sessionID + suffix, productId, quantity);
+//     }
+//   }
 
-  multi.exec(function(err, replies) {
-    if (err) {
-      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
-    } else {
-      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
-    }
-  });
-};
+//   multi.exec(function(err, replies) {
+//     if (err) {
+//       mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+//     } else {
+//       mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
+//     }
+//   });
+// };
 
-exports.updateUserShoppingCart = function(req, res) {
-  var update = req.body;
-  var multi = redisClient.multi();
-  for (productId in update) {
-    var quantity = update[productId];
-    if (quantity == 0) {
-      multi.hdel(prefix + req.param.id + suffix, productId);
-    } else {
-      multi.hset(prefix + req.param.id + suffix, productId, quantity);
-    }
-  }
+// exports.updateUserShoppingCart = function(req, res) {
+//   var update = req.body;
+//   var multi = redisClient.multi();
+//   for (productId in update) {
+//     var quantity = update[productId];
+//     if (quantity == 0) {
+//       multi.hdel(prefix + req.param.id + suffix, productId);
+//     } else {
+//       multi.hset(prefix + req.param.id + suffix, productId, quantity);
+//     }
+//   }
 
-  multi.exec(function(err, replies) {
-    if (err) {
-      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
-    } else {
-      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
-    }
-  });
-};
+//   multi.exec(function(err, replies) {
+//     if (err) {
+//       mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+//     } else {
+//       mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
+//     }
+//   });
+// };
 
-exports.clearSessionShoppingCart = function(req, res) {
-  delPromise(prefix + req.sessionID + suffix, function(err) {
-    mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
-  }, function(err) {
-    mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
-  });
-};
+// exports.clearSessionShoppingCart = function(req, res) {
+//   delPromise(prefix + req.sessionID + suffix, function(err) {
+//     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+//   }, function(err) {
+//     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
+//   });
+// };
 
-exports.clearUserShoppingCart = function(req, res) {
-  delPromise(prefix + req.param.id + suffix, function(err) {
-    mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
-  }, function(err) {
-    mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
-  });
-};
+// exports.clearUserShoppingCart = function(req, res) {
+//   delPromise(prefix + req.param.id + suffix, function(err) {
+//     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
+//   }, function(err) {
+//     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
+//   });
+// };
