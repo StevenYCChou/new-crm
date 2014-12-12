@@ -31,7 +31,7 @@ exports.getUserViewStats = function(req, res) {
   });
 };
 
-exports.updateUserViewStats = function(req, res) {
+exports.incrUserViewStats = function(req, res) {
   var product_key = product_prefix + req.params.id;
   var category_key = category_prefix + req.params.id;
 

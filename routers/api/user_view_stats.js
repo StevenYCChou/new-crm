@@ -4,7 +4,7 @@ var router = express.Router();
 
 router.route('/:id')
   .get(api.getUserViewStats)
-  .put(api.updateUserViewStats)
+  .put(api.incrUserViewStats)
   .delete(api.removeUserViewStats);
 
 module.exports = router;

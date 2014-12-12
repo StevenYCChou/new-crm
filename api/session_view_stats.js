@@ -31,7 +31,7 @@ exports.getSessionViewStats = function(req, res) {
   });
 };
 
-exports.updateSessionViewStats = function(req, res) {
+exports.incrSessionViewStats = function(req, res) {
   var product_key = product_prefix + req.params.id;
   var category_key = category_prefix + req.params.id;
 
