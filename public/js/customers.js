@@ -80,6 +80,22 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
   ];
 
   $scope.searchKey = '';
+  $scope.login = true;
+  $http.get('/api/v1.00/entities/sessions')
+    .success(function(data, status, headers, config) {
+      if ('userid' in data){
+        $scope.login = true;
+        $scope.userid = data.userid;
+      } else {
+        $scope.login = false;
+      }
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+
   $http.get('/api/v1.00/entities/products?category=all')
     .success(function(data, status, headers, config) {
       $scope.products = [];
@@ -99,6 +115,22 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
     });
+
+  $scope.login = function(customer_id) {
+    $http({
+      url: '/api/v1.00/entities/sessions/',
+      method: 'PUT',
+      data: {userid: customer_id}
+    })
+    .success(function(data, status, headers, config) {
+      $window.location.href="/ecomm/customers/products";
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  }
   $scope.productFilter = function(product_category, searchKey) {
     var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
     if (scope.categoryChoice.name !== 'All') {
