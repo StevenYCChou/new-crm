@@ -9,7 +9,7 @@ var hmsetPromise = Promise.denodeify(redisClient.hmset.bind(redisClient));
 var delPromise = Promise.denodeify(redisClient.del.bind(redisClient));
 
 exports.getSession = function(req, res) {
-  hgetallPromise(prefix + req.params.id).then(function(content) {
+  hgetallPromise(prefix + req.sessionID).then(function(content) {
     if (content === null) {
       res.json({error: 'No such session yet.'});
     } else {
@@ -26,7 +26,7 @@ exports.getSession = function(req, res) {
 };
 
 exports.updateSession = function(req, res) {
-  hmsetPromise(prefix + req.params.id, req.body).then(function(content) {
+  hmsetPromise(prefix + req.sessionID, req.body).then(function(content) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
   }, function(err) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
@@ -34,7 +34,7 @@ exports.updateSession = function(req, res) {
 };
 
 exports.removeSession = function(req, res) {
-  delPromise(prefix + req.params.id).then(function(content) {
+  delPromise(prefix + req.sessionID).then(function(content) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
   }, function(err) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();

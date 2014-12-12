@@ -2,7 +2,7 @@ var api = require('../../api/session_shopping_carts.js');
 var express = require('express');
 var router = express.Router();
 
-router.route('/:id')
+router.route('')
   .get(api.getSessionShoppingCart)
   .put(api.updateSessionShoppingCart)
   .delete(api.clearSessionShoppingCart);

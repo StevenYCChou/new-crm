@@ -8,8 +8,8 @@ var product_prefix = 'product_view_stats:',
     category_prefix = 'category_view_stats:';
 
 exports.getSessionViewStats = function(req, res) {
-  var product_key = product_prefix + req.params.id;
-  var category_key = category_prefix + req.params.id;
+  var product_key = product_prefix + req.sessionID;
+  var category_key = category_prefix + req.sessionID;
 
   var productPromise = hgetallPromise(product_key);
   var categoryPromise = hgetallPromise(category_key);
@@ -23,7 +23,7 @@ exports.getSessionViewStats = function(req, res) {
       },
       links: [{
         rel: 'self',
-        href: '/api/v1.00/entities/session_view_stats/' + req.params.id
+        href: '/api/v1.00/entities/session_view_stats/' + req.sessionID
       }]
     });
   }, function(err) {
@@ -32,8 +32,8 @@ exports.getSessionViewStats = function(req, res) {
 };
 
 exports.incrSessionViewStats = function(req, res) {
-  var product_key = product_prefix + req.params.id;
-  var category_key = category_prefix + req.params.id;
+  var product_key = product_prefix + req.sessionID;
+  var category_key = category_prefix + req.sessionID;
 
   var multi = redisClient.multi();
   if (req.body.products) {
@@ -57,8 +57,8 @@ exports.incrSessionViewStats = function(req, res) {
 };
 
 exports.removeSessionViewStats = function(req, res) {
-  var product_key = product_prefix + req.params.id;
-  var category_key = category_prefix + req.params.id;
+  var product_key = product_prefix + req.sessionID;
+  var category_key = category_prefix + req.sessionID;
 
   var multi = redisClient.multi();
   multi.del(product_key);
