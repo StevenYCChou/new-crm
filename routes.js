@@ -187,6 +187,8 @@ app.use('/api/v1.00/entities/products', require('./routers/api/products.js'));
 app.use('/api/v1.00/entities/sessions', require('./routers/api/sessions.js'));
 app.use('/api/v1.00/entities/session_view_stats', require('./routers/api/session_view_stats.js'));
 app.use('/api/v1.00/entities/user_view_stats', require('./routers/api/user_view_stats.js'));
+app.use('/api/v1.00/entities/session_shopping_carts', require('./routers/api/session_shopping_carts.js'));
+app.use('/api/v1.00/entities/user_shopping_carts', require('./routers/api/user_shopping_carts.js'));
 
 ////////////////////
 // Manager Facade //
@@ -233,14 +235,14 @@ app.get('/ecomm/managers/product/:productId', managerFacade.showProductDetail);
 /////////////////////
 //  Shopping Cart  //
 /////////////////////
-var shoppingCartApi = require('./shoppingCartApi.js');
-app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
-app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
+// var shoppingCartApi = require('./shoppingCartApi.js');
+// app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
+// app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
 
-app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
-app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
-app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
-app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearShoppingCart);
+// app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
+// app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
+// app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
+// app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearShoppingCart);
 
 /////////////////////
 //  ViewedHistory  //
