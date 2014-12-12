@@ -11,6 +11,15 @@ angular.module('crmHomeApp', []).
 	};
 }]);
 
-angular.module('ecommHomeApp', []).
-  controller('ecommHomeController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('ecommHomeApp', [])
+  .controller('ecommHomeController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+  $scope.managerStartEcomm = function() {
+    $window.location.href="/ecomm/managers/products";
+  };
+  $scope.customerStartEcommGuest = function() {
+    $window.location.href="/ecomm/customers/products";
+  };
+  $scope.customerStartEcomm = function() {
+    $window.location.href="/ecomm/customers/products";
+  };
 }]);

@@ -12,19 +12,23 @@
       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-brand" href="/ecomm/">Ecommerce System</a>
+            <a class="navbar-brand" href="/ecomm/">Ecommerce</a>
           </div>
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
               <li class="active"><a href="/ecomm/">Main <span class="sr-only">(current)</span></a></li>
               <li><a href="/ecomm/about">About</a></li>
             </ul>
-            <form class="navbar-form navbar-right" role="form">
-              <button type="submit" onclick="location.href = '/crm/';" class="btn btn-success">CRM</button>
-            </form>
+            <div class="navbar-form navbar-right">
+              <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
+              <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
+              <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
+              <input type="button" onclick="location.href = '/crm/';" class="btn btn-success" value ="CRM" />
+            </div>
           </div>
         </div>
       </nav>
+
       <h3>Ecommerce Products</h3>
       <div>Category Filter
         <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
