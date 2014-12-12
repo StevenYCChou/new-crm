@@ -20,6 +20,7 @@
               <li><a href="/ecomm/about">About</a></li>
             </ul>
             <div class="navbar-form navbar-right">
+              <input type="button" class="btn btn-success" value="View Stats" ng-click="viewStats()"/>
               <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
               <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
               <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
@@ -34,8 +35,12 @@
         <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
       </div>
       <br />
-      <div>Product Name Search
-        <input type="text" ng-model="searchKey" /><input type="button" ng-click="productSearch(categoryChoice, searchKey)" value="Search" />
+      <p>Product Name Search</p>
+      <div class="row">
+        <div class="col-xs-2">
+          <input type="text" class="form-control" ng-model="searchKey" />
+          <input type="button" class="btn btn-primary" ng-click="productSearch(categoryChoice, searchKey)" value="Search" />
+        </div>
       </div>
       <br />
       <div ng-repeat="product in products">

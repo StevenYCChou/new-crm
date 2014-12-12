@@ -81,7 +81,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
 
   $scope.searchKey = '';
   $scope.login = true;
-  $http.get('/api/v1.00/entities/sessions')
+/*  $http.get('/api/v1.00/entities/sessions')
     .success(function(data, status, headers, config) {
       if ('userid' in data){
         $scope.login = true;
@@ -94,9 +94,9 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $scope.errorStatus = status;
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
-    });
+    });*/
 
-  $http.get('/api/v1.00/entities/products?category=all')
+  $http.get('/api/v1.00/entities/products')
     .success(function(data, status, headers, config) {
       $scope.products = [];
       data.data.forEach(function(product){
@@ -131,6 +131,11 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       $window.alert("Status: " + status + ", " + data);
     });
   }
+
+  $scope.viewStats = function() {
+    $window.location.href="/ecomm/customers/viewStats";
+  }
+
   $scope.productFilter = function(product_category, searchKey) {
     var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
     if (scope.categoryChoice.name !== 'All') {
@@ -183,4 +188,8 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   $scope.getProducts = function(){
     $window.location.href="/ecomm/customers/products";
   };
+}]);
+
+ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+
 }]);
