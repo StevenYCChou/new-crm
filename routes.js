@@ -225,6 +225,7 @@ app.get('/crm/customers/:customerId/edit', customerFacade.showProfileUpdatePage)
 app.get('/ecomm/customers/products', customerFacade.showProductsPage);
 app.get('/ecomm/customers/product/:productId', customerFacade.showProductDetail);
 app.get('/ecomm/customers/viewStats', customerFacade.showViewStats);
+app.get('/ecomm/customers/shoppingCarts', customerFacade.showShoppingCarts);
 
 /////////////////////
 // Ecommerce-Manager Facade //

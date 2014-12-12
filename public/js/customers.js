@@ -102,7 +102,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       data.data.forEach(function(product){
         var productsAttributes = {};
         for (key in product) {
-          if (key!= 'id' && key!= 'links' && key!= 'Name'){
+          if (key!= 'id' && key!= 'links' && key!= 'imagelink'){
             productsAttributes[key] = product[key];
           }
         }
@@ -133,6 +133,10 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
 
   $scope.viewStats = function() {
     $window.location.href="/ecomm/customers/viewStats";
+  }
+
+  $scope.shoppingCarts = function() {
+    $window.location.href="/ecomm/customers/shoppingCarts";
   }
 
   $scope.productFilter = function(product_category, searchKey) {
@@ -211,6 +215,36 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   $scope.getProducts = function(){
     $window.location.href="/ecomm/customers/products";
   };
+
+  $scope.viewStats = function(){
+    $window.location.href="/ecomm/customers/viewStats";
+  };
+
+  $scope.shoppingCarts = function() {
+    $window.location.href="/ecomm/customers/shoppingCarts";
+  }
+
+  $scope.productPurchase = function(){
+    var products = {};
+    products[$scope.productId] = 1;
+
+//    var put_data = {products: products};
+//    console.log(put_data);
+    $http({
+      url: '/api/v1.00/entities/session_shopping_carts/',
+      contentType: "applictaion/json",
+      method: 'PUT',
+      data: products
+    })
+    .success(function(data, status, headers, config) {
+      $window.location.href="/ecomm/customers/shoppingCarts";
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  };
 }]);
 
 ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
@@ -227,5 +261,53 @@ ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window'
 
   $scope.productsList = function() {
     $window.location.href = "/ecomm/customers/products";
+  }
+
+  $scope.viewStats = function(){
+    $window.location.href="/ecomm/customers/viewStats";
+  };
+
+  $scope.shoppingCarts = function() {
+    $window.location.href="/ecomm/customers/shoppingCarts";
+  }
+}]);
+
+ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $http.get('/api/v1.00/entities/session_shopping_carts')
+    .success(function(data, status, headers, config) {
+       $scope.product_cart = data.data;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+
+  $scope.productsList = function() {
+    $window.location.href = "/ecomm/customers/products";
+  }
+
+  $scope.viewStats = function(){
+    $window.location.href="/ecomm/customers/viewStats";
+  };
+
+  $scope.shoppingCarts = function() {
+    $window.location.href="/ecomm/customers/shoppingCarts";
+  }
+
+  $scope.Updatequantity = function() {
+    $http({
+      url: '/api/v1.00/entities/session_shopping_carts',
+      method: 'PUT',
+      data: $scope.products
+    })
+    .success(function(data, status, headers, config) {
+      $window.location.href="/ecomm/customers/shoppingCarts";
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
   }
 }]);

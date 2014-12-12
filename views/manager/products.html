@@ -26,7 +26,7 @@
         </div>
       </nav>
       <h3>Ecommerce Products</h3>
-      <input type="button" ng-click="createProduct()" value="New Product" /><br /><br />
+      <input type="button" class="btn btn-success" ng-click="createProduct()" value="New Product" /><br /><br />
       <div ng-repeat="product in products">
         <div>ID: {{ product.id }}</div>
         <div ng-repeat="(attribute, value) in product">
@@ -36,7 +36,29 @@
         <input type="button" ng-click="productUpdateSummary(product.id)" value="Update" />
         <input type="button" ng-click="productDelete(product.id)" value="Delete" />
       </div>
-      <br />
+      <table class="table table-striped" ng-repeat="product in products">
+        <caption>ProductID: {{ product.id }}</caption>
+        <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+        </tr>
+        <tr ng-repeat="(key,val) in product.productsAttributes">
+          <td>{{ key }}</td>
+          <td><input ng-model="attributes.Value" value="{{ val }}"></td>
+        </tr>
+        <tr>
+          <td>Details</td>
+          <td><input type="button" ng-click="productDetail(product.id)" value="Detail" /></td>
+        </tr>
+        <tr>
+          <td>Update</td>
+          <td><input type="button" ng-click="productUpdateSummary(product.id)" value="Update" /></td>
+        </tr>
+        <tr>
+          <td>Delete</td>
+          <td><input type="button" ng-click="productDelete(product.id)" value="Delete" /></td>
+        </tr>
+      </table>
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>

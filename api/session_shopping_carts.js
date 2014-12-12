@@ -15,7 +15,7 @@ var redisClient = redisService.getRedisClient();
  */
 
 var prefix = 'session:';
-var suffix = ':shoppingCart';
+var suffix = ':shopping_cart';
 
 var hgetallPromise = Promise.denodeify(redisClient.hgetall.bind(redisClient));
 var delPromise = Promise.denodeify(redisClient.del.bind(redisClient));
@@ -36,6 +36,7 @@ exports.getSessionShoppingCart = function(req, res) {
 };
 
 exports.updateSessionShoppingCart = function(req, res) {
+  console.log(req.body);
   var update = req.body;
   var multi = redisClient.multi();
   for (var productId in update) {
