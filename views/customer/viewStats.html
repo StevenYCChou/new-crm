@@ -29,6 +29,31 @@
           </div>
         </div>
       </nav>
+      <h3>Session view Stats</h3>
+      <table class="table table-striped">
+        <caption>Product View Stats</caption>
+        <tr>
+          <th>Product ID</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in product_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <br />
+      <table class="table table-striped">
+        <caption>Category View Stats</caption>
+        <tr>
+          <th>Category</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in category_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <input type="button" class="btn btn-primary" ng-click="productsList()" value="All Products" />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>

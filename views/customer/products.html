@@ -43,15 +43,21 @@
         </div>
       </div>
       <br />
-      <div ng-repeat="product in products">
-        Name: {{ product.Name }}
-        <div ng-repeat="(key,val) in product.productsAttributes">
-          {{ key }}:
-          {{ val }}
-        </div> 
-        <input type="button" ng-click="productDetail(product.id)" value="Detail" />
-        <br />
-      </div>
+      <table class="table table-striped" ng-repeat="product in products">
+        <caption>ProductID: {{ product.id }}</caption>
+        <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+        </tr>
+        <tr ng-repeat="(key,val) in product.productsAttributes">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+        <tr>
+          <td>Details</td>
+          <td><input type="button" class="btn btn-primary" ng-click="productDetail(product.id)" value="Detail" /></td>
+        </tr>
+      </table>
       <br />
     </div>
     <script src="/js/jquery-1.11.1.js"></script>

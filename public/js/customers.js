@@ -106,9 +106,8 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
             productsAttributes[key] = product[key];
           }
         }
-        $scope.products.push({Name: product['Name'], productsAttributes: productsAttributes});
+        $scope.products.push({id: product['id'], productsAttributes: productsAttributes});
       });
-
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -167,7 +166,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
       });
   };
   $scope.productDetail = function(product_id) {
-    $window.location.href = "/ecomm/customers/Product/" + product_id;
+    $window.location.href = "/ecomm/customers/product/" + product_id;
   };
 }]);
 
@@ -175,21 +174,58 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   $scope.productId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
-      $scope.shortDescription = data.data.shortDescription;
-      $scope.longDescription = data.data.longDescription;
-      $scope.sellerComments = data.data.sellerComments;
-      $scope.imageLink = data.data.imageLink;
+      $scope.shortDescription = data.data.shortdescription;
+      $scope.longDescription = data.data.longdescription;
+      $scope.sellerComments = data.data.sellercomments;
+      $scope.imageLink = data.data.imagelink;
+
+      var products = {};
+      var categories = {};
+      products[$scope.productId] = 1;
+      data.data.category.forEach(function(category) {
+          categories[category] = 1;
+        });
+      var put_data = {products: products, categories: categories};
+      $http({
+          url: '/api/v1.00/entities/session_view_stats/',
+          contentType: "applictaion/json",
+          method: 'PUT',
+          data: put_data
+        })
+        .success(function(data, status, headers, config) {
+
+        })
+        .error(function(data, status, headers, config) {
+          $scope.errorStatus = status;
+          $scope.errorData = data;
+          $window.alert("Status: " + status + ", " + data);
+        });
+
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
       $scope.errorData = data;
       $window.alert("Status: " + status + ", " + data);
     });
+
   $scope.getProducts = function(){
     $window.location.href="/ecomm/customers/products";
   };
 }]);
 
 ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+  $http.get('/api/v1.00/entities/session_view_stats')
+    .success(function(data, status, headers, config) {
+       $scope.product_stat = data.data.products;
+       $scope.category_stat = data.data.categories;
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
 
+  $scope.productsList = function() {
+    $window.location.href = "/ecomm/customers/products";
+  }
 }]);

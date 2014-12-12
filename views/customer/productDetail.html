@@ -20,24 +20,28 @@
               <li><a href="/ecomm/about">About</a></li>
             </ul>
             <form class="navbar-form navbar-right" role="form">
-              <button type="submit" onclick="location.href = '/crm/';" class="btn btn-success">CRM</button>
+              <input type="button" class="btn btn-success" value="View Stats" ng-click="viewStats()"/>
+              <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
+              <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
+              <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
+              <input type="button" onclick="location.href = '/crm/';" class="btn btn-success" value ="CRM" />
             </form>
           </div>
         </div>
       </nav>
       <div style="padding: 20px;">
-        <h3>Product Details (Product ID) {{ productid }}</h3>
+        <h3>Product Details (Product ID) {{ productId }}</h3>
         <div class="row-fluid">
           <div class="span2">
-            <img ng-src= "{{imagelink}}" />
+            <img ng-src= "{{imageLink}}" />
           </div>
           <div class="span10">
-            <div>Short Description: {{ shortdescription }}</div>
-            <div>Long Description: {{ longdescription }}</div>
-            <div>Seller Comments: {{ sellercomments }}</div>
+            <div>Short Description: {{ shortDescription }}</div>
+            <div>Long Description: {{ longDescription }}</div>
+            <div>Seller Comments: {{ sellerComments }}</div>
             <br /><br />
-            <input type="button" ng-click="productPurchase(productid)" value="Purchase" />
-            <input type="button" ng-click="getProducts()" value="All Products" />
+            <input type="button" class="btn btn-success" ng-click="productPurchase(productid)" value="Purchase" />
+            <input type="button" class="btn btn-default" ng-click="getProducts()" value="All Products" />
           </div>
         </div>
       </div>

@@ -18,31 +18,7 @@ exports.showProductsPage = function (req, res) {
 };
 
 exports.showProductDetail = function (req, res) {
-  var session = REDIS_SESSION_PREFIX + req.sessionID;
-  var product = req.param('productId');
-
-  crmSimpleDb.getProductAttributes(product, ['Category'], function(err, data) {
-    if (err) {
-      res.status(500);
-      res.send({err: err.stack});
-    } else {
-      var categories = new Array();
-      categories = data.Attributes[0].Value.split(',');
-      var update = {
-        product: req.param('productId'),
-        categories: categories,
-      }
-
-      viewedHistoryService.updateViewedHistory(session, update, function(err, callback) {
-        if (err) {
-          res.status(500);
-          res.send({err: err.message});
-        } else {
-          res.render('customer/productDetail');
-        }
-      });
-    }
-  })
+  res.render('customer/productDetail');
 };
 
 exports.showViewStats = function (req, res) {
