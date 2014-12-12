@@ -23,7 +23,7 @@ exports.getSessionViewStats = function(req, res) {
       },
       links: [{
         rel: 'self',
-        href: '/api/v1.00/entities/session_view_stats/'+req.params.id
+        href: '/api/v1.00/entities/session_view_stats/' + req.params.id
       }]
     });
   }, function(err) {
