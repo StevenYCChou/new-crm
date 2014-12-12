@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="ecommCustomerApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Ecommerce-View Stats</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/content.css">
+  </head>
+  <body>
+    <div ng-controller="viewStatsController">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/ecomm/">Ecommerce</a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/ecomm/">Main <span class="sr-only">(current)</span></a></li>
+              <li><a href="/ecomm/about">About</a></li>
+            </ul>
+            <div class="navbar-form navbar-right">
+              <input type="button" class="btn btn-success" value="View Stats" ng-click="viewStats()" />
+              <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
+              <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
+              <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
+              <input type="button" onclick="location.href = '/crm/';" class="btn btn-success" value ="CRM" />
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <script src="/js/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/js/customers.js"></script>
+  </body>
+</html>
