@@ -186,6 +186,7 @@ app.use('/api/v1.00/entities/contact_records', require('./routers/api/contact_re
 app.use('/api/v1.00/entities/products', require('./routers/api/products.js'));
 app.use('/api/v1.00/entities/sessions', require('./routers/api/sessions.js'));
 app.use('/api/v1.00/entities/session_view_stats', require('./routers/api/session_view_stats.js'));
+app.use('/api/v1.00/entities/user_view_stats', require('./routers/api/user_view_stats.js'));
 
 ////////////////////
 // Manager Facade //
