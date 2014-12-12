@@ -4,14 +4,15 @@ var Promise = require('promise');
 var redisClient = redisService.getRedisClient();
 
 var hgetallPromise = Promise.denodeify(redisClient.hgetall.bind(redisClient));
-var hmsetPromise = Promise.denodeify(redisClient.hmset.bind(redisClient));
-var delPromise = Promise.denodeify(redisClient.del.bind(redisClient));
 var product_prefix = 'product_view_stats:',
-    category_prefix = 'category_view_stats:'
+    category_prefix = 'category_view_stats:';
 
 exports.getSessionViewStats = function(req, res) {
-  var productPromise = hgetallPromise(product_prefix + req.params.id);
-  var categoryPromise = hgetallPromise(category_prefix + req.params.id);
+  var product_key = product_prefix + req.params.id;
+  var category_key = category_prefix + req.params.id;
+
+  var productPromise = hgetallPromise(product_key);
+  var categoryPromise = hgetallPromise(category_key);
   Promise.all([productPromise, categoryPromise]).then(function(results) {
     var products = results[0],
         categories = results[1];
@@ -36,17 +37,13 @@ exports.updateSessionViewStats = function(req, res) {
 
   var multi = redisClient.multi();
   if (req.body.products) {
-    for (var key in req.body.products) {
-      console.log(key);
-      console.log(req.body.products[key]);
-      multi.hincrby(product_key, key, req.body.products[key]);
+    for (var attribute_key in req.body.products) {
+      multi.hincrby(product_key, attribute_key, req.body.products[attribute_key]);
     }
   }
   if (req.body.categories) {
-    for (var key in req.body.categories) {
-      console.log(key);
-      console.log(req.body.categories[key]);
-      multi.hincrby(category_key, key, req.body.categories[key]);
+    for (var attribute_key in req.body.categories) {
+      multi.hincrby(category_key, attribute_key, req.body.categories[attribute_key]);
     }
   }
 
@@ -62,9 +59,11 @@ exports.updateSessionViewStats = function(req, res) {
 exports.removeSessionViewStats = function(req, res) {
   var product_key = product_prefix + req.params.id;
   var category_key = category_prefix + req.params.id;
+
   var multi = redisClient.multi();
   multi.del(product_key);
   multi.del(category_key);
+
   multi.exec(function(err, content) {
     if (err) {
       mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
