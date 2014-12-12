@@ -136,11 +136,14 @@ exports.getProduct = function (req, res) {
         }
       });
       productObj.id = req.params.id;
-      productObj.links = [{
+      var links = [{
         rel: 'self',
         href: '/api/v1.00/entities/products/' + req.params.id
       }];
-      res.json(productObj);
+      res.json(
+        {data: productObj,
+          links: links}
+        );
     }
   });
 };
