@@ -37,9 +37,9 @@ exports.updateSession = function(req, res) {
 exports.removeSession = function(req, res) {
   redisClient.del('session:'+req.params.id, function(err, content) {
     if (err) {
-      res.json(err);
+      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
     } else {
-      res.json(content);
+      mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
     }
   })
 };
