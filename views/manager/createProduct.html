@@ -48,9 +48,9 @@
         </tr>
       </table>
       Category Name: 
-      <span ng-repeat="category in filterCategorys">
-        <input class="checkbox" type="checkbox" ng-model="category.data">{{ category.name }}
-      </span>
+      <label ng-repeat="category in filterCategorys">
+        <input class="checkbox" type="checkbox" ng-model="category.data" />{{ category.name }}
+      </label>
       <br />
       <input type="button" class="btn btn-success" ng-click="createProductSubmit(product_id, fields, template_select)" value="Submit" />
       <input type="button" class="btn btn-danger" ng-click="createProductCancel()" value="Return" />

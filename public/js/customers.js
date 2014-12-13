@@ -71,7 +71,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
 }]);
 
 ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $scope.categoryChoice = 'All';
+  $scope.categoryChoice = 'all';
   $scope.filterCategorys = [
     {name: 'all'},
     {name: 'music'},
@@ -103,7 +103,15 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
         var productsAttributes = {};
         for (key in product) {
           if (key!= 'id' && key!= 'links' && key!= 'imagelink'){
-            productsAttributes[key] = product[key];
+            if (key == 'category') {
+              productsAttributes[key] = '';
+              product[key].forEach(function(keys) {
+                 productsAttributes[key] += keys + ', ';
+              });
+              productsAttributes[key] = productsAttributes[key].substring(0, productsAttributes[key].length-2);
+            } else {
+              productsAttributes[key] = product[key];
+            }
           }
         }
         $scope.products.push({id: product['id'], productsAttributes: productsAttributes});
@@ -139,14 +147,32 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
     $window.location.href="/ecomm/customers/shoppingCarts";
   }
 
-  $scope.productFilter = function(product_category, searchKey) {
-    var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
-    if (scope.categoryChoice.name !== 'All') {
-      href += 'category='+$scope.categoryChoice.name;
+  $scope.productFilter = function(product_category) {
+    var href = '/api/v1.00/entities/products?q=category=' + product_category;
+    if (product_category == 'all') {
+      href = '/api/v1.00/entities/products';
     }
+    console.log(href);
     $http.get(href)
       .success(function(data, status, headers, config) {
-        $scope.products = data.data;
+        $scope.products = [];
+        data.data.forEach(function(product){
+          var productsAttributes = {};
+          for (key in product) {
+            if (key!= 'id' && key!= 'links' && key!= 'imagelink'){
+              if (key == 'category') {
+                productsAttributes[key] = '';
+                product[key].forEach(function(keys) {
+                   productsAttributes[key] += keys + ', ';
+                });
+                productsAttributes[key] = productsAttributes[key].substring(0, productsAttributes[key].length-2);
+              } else {
+                productsAttributes[key] = product[key];
+              }
+            }
+          }
+          $scope.products.push({id: product['id'], productsAttributes: productsAttributes});
+        });
       })
       .error(function(data, status, headers, config) {
         $scope.errorStatus = status;
