@@ -27,36 +27,31 @@
       </nav>
       <h3>Ecommerce Products</h3>
       <input type="button" class="btn btn-success" ng-click="createProduct()" value="New Product" /><br /><br />
-      <div ng-repeat="product in products">
-        <div>ID: {{ product.id }}</div>
-        <div ng-repeat="(attribute, value) in product">
-          <label>{{ attribute }}: <input ng-model="attributes.Value" value="{{ value }}"></label>
-        </div> 
-        <input type="button" ng-click="productDetail(product.id)" value="Detail" />
-        <input type="button" ng-click="productUpdateSummary(product.id)" value="Update" />
-        <input type="button" ng-click="productDelete(product.id)" value="Delete" />
-      </div>
       <table class="table table-striped" ng-repeat="product in products">
         <caption>ProductID: {{ product.id }}</caption>
         <tr>
           <th>Attribute</th>
           <th>Value</th>
         </tr>
+        <tr>
+          <td>Category</td>
+          <td>{{ product.category }}</td>
+        </tr>
         <tr ng-repeat="(key,val) in product.productsAttributes">
           <td>{{ key }}</td>
-          <td><input ng-model="attributes.Value" value="{{ val }}"></td>
+          <td><input class="form-control" ng-model="product.productsAttributes[key]" value="{{val}}"></td>
         </tr>
         <tr>
           <td>Details</td>
-          <td><input type="button" ng-click="productDetail(product.id)" value="Detail" /></td>
+          <td><input type="button" class="btn btn-primary" ng-click="productDetail(product.id)" value="Detail" /></td>
         </tr>
         <tr>
           <td>Update</td>
-          <td><input type="button" ng-click="productUpdateSummary(product.id)" value="Update" /></td>
+          <td><input type="button" class="btn btn-success" ng-click="productUpdateSummary(product.id)" value="Update" /></td>
         </tr>
         <tr>
           <td>Delete</td>
-          <td><input type="button" ng-click="productDelete(product.id)" value="Delete" /></td>
+          <td><input type="button" class="btn btn-danger" ng-click="productDelete(product.id)" value="Delete" /></td>
         </tr>
       </table>
     </div>

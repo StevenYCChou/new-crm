@@ -26,6 +26,28 @@ var parseToAttributes = function(product) {
   return attributes;
 }
 
+var parseToAttributesUpdate = function(product) {
+  var attributes = [];
+
+  for (var key in product) {
+    if (Array.isArray(product[key])) {
+      product[key].forEach(function(v) {
+        attributes.push({
+          Name: key,
+          Value: String(v),
+          Replace: true
+        });
+      });
+    } else if (key !== 'id') {
+      attributes.push({
+        Name: key,
+        Value: String(product[key])
+      });
+    }
+  }
+  return attributes;
+}
+
 exports.getProducts = function (req, res) {
   var constraints = req.constraints;
 
@@ -166,13 +188,12 @@ exports.createProduct = function (req, res) {
 };
 
 exports.updateProduct = function (req, res) {
-  var attributes = parseToAttributes(req.body);
+  var attributes = parseToAttributesUpdate(req.body);
   var params = {
     Attributes: attributes,
     DomainName: 'Product',
     ItemName: req.param('id')
   }
-
   simpledb.putAttributes(params, function(err, response) {
     if (err) {
       return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
@@ -184,12 +205,10 @@ exports.updateProduct = function (req, res) {
 
 exports.removeProduct = function (req, res) {
   var id = req.param('id');
-  console.log(id);
   simpledb.getAttributes({
     DomainName: 'Product',
     ItemName: id
   }, function(err, data) {
-    console.log(data);
     if (err) {
       return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
     } else {
