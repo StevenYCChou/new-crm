@@ -5,7 +5,7 @@ var restfulHelper = require('./restful_helper.js');
 exports.getAgents = function (req, res) {
   var constraints = req.constraints;
   var subcollectionQuery, subcollectionPromise;
-  if (req.constraints.query) {
+  if (constraints.query) {
     subcollectionQuery = mongodbService.Agent.find(constraints.query);
   } else {
     subcollectionQuery = mongodbService.Agent.find({});
