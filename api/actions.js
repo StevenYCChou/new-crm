@@ -10,7 +10,7 @@ var productPrefix = 'product_view_stats:',
     categoryPrefix = 'category_view_stats:';
 
 exports.importViewStats = function(req, res) {
-  var sessionId = req.body.sessionId || '';
+  var sessionId = req.sessionId || '';
   var userId = req.body.userId || '';
   var sessionProductKey = productPrefix + sessionId,
       sessionCategoryKey = categoryPrefix + sessionId,
