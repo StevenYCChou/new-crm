@@ -45,28 +45,41 @@ exports.importViewStats = function(req, res) {
 };
 
 
-var sessionPrefix = 'session:'
-  , userPrefix = 'user:'
-  , suffix = ':shoppingCart';
-exports.importShoppingCart = function(req, res) {
+var sessionPrefix = 'session:',
+    userPrefix = 'user:',
+    suffix = ':shoppingCart';
+
+exports.importShoppingCart = function (req, res) {
   var sessionId = req.sessionID || '';
   var userId = req.body.userId || '';
+  var sessionShoppingCartKey = sessionPrefix + sessionId + suffix,
+      userShoppingCartKey = userPrefix + userId + suffix;
 
   var multi = redisClient.multi();
-  multi.hgetall(sessionPrefix + sessionId + suffix);
-  multi.hgetall(userPrefix + userId + suffix);
-  mutli.del(sessionPrefix + sessionId + suffix);
-  multi.del(userPrefix + userId + suffix);
+  multi.hgetall(sessionShoppingCartKey);
+  multi.hgetall(userShoppingCartKey);
 
   multi.exec(function(err, replies) {
     sessionCart = replies[0];
-    userCart = replies[1];
-    // merge.
-    for (productId in sessionCart) {
-      userCart[proudctId] = sessionCart[productId];
+    userCart = replies[1] == null ? {} : replies[1]; // Cannot set property to `null` object.
+
+    if (!sessionCart)
+      multi.del(sessionShoppingCartKey);
+    if (!userCart)
+      multi.del(userShoppingCartKey);
+
+    if (sessionCart != null || userCart != null) {
+      // Rules on updating shopping cart when log-in:
+      //  - If a product in session_shopping_cart occurs in user_shopping_cart,
+      //    we update count based on the session.
+      //  - Otherwise, we add the new product with count into user_shopping_cart.
+      //  - Finally, we overwrite session_shopping_cart.
+      for (var productId in sessionCart)
+        userCart[productId] = sessionCart[productId];
+      multi.hmset(sessionShoppingCartKey, userCart);
+      multi.hmset(userShoppingCartKey, userCart);
     }
-    multi.hmset(sessionPrefix + sessionId + suffix, userCart);
-    multi.hmset(userPrefix + userId + suffix, userCart);
+
     multi.exec(function(err, replies) {
       if (err) {
         mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
