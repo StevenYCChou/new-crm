@@ -194,6 +194,7 @@ exports.updateProduct = function (req, res) {
     DomainName: 'Product',
     ItemName: req.param('id')
   }
+
   simpledb.putAttributes(params, function(err, response) {
     if (err) {
       return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();

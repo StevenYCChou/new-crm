@@ -257,16 +257,13 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   };
   $scope.updateProductDetail = function(product_id) {
     var put_data = {
-      updatetype: 'detail',
-      detail: {
-        productId: product_id,
-        shortdescription: $scope.shortdescription,
-        longdescription: $scope.longdescription,
-        sellervomments: $scope.sellercomments,
-      }
+      productId: product_id,
+      shortdescription: $scope.shortDescription,
+      longdescription: $scope.longDescription,
+      sellervomments: $scope.sellerComments,
     };
     $http({
-      url: '/api/v1.00/entities/product/' + product_id,
+      url: '/api/v1.00/entities/products/' + product_id,
       method: 'PUT',
       data: put_data})
       .success(function(data, status, headers, config) {
