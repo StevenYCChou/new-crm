@@ -189,7 +189,8 @@ app.use('/api/v1.00/entities/session_view_stats', require('./routers/api/session
 app.use('/api/v1.00/entities/user_view_stats', require('./routers/api/user_view_stats.js'));
 app.use('/api/v1.00/entities/session_shopping_carts', require('./routers/api/session_shopping_carts.js'));
 app.use('/api/v1.00/entities/user_shopping_carts', require('./routers/api/user_shopping_carts.js'));
-app.use('/api/v1.00/entities/responses/', require('./routers/api/responses.js'));
+app.use('/api/v1.00/entities/responses', require('./routers/api/responses.js'));
+app.use('/api/v1.00/actions', require('./routers/api/actions.js'));
 ////////////////////
 // Manager Facade //
 ////////////////////
