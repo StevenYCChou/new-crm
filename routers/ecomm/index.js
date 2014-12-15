@@ -10,7 +10,7 @@ router.get('/', function (req, res) {
   res.render('ecommHome');
 });
 
-router.get('/about', function ecommAboutpage(req, res) {
+router.get('/about', function (req, res) {
   res.render('ecommAbout');
 });
 
