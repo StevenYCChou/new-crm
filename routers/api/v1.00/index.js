@@ -29,14 +29,10 @@ var dectectAndRestoreUUID = function(req, res, next) {
       if (entry === null) {
         mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
           next();
-        }, function(err) {
-          res.status(500).end();
         });
       } else {
         console.log('In dectectAndRestoreUUID: detect duplication.');
       };
-    }, function(err) {
-      res.status(500).end();
     });
   } else {
     next();
