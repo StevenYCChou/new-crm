@@ -3,6 +3,7 @@ var restfulHelper = require('./api/restful_helper.js');
 var businessService = require('./business_service/business_service.js');
 var mongodbService = require('./data_service/mongodb_service.js');
 var entryPages = require('./entryPages.js');
+
 var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;
 var customerFacade = businessService.customerFacade;
@@ -175,62 +176,9 @@ app.use(function(req, res, next) {
 // var mq = require('./message_queue/main.js');
 // mq.startMessageQueueService(8000);
 
-app.get('/crm/', entryPages.crmHomepage);
-app.get('/crm/about', entryPages.crmAboutpage);
-app.get('/ecomm/', entryPages.ecommHomepage);
-app.get('/ecomm/about', entryPages.ecommAboutpage)
-
-app.use('/api/v1.00/entities/agents', require('./routers/api/agents.js'));
-app.use('/api/v1.00/entities/customers', require('./routers/api/customers.js'));
-app.use('/api/v1.00/entities/contact_records', require('./routers/api/contact_records.js'));
-app.use('/api/v1.00/entities/products', require('./routers/api/products.js'));
-app.use('/api/v1.00/entities/sessions', require('./routers/api/sessions.js'));
-app.use('/api/v1.00/entities/session_view_stats', require('./routers/api/session_view_stats.js'));
-app.use('/api/v1.00/entities/user_view_stats', require('./routers/api/user_view_stats.js'));
-app.use('/api/v1.00/entities/session_shopping_carts', require('./routers/api/session_shopping_carts.js'));
-app.use('/api/v1.00/entities/user_shopping_carts', require('./routers/api/user_shopping_carts.js'));
-app.use('/api/v1.00/entities/responses/', require('./routers/api/responses.js'));
-////////////////////
-// Manager Facade //
-////////////////////
-app.get('/crm/agents', managerFacade.showAllAgents);
-app.get('/crm/agents/create', managerFacade.showAgentCreationPage);
-
-//////////////////
-// Agent Facade //
-//////////////////
-
-// profile related
-app.get('/crm/agents/:agentId', agentFacade.showProfile);
-app.get('/crm/agents/:agentId/edit', agentFacade.showProfileUpdatePage);
-
-// customer related
-app.get('/crm/agents/:agentId/customers/:customerId', agentFacade.showCustomerDetailPage);
-app.get('/crm/agents/:agentId/create', agentFacade.showCustomerCreationPage);
-app.get('/crm/agents/:agentId/customers/:customerId/edit', agentFacade.showCustomerUpdatePage);
-
-// contact record related
-app.get('/crm/contact_records/create', agentFacade.showContactRecordCreationPage);
-app.get('/crm/contact_records/:contactRecordId', agentFacade.retrieveContactRecordById);
-
-/////////////////////
-// Customer Facade //
-/////////////////////
-app.get('/crm/customers/:customerId', customerFacade.retrieveProfilePage);
-app.get('/crm/customers/:customerId/edit', customerFacade.showProfileUpdatePage);
-
-/////////////////////
-// Ecommerce-Customer Facade //
-/////////////////////
-app.get('/ecomm/customers/products', customerFacade.showProductsPage);
-app.get('/ecomm/customers/product/:productId', customerFacade.showProductDetail);
-
-/////////////////////
-// Ecommerce-Manager Facade //
-/////////////////////
-app.get('/ecomm/managers/products', managerFacade.showProductsPage);
-app.get('/ecomm/managers/createProduct', managerFacade.createProductsPage);
-app.get('/ecomm/managers/product/:productId', managerFacade.showProductDetail);
+app.use('/crm', require('./routers/crm'));
+app.use('/ecomm', require('./routers/ecomm'));
+app.use('/api/v1.00/', require('./routers/api/v1.00'));
 
 ////////////////////
 //   Web Server   //
