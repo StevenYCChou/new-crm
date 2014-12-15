@@ -26,5 +26,7 @@ router.get('/managers/product/:productId', managerFacade.showProductDetail);
 /////////////////////
 router.get('/customers/products', customerFacade.showProductsPage);
 router.get('/customers/product/:productId', customerFacade.showProductDetail);
+router.get('/customers/shoppingCarts', customerFacade.showShoppingCarts);
+router.get('/customers/viewStats', customerFacade.showViewStats);
 
 module.exports = router;
