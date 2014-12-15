@@ -188,7 +188,6 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
     if (product_category == 'all') {
       href = '/api/v1.00/entities/products';
     }
-    console.log(href);
     $http.get(href)
       .success(function(data, status, headers, config) {
         $scope.products = [];
@@ -523,10 +522,32 @@ ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$win
     $http({
       url: '/api/v1.00/entities/session_shopping_carts',
       method: 'PUT',
-      data: $scope.products
+      data: $scope.session_product_cart
     })
     .success(function(data, status, headers, config) {
-      $window.location.href="/ecomm/customers/shoppingCarts";
+      $http.get('/api/v1.00/entities/sessions')
+        .success(function(data, status, headers, config) {
+          if (data.data.userId != "null"){
+            $http({
+                url: '/api/v1.00/entities/user_shopping_carts/' + data.data.userId,
+                method: 'PUT',
+                data: $scope.session_product_cart
+              })
+              .success(function(data, status, headers, config) {
+                $window.location.href="/ecomm/customers/shoppingCarts";
+              })
+              .error(function(data, status, headers, config) {
+                $scope.errorStatus = status;
+                $scope.errorData = data;
+                $window.alert("Status: " + status + ", " + data);
+              });
+          }
+        })
+        .error(function(data, status, headers, config) {
+          $scope.errorStatus = status;
+          $scope.errorData = data;
+          $window.alert("Status: " + status + ", " + data);
+        });
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;

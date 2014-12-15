@@ -41,8 +41,7 @@ exports.updateUserShoppingCart = function(req, res) {
   var multi = redisClient.multi();
   for (var productId in update) {
     var quantity = update[productId];
-
-    if (quantity === 0) {
+    if (quantity == 0) {
       multi.hdel(redis_key, productId);
     } else {
       multi.hset(redis_key, productId, quantity);

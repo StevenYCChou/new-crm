@@ -39,7 +39,7 @@
         </tr>
         <tr ng-repeat="(key,val) in session_product_cart">
           <td>{{ key }}</td>
-          <td width="10"><input width="10px" class="form-control" type="text" ng-model="val" value="{{ val }}" />
+          <td width="10"><input width="10px" class="form-control" type="text" ng-model="session_product_cart[key]" value="{{ val }}" />
           </td>
         </tr>
       </table>
