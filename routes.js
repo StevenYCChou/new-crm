@@ -144,31 +144,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(function(req, res, next) {
-  var session = req.session;
-  var userId = req.query.userId;
-
-  if (!session.userId && typeof userId != "undefined") {
-    session.userId = userId;
-
-    var sessionId = 'session:' + req.sessionID;
-    var shoppingCartId = sessionId + ':shoppingCart';
-    var viewedProductsId = sessionId + ':viewedProducts';
-    var viewedCategoriesId = sessionId + ':viewedCategories';
-
-    var multi = redisClient.multi();
-    multi.hset(sessionId, 'userId', userId);
-    multi.hset(shoppingCartId, 'userId', userId);
-    multi.hset(viewedProductsId, 'userId', userId);
-    multi.hset(viewedCategoriesId, 'userId', userId);
-
-    multi.exec(function(err, replies){
-      // TODO.
-    });
-  }
-  next();
-})
-
 ////////////////////
 //  MessageQueue  //
 ////////////////////

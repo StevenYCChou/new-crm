@@ -127,7 +127,7 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
     $http({
       url: '/api/v1.00/entities/sessions/',
       method: 'PUT',
-      data: {userid: customer_id}
+      data: {userId: customer_id}
     })
     .success(function(data, status, headers, config) {
       $window.location.href="/ecomm/customers/products";
