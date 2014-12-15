@@ -1,4 +1,4 @@
-var api = require('../../api.js');
+var api = require('../../../../api/contact_records.js');
 var express = require('express');
 var router = express.Router();
 
