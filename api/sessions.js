@@ -17,7 +17,7 @@ exports.getSession = function(req, res) {
         data: content,
         links: [{
           rel: 'self',
-          href: '/api/v1.00/entities/sessions/'+req.params.id
+          href: '/api/v1.00/entities/sessions/'+req.sessionID
         }]
       });
     }}, function(err) {
