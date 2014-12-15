@@ -32,40 +32,6 @@ app.use(cors());
 app.set('views', __dirname+'/views');
 app.set('view engine', 'html'); // default view engine
 
-var appendUUID = function(req, res, next) {
-  req.headers.uuid = hash(req.headers);
-  req.headers.uuid = hash(req.originalUrl);
-  req.headers.uuid += hash(req.body);
-  next();
-};
-
-var dectectAndRestoreUUID = function(req, res, next) {
-  var method = req.method;
-  if (method === 'PUT' || method === 'POST' || method === 'DELETE') {
-    var reqUUID = req.headers.uuid;
-    mongodbService.Response.findOne({nonce: reqUUID}).exec().then(function(entry) {
-      if (entry === null) {
-        mongodbService.Response.create({nonce: reqUUID}).then(function(entry) {
-          restfulHelper.responsePollingPage(res, reqUUID);
-          next();
-        }, function(err) {
-          res.status(500).end();
-        });
-      } else {
-        console.log('In dectectAndRestoreUUID: detect duplication.');
-        restfulHelper.responsePollingPage(res, reqUUID);
-      };
-    }, function(err) {
-      res.status(500).end();
-    });
-  } else {
-    next();
-  }
-};
-
-app.use(appendUUID);
-app.use(dectectAndRestoreUUID);
-
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var redisService = require('./data_service/redis_service');
