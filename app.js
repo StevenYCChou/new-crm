@@ -54,38 +54,16 @@ app.use(session({
 }));
 
 app.use(function(req, res, next) {
-  var session = req.session;
-  var sessionId = 'session:' + req.sessionID;
+  if (!req.session.views) {
+    req.session.views = 1;
 
-  if (!session.views) {
-    session.views = 1;
-
-    var userId = typeof req.query.userId === "undefined" ? null : req.query.userId;
-    session.userId = userId;
-
-    var shoppingCartId = sessionId + ':shoppingCart';
-    var viewedProductsId = sessionId + ':viewedProducts';
-    var viewedCategoriesId = sessionId + ':viewedCategories';
-
+    var sessionId = 'session:' + req.sessionID;
     var multi = redisClient.multi();
-    multi.hmset(sessionId,
-                'userId', userId,
-                'shoppingCart', shoppingCartId,
-                'viewedProducts', viewedProductsId,
-                'viewedCategories', viewedCategoriesId);
+    multi.hmset(sessionId, 'userId', null)
     multi.expire(sessionId, SESSION_TIMEOUT_SECONDS);
 
-    multi.hset(shoppingCartId, 'userId', userId);
-    multi.expire(shoppingCartId, SESSION_TIMEOUT_SECONDS);
-
-    multi.hset(viewedProductsId, 'userId', userId);
-    multi.expire(viewedProductsId, SESSION_TIMEOUT_SECONDS);
-
-    multi.hset(viewedCategoriesId, 'userId', userId);
-    multi.expire(viewedCategoriesId, SESSION_TIMEOUT_SECONDS);
-
     multi.exec(function(err, replies){
-      // TODO.
+      next();
     });
   }
   next();
@@ -108,31 +86,6 @@ app.use(function(req, res, next) {
   req.constraints = constraints;
   next();
 });
-
-app.use(function(req, res, next) {
-  var session = req.session;
-  var userId = req.query.userId;
-
-  if (!session.userId && typeof userId != "undefined") {
-    session.userId = userId;
-
-    var sessionId = 'session:' + req.sessionID;
-    var shoppingCartId = sessionId + ':shoppingCart';
-    var viewedProductsId = sessionId + ':viewedProducts';
-    var viewedCategoriesId = sessionId + ':viewedCategories';
-
-    var multi = redisClient.multi();
-    multi.hset(sessionId, 'userId', userId);
-    multi.hset(shoppingCartId, 'userId', userId);
-    multi.hset(viewedProductsId, 'userId', userId);
-    multi.hset(viewedCategoriesId, 'userId', userId);
-
-    multi.exec(function(err, replies){
-      // TODO.
-    });
-  }
-  next();
-})
 
 ////////////////////
 //  MessageQueue  //
