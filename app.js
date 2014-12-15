@@ -142,7 +142,7 @@ app.use(function(req, res, next) {
 
 app.use('/crm', require('./routers/crm'));
 app.use('/ecomm', require('./routers/ecomm'));
-app.use('/api/v1.00/', require('./routers/api/v1.00'));
+app.use('/api/v1.00', require('./routers/api/v1.00'));
 
 ////////////////////
 //   Web Server   //
