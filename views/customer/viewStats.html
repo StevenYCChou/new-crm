@@ -37,7 +37,7 @@
           <th>Product ID</th>
           <th>View Count</th>
         </tr>
-        <tr ng-repeat="(key,val) in product_stat">
+        <tr ng-repeat="(key,val) in session_product_stat">
           <td>{{ key }}</td>
           <td>{{ val }}</td>
         </tr>
@@ -49,7 +49,31 @@
           <th>Category</th>
           <th>View Count</th>
         </tr>
-        <tr ng-repeat="(key,val) in category_stat">
+        <tr ng-repeat="(key,val) in session_category_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <h3>User view Stats</h3>
+      <table class="table table-striped">
+        <caption>Product View Stats</caption>
+        <tr>
+          <th>Product ID</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in user_product_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <br />
+      <table class="table table-striped">
+        <caption>Category View Stats</caption>
+        <tr>
+          <th>Category</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in user_category_stat">
           <td>{{ key }}</td>
           <td>{{ val }}</td>
         </tr>

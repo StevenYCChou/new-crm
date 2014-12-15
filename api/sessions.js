@@ -34,7 +34,7 @@ exports.updateSession = function(req, res) {
 };
 
 exports.removeSession = function(req, res) {
-  delPromise(prefix + req.sessionID).then(function(content) {
+  delPromise("crm-" + prefix + req.sessionID).then(function(content) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
   }, function(err) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();

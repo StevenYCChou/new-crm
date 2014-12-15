@@ -10,8 +10,10 @@ var productPrefix = 'product_view_stats:',
     categoryPrefix = 'category_view_stats:';
 
 exports.importViewStats = function(req, res) {
-  var sessionId = req.sessionId || '';
+  var sessionId = req.sessionID || '';
   var userId = req.body.userId || '';
+  console.log(sessionId);
+  console.log(userId);
   var sessionProductKey = productPrefix + sessionId,
       sessionCategoryKey = categoryPrefix + sessionId,
       userProductKey = productPrefix + userId,
