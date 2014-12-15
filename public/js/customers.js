@@ -489,9 +489,17 @@ ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window'
 }]);
 
 ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
-  $http.get('/api/v1.00/entities/session_shopping_carts')
+  $http.get('/api/v1.00/entities/sessions')
     .success(function(data, status, headers, config) {
-       $scope.product_cart = data.data;
+      $http.get('/api/v1.00/entities/session_shopping_carts')
+        .success(function(data, status, headers, config) {
+           $scope.session_product_cart = data.data;
+        })
+        .error(function(data, status, headers, config) {
+          $scope.errorStatus = status;
+          $scope.errorData = data;
+          $window.alert("Status: " + status + ", " + data);
+        });
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -519,6 +527,61 @@ ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$win
     })
     .success(function(data, status, headers, config) {
       $window.location.href="/ecomm/customers/shoppingCarts";
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  }
+
+  $scope.login = function(customer_id) {
+    $http({
+      url: '/api/v1.00/entities/sessions/',
+      method: 'PUT',
+      data: {userId: customer_id}
+    })
+    .success(function(data, status, headers, config) {
+      $http({
+        url: '/api/v1.00/actions/import_shopping_cart',
+        method: 'PUT',
+        data: {userId: customer_id}
+      })
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/customers/shoppingCarts";
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
+    })
+    .error(function(data, status, headers, config) {
+      $scope.errorStatus = status;
+      $scope.errorData = data;
+      $window.alert("Status: " + status + ", " + data);
+    });
+  }
+
+  $scope.logout = function() {
+    $http({
+      url: '/api/v1.00/entities/sessions/',
+      method: 'PUT',
+      data: {userId: null}
+    })
+    .success(function(data, status, headers, config) {
+        $http({
+        url: '/api/v1.00/entities/sessions/',
+        method: 'DELETE'
+      })
+      .success(function(data, status, headers, config) {
+        $window.location.href="/ecomm/customers/shoppingCarts";
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorStatus = status;
+        $scope.errorData = data;
+        $window.alert("Status: " + status + ", " + data);
+      });
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;

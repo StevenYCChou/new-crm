@@ -49,7 +49,7 @@ exports.importViewStats = function(req, res) {
 
 var sessionPrefix = 'session:',
     userPrefix = 'user:',
-    suffix = ':shoppingCart';
+    suffix = ':shopping_cart';
 
 exports.importShoppingCart = function (req, res) {
   var sessionId = req.sessionID || '';
@@ -62,9 +62,10 @@ exports.importShoppingCart = function (req, res) {
   multi.hgetall(userShoppingCartKey);
 
   multi.exec(function(err, replies) {
+    console.log(replies[1]);
     sessionCart = replies[0];
     userCart = replies[1] == null ? {} : replies[1]; // Cannot set property to `null` object.
-
+    console.log(userCart);
     if (!sessionCart)
       multi.del(sessionShoppingCartKey);
     if (!userCart)
@@ -86,7 +87,7 @@ exports.importShoppingCart = function (req, res) {
       if (err) {
         mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
       } else {
-        mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
+        mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: replies}}).exec();
       }
     });
   });

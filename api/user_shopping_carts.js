@@ -15,7 +15,7 @@ var redisClient = redisService.getRedisClient();
  */
 
 var prefix = 'user:';
-var suffix = ':shoppingCart';
+var suffix = ':shopping_cart';
 
 var hgetallPromise = Promise.denodeify(redisClient.hgetall.bind(redisClient));
 var delPromise = Promise.denodeify(redisClient.del.bind(redisClient));

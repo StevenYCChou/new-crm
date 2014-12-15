@@ -110,9 +110,6 @@ app.use(function(req, res, next) {
                 'viewedCategories', viewedCategoriesId);
     multi.expire(sessionId, SESSION_TIMEOUT_SECONDS);
 
-    multi.hset(shoppingCartId, 'userId', userId);
-    multi.expire(shoppingCartId, SESSION_TIMEOUT_SECONDS);
-
     multi.hset(viewedProductsId, 'userId', userId);
     multi.expire(viewedProductsId, SESSION_TIMEOUT_SECONDS);
 
