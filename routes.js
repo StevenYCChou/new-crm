@@ -232,25 +232,6 @@ app.get('/ecomm/managers/products', managerFacade.showProductsPage);
 app.get('/ecomm/managers/createProduct', managerFacade.createProductsPage);
 app.get('/ecomm/managers/product/:productId', managerFacade.showProductDetail);
 
-/////////////////////
-//  Shopping Cart  //
-/////////////////////
-// var shoppingCartApi = require('./shoppingCartApi.js');
-// app.get('/api/v1.00/entities/shoppingcarts', shoppingCartApi.getShoppingCart);
-// app.put('/api/v1.00/entities/shoppingcarts', shoppingCartApi.updateShoppingCart);
-
-// app.delete('/api/v1.00/entities/shoppingcarts', shoppingCartApi.clearShoppingCart);
-// app.get('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.getShoppingCart);
-// app.put('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.updateShoppingCart);
-// app.delete('/api/v1.00/entities/shoppingcarts/:session', shoppingCartApi.clearShoppingCart);
-
-/////////////////////
-//  ViewedHistory  //
-/////////////////////
-var viewedHistoryApi = require('./viewedHistoryApi.js');
-app.get('/api/v1.00/entities/viewedHistory', viewedHistoryApi.getViewedHistory);
-app.put('/api/v1.00/entities/users/:userId/viewedHistory', viewedHistoryApi.updateViewedHistory);
-
 ////////////////////
 //   Web Server   //
 ////////////////////
