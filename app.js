@@ -1,8 +1,6 @@
-var api = require('./api.js');
 var restfulHelper = require('./api/restful_helper.js');
 var businessService = require('./business_service/business_service.js');
 var mongodbService = require('./data_service/mongodb_service.js');
-var entryPages = require('./entryPages.js');
 
 var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;

@@ -6,9 +6,13 @@ var managerFacade = businessService.managerFacade;
 var agentFacade = businessService.agentFacade;
 var customerFacade = businessService.customerFacade;
 
-var entryPages = require('../../entryPages.js');
-router.get('/', entryPages.crmHomepage);
-router.get('/about', entryPages.crmAboutpage);
+router.get('/', function (req, res) {
+  res.render('ecommHome');
+});
+
+router.get('/about', function ecommAboutpage(req, res) {
+  res.render('ecommAbout');
+});
 
 ////////////////////
 // Manager Facade //
