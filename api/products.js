@@ -84,7 +84,10 @@ exports.getProducts = function (req, res) {
       return simpleDbSelectPromise(queryParams);
     });
   } else {
-    var queryParams = {SelectExpression: select_string + where_string + limit_string};
+    var queryParams = {
+      SelectExpression: select_string + where_string + limit_string,
+      ConsistentRead: true
+    };
     queryPromise = simpleDbSelectPromise(queryParams);
   }
 
@@ -136,7 +139,8 @@ exports.getProducts = function (req, res) {
 exports.getProduct = function (req, res) {
   var params = {
     DomainName: 'Product',
-    ItemName: req.params.id
+    ItemName: req.params.id,
+    ConsistentRead: true
   }
   if (req.constraints.field) {
     params.AttributeNames = req.constraints.field;

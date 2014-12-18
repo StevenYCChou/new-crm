@@ -47,18 +47,18 @@ router.use(responsePollingPage);
 router.use('/entities/sessions', require('./entities/sessions.js'));
 router.use('/entities/session_view_stats', require('./entities/session_view_stats.js'));
 router.use('/entities/session_shopping_carts', require('./entities/session_shopping_carts.js'));
+router.use('/entities/user_view_stats', require('./entities/user_view_stats.js'));
+router.use('/entities/user_shopping_carts', require('./entities/user_shopping_carts.js'));
+var actions = require('../../../api/actions.js');
+router.put('/actions/import_view_stats', actions.importViewStats);
+router.put('/actions/import_shopping_cart', actions.importShoppingCart)
 
 router.use(dectectAndRestoreUUID);
 router.use('/entities/agents', require('./entities/agents.js'));
 router.use('/entities/customers', require('./entities/customers.js'));
 router.use('/entities/contact_records', require('./entities/contact_records.js'));
 router.use('/entities/products', require('./entities/products.js'));
-router.use('/entities/user_view_stats', require('./entities/user_view_stats.js'));
-router.use('/entities/user_shopping_carts', require('./entities/user_shopping_carts.js'));
 router.use('/entities/responses', require('./entities/responses.js'));
 
-var actions = require('../../../api/actions.js');
-router.put('/actions/import_view_stats', actions.importViewStats);
-router.put('/actions/import_shopping_cart', actions.importShoppingCart)
 
 module.exports = router;

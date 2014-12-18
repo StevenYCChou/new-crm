@@ -7,11 +7,11 @@ var agentFacade = businessService.agentFacade;
 var customerFacade = businessService.customerFacade;
 
 router.get('/', function (req, res) {
-  res.render('ecommHome');
+  res.render('crmHome');
 });
 
 router.get('/about', function (req, res) {
-  res.render('ecommAbout');
+  res.render('crmAbout');
 });
 
 ////////////////////

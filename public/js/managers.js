@@ -260,7 +260,7 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
       productId: product_id,
       shortdescription: $scope.shortDescription,
       longdescription: $scope.longDescription,
-      sellervomments: $scope.sellerComments,
+      sellercomments: $scope.sellerComments,
     };
     $http({
       url: '/api/v1.00/entities/products/' + product_id,
