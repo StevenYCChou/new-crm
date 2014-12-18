@@ -26,6 +26,28 @@ var parseToAttributes = function(product) {
   return attributes;
 }
 
+var parseToAttributesUpdate = function(product) {
+  var attributes = [];
+
+  for (var key in product) {
+    if (Array.isArray(product[key])) {
+      product[key].forEach(function(v) {
+        attributes.push({
+          Name: key,
+          Value: String(v),
+          Replace: true
+        });
+      });
+    } else if (key !== 'id') {
+      attributes.push({
+        Name: key,
+        Value: String(product[key])
+      });
+    }
+  }
+  return attributes;
+}
+
 exports.getProducts = function (req, res) {
   var constraints = req.constraints;
 
@@ -62,7 +84,10 @@ exports.getProducts = function (req, res) {
       return simpleDbSelectPromise(queryParams);
     });
   } else {
-    var queryParams = {SelectExpression: select_string + where_string + limit_string};
+    var queryParams = {
+      SelectExpression: select_string + where_string + limit_string,
+      ConsistentRead: true
+    };
     queryPromise = simpleDbSelectPromise(queryParams);
   }
 
@@ -114,7 +139,8 @@ exports.getProducts = function (req, res) {
 exports.getProduct = function (req, res) {
   var params = {
     DomainName: 'Product',
-    ItemName: req.params.id
+    ItemName: req.params.id,
+    ConsistentRead: true
   }
   if (req.constraints.field) {
     params.AttributeNames = req.constraints.field;
@@ -166,7 +192,7 @@ exports.createProduct = function (req, res) {
 };
 
 exports.updateProduct = function (req, res) {
-  var attributes = parseToAttributes(req.body);
+  var attributes = parseToAttributesUpdate(req.body);
   var params = {
     Attributes: attributes,
     DomainName: 'Product',
@@ -184,12 +210,10 @@ exports.updateProduct = function (req, res) {
 
 exports.removeProduct = function (req, res) {
   var id = req.param('id');
-  console.log(id);
   simpledb.getAttributes({
     DomainName: 'Product',
     ItemName: id
   }, function(err, data) {
-    console.log(data);
     if (err) {
       return mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();
     } else {

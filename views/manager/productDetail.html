@@ -20,7 +20,7 @@
               <li><a href="/ecomm/about">About</a></li>
             </ul>
             <form class="navbar-form navbar-right" role="form">
-              <button type="submit" onclick="location.href = '/crm/';" class="btn btn-success">CRM</button>
+              <input type="button" onclick="location.href = '/crm/';" class="btn btn-success" value ="CRM" />
             </form>
           </div>
         </div>
@@ -32,12 +32,13 @@
             <img ng-src= "{{imageLink}}" />
           </div>
           <div class="span10">
-            <label>Short Description: <input ng-model="shortDescription" value="{{ shortDescription }}"></label>
-            <label>Long Description: <input ng-model="longDescription" value="{{ longDescription }}"></label>
-            <label>Seller Comments: <input ng-model="sellerComments" value="{{ sellerComments }}"></label>
+            <div><label>Short Description: <input class="form-control" ng-model="shortDescription" value="{{ shortDescription }}"></label>
+            </div>
+            <div><label>Long Description: <input class="form-control" ng-model="longDescription" value="{{ longDescription }}"></label></div>
+            <div><label>Seller Comments: <input class="form-control" ng-model="sellerComments" value="{{ sellerComments }}"></label></div>
             <br /><br />
-            <input type="button" ng-click="updateProductDetail(id)" value="Update" />
-            <input type="button" ng-click="getProducts()" value="All Products" />
+            <input type="button" class="btn btn-primary" ng-click="updateProductDetail(productId)" value="Update" />
+            <input type="button" class="btn btn-success" ng-click="getProducts()" value="All Products" />
           </div>
         </div>
       </div>

@@ -38,7 +38,24 @@ managerApp.controller('agentCreateController', ['$scope', '$http', '$window', fu
 ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
   $http.get('/api/v1.00/entities/products')
     .success(function(data, status, headers, config) {
-      $scope.products = data.data;
+      $scope.products = [];
+        data.data.forEach(function(product){
+          var productsAttributes = {};
+          var category = '';
+          for (key in product) {
+            if (key == 'category'){
+              product['old_category'] = product['category'];
+              category = '';
+              for (keys in product[key]) {
+                 category += product[key][keys] + ', ';
+              }
+              product[key] = category.substring(0, category.length-2);
+            } else if (key!= 'id' && key!= 'links' && key!= 'imagelink'){
+              productsAttributes[key] = product[key];
+            }
+          }
+          $scope.products.push({id: product['id'], imagelink: product['imagelink'], category: product['category'], old_category: product['old_category'], productsAttributes: productsAttributes});
+        });
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -49,19 +66,25 @@ ecommManagerApp.controller('retrieveProductController', ['$scope', '$http', '$wi
     $window.location.href = "/ecomm/managers/createProduct";
   };
   $scope.productDetail = function(id) {
-    $window.location.href = "/ecomm/managers/Product/" + id;
+    $window.location.href = "/ecomm/managers/product/" + id;
   };
   $scope.productUpdateSummary = function(product_id) {
-    var put_data = {
-      updatetype: 'summary',
-      summary: {
-        products: $scope.products
+    var post_data = {};
+    $scope.products.forEach(function(product) {
+      if (product.id == product_id) {
+        for (key in product.productsAttributes) {
+          post_data[key] = product.productsAttributes[key];
+        }
+        post_data['category'] = product.old_category;
+        post_data['imagelink'] = product.imagelink;
       }
-    };
+    });
+
     $http({
-      url: '/api/v1.00/entities/product/' + product_id,
+      url: '/api/v1.00/entities/products/' + product_id,
       method: 'PUT',
-      data: put_data})
+      data: post_data
+    })
       .success(function(data, status, headers, config) {
         $window.location.href="/ecomm/managers/products";
       })
@@ -219,10 +242,10 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   $scope.productId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
-      $scope.shortdescription = data.data.shortdescription;
-      $scope.longdescription = data.data.longdescription;
-      $scope.sellercomments = data.data.sellercomments;
-      $scope.imagecink = data.data.imagelink;
+      $scope.shortDescription = data.data.shortdescription;
+      $scope.longDescription = data.data.longdescription;
+      $scope.sellerComments = data.data.sellercomments;
+      $scope.imageLink = data.data.imagelink;
     })
     .error(function(data, status, headers, config) {
       $scope.errorStatus = status;
@@ -234,16 +257,13 @@ ecommManagerApp.controller('productDetailController', ['$scope', '$http', '$wind
   };
   $scope.updateProductDetail = function(product_id) {
     var put_data = {
-      updatetype: 'detail',
-      detail: {
-        productId: product_id,
-        shortdescription: $scope.shortdescription,
-        longdescription: $scope.longdescription,
-        sellervomments: $scope.sellercomments,
-      }
+      productId: product_id,
+      shortdescription: $scope.shortDescription,
+      longdescription: $scope.longDescription,
+      sellercomments: $scope.sellerComments,
     };
     $http({
-      url: '/api/v1.00/entities/product/' + product_id,
+      url: '/api/v1.00/entities/products/' + product_id,
       method: 'PUT',
       data: put_data})
       .success(function(data, status, headers, config) {

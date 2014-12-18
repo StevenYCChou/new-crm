@@ -1,4 +1,4 @@
-var api = require('../../api/user_view_stats.js');
+var api = require('../../../../api/user_view_stats.js');
 var express = require('express');
 var router = express.Router();
 

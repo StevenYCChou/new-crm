@@ -21,6 +21,7 @@
             </ul>
             <div class="navbar-form navbar-right">
               <input type="button" class="btn btn-success" value="View Stats" ng-click="viewStats()" />
+              <input type="button" class="btn btn-primary" value="Shopping Cart" ng-click="shoppingCarts()"/>
               <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
               <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
               <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
@@ -36,7 +37,7 @@
           <th>Product ID</th>
           <th>View Count</th>
         </tr>
-        <tr ng-repeat="(key,val) in product_stat">
+        <tr ng-repeat="(key,val) in session_product_stat">
           <td>{{ key }}</td>
           <td>{{ val }}</td>
         </tr>
@@ -48,7 +49,31 @@
           <th>Category</th>
           <th>View Count</th>
         </tr>
-        <tr ng-repeat="(key,val) in category_stat">
+        <tr ng-repeat="(key,val) in session_category_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <h3>User view Stats</h3>
+      <table class="table table-striped">
+        <caption>Product View Stats</caption>
+        <tr>
+          <th>Product ID</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in user_product_stat">
+          <td>{{ key }}</td>
+          <td>{{ val }}</td>
+        </tr>
+      </table>
+      <br />
+      <table class="table table-striped">
+        <caption>Category View Stats</caption>
+        <tr>
+          <th>Category</th>
+          <th>View Count</th>
+        </tr>
+        <tr ng-repeat="(key,val) in user_category_stat">
           <td>{{ key }}</td>
           <td>{{ val }}</td>
         </tr>

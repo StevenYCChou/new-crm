@@ -43,7 +43,7 @@ exports.responsePollingPage = function(res, uuid) {
   res.json({
     links: {
       rel: 'poll',
-      href: '/api/v1.00/responses/' + uuid
+      href: '/api/v1.00/entities/responses/' + uuid
     }
   });
 }

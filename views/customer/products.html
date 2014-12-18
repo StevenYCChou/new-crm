@@ -21,6 +21,7 @@
             </ul>
             <div class="navbar-form navbar-right">
               <input type="button" class="btn btn-success" value="View Stats" ng-click="viewStats()"/>
+              <input type="button" class="btn btn-primary" value="Shopping Cart" ng-click="shoppingCarts()"/>
               <input type="text" class="form-control" ng-model="customerId" placeholder="Customer id" />
               <input type="button" class="btn btn-default" value="Sign in" ng-click="login(customerId)" />
               <input type="button" class="btn btn-danger" value="Sign out" ng-click="logout()" />
@@ -31,14 +32,23 @@
       </nav>
 
       <h3>Ecommerce Products</h3>
-      <div>Category Filter
-        <select ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
-      </div>
-      <br />
-      <p>Product Name Search</p>
       <div class="row">
         <div class="col-xs-2">
+          <h5>Category Filter</h5>
+        </div>
+        <div class="col-xs-2">
+          <select class="form-control" ng-model="categoryChoice" ng-options="item.name for item in filterCategorys" ng-change="productFilter(categoryChoice.name)"></select>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-xs-2">
+          <h5>Product Name Search</h5>
+        </div>
+        <div class="col-xs-2">
           <input type="text" class="form-control" ng-model="searchKey" />
+        </div>
+        <div class="col-xs-2">
           <input type="button" class="btn btn-primary" ng-click="productSearch(categoryChoice, searchKey)" value="Search" />
         </div>
       </div>

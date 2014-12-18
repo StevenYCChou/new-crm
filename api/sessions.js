@@ -17,7 +17,7 @@ exports.getSession = function(req, res) {
         data: content,
         links: [{
           rel: 'self',
-          href: '/api/v1.00/entities/sessions/'+req.params.id
+          href: '/api/v1.00/entities/sessions/'+req.sessionID
         }]
       });
     }}, function(err) {
@@ -34,7 +34,7 @@ exports.updateSession = function(req, res) {
 };
 
 exports.removeSession = function(req, res) {
-  delPromise(prefix + req.sessionID).then(function(content) {
+  delPromise("crm-" + prefix + req.sessionID).then(function(content) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: content}}).exec();
   }, function(err) {
     mongodbService.Response.update({nonce: req.headers.uuid}, {$set : {status: "COMPLETED", response: err}}).exec();

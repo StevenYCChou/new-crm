@@ -1,4 +1,4 @@
-var api = require('../../api/responses.js');
+var api = require('../../../../api/responses.js');
 var express = require('express');
 var router = express.Router();
 

@@ -24,3 +24,7 @@ exports.showProductDetail = function (req, res) {
 exports.showViewStats = function (req, res) {
   res.render('customer/viewStats');
 };
+
+exports.showShoppingCarts = function (req, res) {
+  res.render('customer/shoppingCarts');
+};
