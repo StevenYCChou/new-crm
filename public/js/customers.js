@@ -70,7 +70,7 @@ customerApp.controller('editDetailController', ['$scope', '$http', '$window', '$
   };
 }]);
 
-ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$window', '$location', '$timeout', function($scope, $http, $window, $location, $timeout) {
   $scope.categoryChoice = 'all';
   $scope.filterCategorys = [
     {name: 'all'},
@@ -79,12 +79,16 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
     {name: 'cd'}
   ];
 
-  $scope.searchKey = '';
   $http.get('/api/v1.00/entities/sessions')
     .success(function(data, status, headers, config) {
-      if (data.data.userId == null){
+      if (data.data.userId != "null"){
+        $timeout(function(){
+          $scope.login_flag = true;
+        }, 100);
       } else {
-        $scope.userId = data.data.userId;
+        $timeout(function(){
+          $scope.login_flag = false;
+        }, 100);
       }
     })
     .error(function(data, status, headers, config) {
@@ -215,27 +219,13 @@ ecommCustomerApp.controller('retrieveProductController', ['$scope', '$http', '$w
         $window.alert("Status: " + status + ", " + data);
       });
   }
-  $scope.productSearch = function(product_category, searchKey) {
-    var href = '/api/v1.00/entities/products?searchKey=' + $scope.searchKey;
-    if (scope.categoryChoice.name !== 'All') {
-      href += 'category='+$scope.categoryChoice.name;
-    }
-    $http.get(href)
-      .success(function(data, status, headers, config) {
-        $scope.products = data.data;
-      })
-      .error(function(data, status, headers, config) {
-        $scope.errorStatus = status;
-        $scope.errorData = data;
-        $window.alert("Status: " + status + ", " + data);
-      });
-  };
+
   $scope.productDetail = function(product_id) {
     $window.location.href = "/ecomm/customers/product/" + product_id;
   };
 }]);
 
-ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$window', '$location', '$timeout', function($scope, $http, $window, $location, $timeout) {
   $scope.productId = $location.absUrl().split("/")[6];
   $http.get('/api/v1.00/entities/products/' + $scope.productId)
     .success(function(data, status, headers, config) {
@@ -255,6 +245,9 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
       $http.get('/api/v1.00/entities/sessions')
         .success(function(data, status, headers, config) {
           if (data.data.userId != "null"){
+            $timeout(function(){
+              $scope.login_flag = true;
+            }, 100);
             $http({
               url: '/api/v1.00/entities/user_view_stats/' + data.data.userId,
               contentType: "application/json",
@@ -269,6 +262,10 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
               $scope.errorData = data;
               $window.alert("Status: " + status + ", " + data);
             });
+          } else {
+            $timeout(function(){
+              $scope.login_flag = false;
+            }, 100);
           }
           $http({
               url: '/api/v1.00/entities/session_view_stats/',
@@ -312,9 +309,6 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   $scope.productPurchase = function(){
     var products = {};
     products[$scope.productId] = 1;
-
-//    var put_data = {products: products};
-//    console.log(put_data);
     $http({
       url: '/api/v1.00/entities/session_shopping_carts/',
       contentType: "application/json",
@@ -387,10 +381,14 @@ ecommCustomerApp.controller('productDetailController', ['$scope', '$http', '$win
   }
 }]);
 
-ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window', '$location', '$timeout', function($scope, $http, $window, $location, $timeout) {
+  $scope.login = false;
   $http.get('/api/v1.00/entities/sessions')
     .success(function(data, status, headers, config) {
       if (data.data.userId != "null"){
+        $timeout(function(){
+          $scope.login_flag = true;
+        }, 100);
         $http.get('/api/v1.00/entities/user_view_stats/' + data.data.userId)
           .success(function(data, status, headers, config) {
              $scope.user_product_stat = data.data.products;
@@ -401,6 +399,10 @@ ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window'
             $scope.errorData = data;
             $window.alert("Status: " + status + ", " + data);
           });
+      } else {
+        $timeout(function(){
+          $scope.login_flag = false;
+        }, 100);
       }
       $http.get('/api/v1.00/entities/session_view_stats')
         .success(function(data, status, headers, config) {
@@ -487,9 +489,19 @@ ecommCustomerApp.controller('viewStatsController', ['$scope', '$http', '$window'
   }
 }]);
 
-ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$window', '$location', function($scope, $http, $window, $location) {
+ecommCustomerApp.controller('shoppingCartsController', ['$scope', '$http', '$window', '$location', '$timeout', function($scope, $http, $window, $location, $timeout) {
+  $scope.login = false;
   $http.get('/api/v1.00/entities/sessions')
     .success(function(data, status, headers, config) {
+      if (data.data.userId != "null"){
+        $timeout(function(){
+          $scope.login_flag = true;
+        }, 100);
+      } else {
+        $timeout(function(){
+          $scope.login_flag = false;
+        }, 100);
+      }
       $http.get('/api/v1.00/entities/session_shopping_carts')
         .success(function(data, status, headers, config) {
            $scope.session_product_cart = data.data;
