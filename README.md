@@ -3,9 +3,9 @@ Customer Relation Management (CRM) and ecommerce system
 
 Team members:
 
-Yen-cheng Chou
-Fan Su
-Wenjun Xu
+1. Yen-cheng Chou
+2. Fan Su
+3. Wenjun Xu
 
 Features: 
 
